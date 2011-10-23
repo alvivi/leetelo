@@ -1,0 +1,29 @@
+
+body {
+    padding-top: 40px;
+}
+
+#main-container {
+    padding-top: 25px;
+}
+
+#logo {
+    text-indent: -999ex;
+    display: block;
+    width: 85px;
+    height: 34px;
+    background-image: url("/static/img/logo.png");
+    padding: 0;
+}
+
+
+table th {
+    font-size: 100%;
+    font-style: normal;
+    font-weight: normal;
+}
+
+thead th {
+    font-weight: bold;
+}
+

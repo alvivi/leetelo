@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Léetelo{% if subtitle %} - {{subtitle}}{% endif %}</title>
+    <link rel="stylesheet" type="text/css" href="static/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="static/base.css"/>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="static/base.js"></script>
+
+    {% block head %} {% endblock %}
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="topbar-inner">
+            <div class="container">
+                <a id="logo" class="nav" href="/">Léetelo</a>
+                <ul class="nav">
+                    <li {% block nav_index %} {% endblock %}><a href="/">Inicio</a></li>
+                    {%if user %}
+                    <li {% block nav_user %} {% endblock %}><a href="/user">Pérfil</a></li>
+                    <li><a href="{{logoutUri}}">Cerrar sesión</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if user %}
+    {% else %}
+    <div class="container">
+        <div class="alert-message warning">
+            <a class="close" href="#">×</a>
+            <p><strong>¡Hola anónimo!</strong> Si quieres disfrutar al máximo de léetelo
+                <a href="{{newUserUri}}">registrate</a> o
+                <a href="{{loginUri}}">inicia sesión</a> ahora.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="container" id="main-container">
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>
