@@ -20,7 +20,7 @@
                 <ul class="nav">
                     <li {% block nav_index %} {% endblock %}><a href="/">Inicio</a></li>
                     {%if user %}
-                    <li {% block nav_user %} {% endblock %}><a href="/user">Pérfil</a></li>
+                    <li {% block nav_user %} {% endblock %}><a href="/profile">Pérfil</a></li>
                     <li><a href="{{logoutUri}}">Cerrar sesión</a></li>
                     {% endif %}
                 </ul>
