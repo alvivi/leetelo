@@ -13,7 +13,10 @@ from views import *
 def main():
     application = webapp.WSGIApplication([
         ('/',     IndexView),
-        ('/profile', ProfileView)
+        ('/profile', ProfileView),
+        ('/profile/alerts', ProfileAlertsView),
+        ('/profile/offers', ProfileOffersView),
+        ('/profile/historial', ProfileHistorialView),
         ], debug=True)
     util.run_wsgi_app(application)
 

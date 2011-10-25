@@ -3,11 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Léetelo{% if subtitle %} - {{subtitle}}{% endif %}</title>
-    <link rel="stylesheet" type="text/css" href="static/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="static/base.css"/>
-    <script type="text/javascript" src="static/jquery.js"></script>
-    <script type="text/javascript" src="static/jquery.tablesorter.js"></script>
-    <script type="text/javascript" src="static/base.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/base.css"/>
+    <script type="text/javascript" src="/static/jquery.js"></script>
+    <script type="text/javascript" src="/static/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="/static/base.js"></script>
 
     {% block head %} {% endblock %}
 </head>
@@ -20,7 +20,7 @@
                 <ul class="nav">
                     <li {% block nav_index %} {% endblock %}><a href="/">Inicio</a></li>
                     {%if user %}
-                    <li {% block nav_user %} {% endblock %}><a href="/profile">Pérfil</a></li>
+                    <li {% block nav_profile %} {% endblock %}><a href="/profile">Pérfil</a></li>
                     <li><a href="{{logoutUri}}">Cerrar sesión</a></li>
                     {% endif %}
                 </ul>

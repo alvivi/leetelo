@@ -34,13 +34,35 @@ class UserView(webapp.RequestHandler):
 # Pérfil de usuario.
 class ProfileView(UserView):
     def get_as_user(self, user, logoutUri):
+        self.redirect('/profile/alerts')
+
+
+class ProfileAlertsView(UserView):
+    def get_as_user(self, user, logoutUri):
         values = {
             'copies'     : Copy.allCopiesOf(user),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/')
         }
-        self.response.out.write(template.render('html/profile.html', values))
+        self.response.out.write(template.render('html/profileAlerts.html', values))
 
+class ProfileOffersView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'copies'     : Copy.allCopiesOf(user),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/profileOffers.html', values))
+
+class ProfileHistorialView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'copies'     : Copy.allCopiesOf(user),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/profileHistorial.html', values))
 
 # Página principal.
 class IndexView(UserView):
