@@ -87,14 +87,6 @@ class ProfileNewCopyView(UserView):
         Copy(book=book, user=user).put()
         self.redirect('/profile/copies')
 
-class ProfileNewCopyAddView(UserView):
-    def post_as_user(self, user, logoutUri):
-        title = self.request.get('titleBook')
-        book = Book.all().filter('title=', title).get()
-        Copy(title=title,user=user).put()
-        self.redirect('/profile/copies')
-
-
 class ProfileOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {

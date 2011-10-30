@@ -19,7 +19,6 @@ def main():
         ('/profile/copies', ProfileCopiesView),
         ('/profile/historial', ProfileHistorialView),
         ('/profile/newcopy', ProfileNewCopyView),
-        ('/profile/newcopy/add', ProfileNewCopyAddView),
         ('/profile/offers', ProfileOffersView),
         ], debug=True)
     util.run_wsgi_app(application)
