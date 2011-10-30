@@ -16,6 +16,9 @@ body {
     padding: 0;
 }
 
+#copiesTable {
+    margin-top: 20px;    
+}
 
 table th {
     font-size: 100%;

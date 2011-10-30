@@ -1,0 +1,28 @@
+
+{% extends "profile.html" %}
+
+{% block nav_profile_copies %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<a href="/profile/newcopy" class="btn">Añadir un nuevo ejemplar</a>
+<a href="#" class="btn disabled">Elminar ejemplares seleccionados</a>
+
+<table id="copiesTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue">Título</th>
+			<th class="header blue">Autor</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for copy in copies %}
+		<tr>
+			<td>{{copy.book.title}}</td>
+			<td>{{copy.book.author}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}

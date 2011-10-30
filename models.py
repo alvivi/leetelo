@@ -11,7 +11,6 @@ class Book(db.Model):
     title  = db.StringProperty(required=True)
     author = db.StringProperty()
 
-
 # El ejemplar del libro
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
@@ -20,5 +19,4 @@ class Copy(db.Model):
     # Método de clase que devuelve todos los ejemplares que posee un usuario
     @classmethod
     def allCopiesOf(cls, user):
-        return cls.all().filter('user =', user).fetch(64)
-
+        return cls.all().filter('user =', user).fetch(128)
