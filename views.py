@@ -91,10 +91,20 @@ class ProfileOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesOf(user)
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
+class CopyOffersView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesOf(user)
+        }
+        self.response.out.write(template.render('html/copyOffers.html', values))
+        
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {

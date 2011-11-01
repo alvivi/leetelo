@@ -1,0 +1,43 @@
+{% extends "profileOffers.html" %}
+
+{% block copy_offers %} 
+
+<label for="offerType" style="color: #268BD2; font-weight: bold"> Tipo de transacci&oacuten: </label>
+<label for="offerType" style="font-weight: bold"> Intercambio </label>
+
+<table class="zebra-striped sortable" id="offersTable">
+    <thead>
+        <tr>
+            <th class="blue header">Lo quiere...</th>
+            <th class="yellow header">Calificaci&oacuten</th>
+            <th class="green header">Estado</th>
+            <th class="red header"> </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>usuario1</th>
+            <th>****</th>
+            <th>Sin contestar</th>
+            <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+        </tr>
+        <tr>
+            <th>usuario2</th>
+            <th>****</th>
+            <th>Sin contestar</th>
+            <th><a href="#" class="btn">Enviar Mensaje</a>  </th>
+        </tr>
+        <tr>
+            <th>usuario3</th>
+            <th>****</th>
+            <th>Sin contestar</th>
+            <th><a href="#" class="btn">Enviar Mensaje</a>  </th>
+        </tr>
+    </tbody>
+</table>
+<div style="text-align: center">
+    <button class="btn primary"> Rechazar oferta </button>
+    <button class="btn primary"> Proponer intercambio indirecto </button>
+</div>
+
+{% endblock %}
