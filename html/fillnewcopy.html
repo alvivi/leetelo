@@ -1,0 +1,27 @@
+﻿{% extends "profile.html" %}
+
+{% block nav_profile_copies %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<form action="/profile/fillnewcopy" method="post">
+	<fieldset>
+		<legend>Nuevo ejemplar</legend>
+		<div class="clearfix">
+			<label for="titleBook">Libro</label>
+			<div class="input">
+				<select name="titleBook">
+				{% for b in books %}
+					<option>{{b.title}}</option>
+				{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="actions">
+			<input type="submit" class="btn primary" value="Añadir ejemplar">
+			<a href="/profile/copies" class="btn">Cancelar</a>
+		</div>
+	</fieldset>
+</form>
+
+{% endblock %}
