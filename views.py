@@ -96,6 +96,15 @@ class ProfileOffersView(UserView):
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
+class ProfileApplicationsView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'Applications'     : Application.allUserWants(user),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/profileApplications.html', values))
+
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
