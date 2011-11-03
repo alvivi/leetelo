@@ -53,3 +53,13 @@ class Request(db.Model):
     @classmethod
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).fetch(128)
+
+class Application(db.Model):
+    book = db.ReferenceProperty(Book)
+    userHas = db.UserProperty()
+    userWants = db.UserProperty()
+    
+    #Método de la clase que devuelve todos los ejemplares solicitados por un usuario
+    @classmethod
+    def allUserWants(cls, user):
+        return cls.all().filter('userWants =', user).fetch(64)

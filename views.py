@@ -96,6 +96,22 @@ class ProfileOffersView(UserView):
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
+class ProfileApplicationsView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'applications'     : Application.allUserWants(user),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/profileApplications.html', values))
+
+    def post_as_user(self, user, logoutUri):
+        title = self.request.get('titleBook')
+        logging.debug(title)
+        book = Book.all().filter('title =', title).get()
+        Application(book=book, userWants=user).put()
+        self.redirect('/profile/applications')
+
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
