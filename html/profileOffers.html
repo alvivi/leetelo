@@ -11,7 +11,7 @@
             <label for="selectOfferredBook" style="color: #268BD2"> Select Offerred Book: </label>
                 <div class="clearfix">
                   <div class="input">
-                        <select class="medium" multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
+                        <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
                                 <option onclick="window.location.href='/profile/copyoffers'">
                                     {{copy.book.title}}

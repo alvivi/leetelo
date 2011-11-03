@@ -20,12 +20,17 @@ jtBook     = Book(title=u'Canción de hielo y fuego 1: Juego de tronos', author=u
 
 
 db.delete(Copy.all().fetch(512))
-Copy(user=testUser, book=justinBook).put()
-Copy(user=testUser, book=kafkaBook).put()
-Copy(user=testUser, book=panBook).put()
-Copy(user=nilsenUser, book=justinBook).put()
-Copy(user=nilsenUser, book=kafkaBook).put()
-Copy(user=nilsenUser, book=panBook).put()
-Copy(user=billyUser, book=cienBook).put()
-Copy(user=billyUser, book=cienBook).put()
-Copy(user=userUser, book=akiraBook).put()
+justinCopy1 = Copy(user=testUser, book=justinBook, offerState="Con solicitud").put()
+kafkaCopy1  = Copy(user=testUser, book=kafkaBook, offerState="Con solicitud").put()
+panCopy1    = Copy(user=testUser, book=panBook).put()
+justinCopy2 = Copy(user=nilsenUser, book=justinBook).put()
+kafkaCopy2  = Copy(user=nilsenUser, book=kafkaBook).put()
+panCopy2    = Copy(user=nilsenUser, book=panBook).put()
+cienCopy1   = Copy(user=billyUser, book=cienBook).put()
+akiraCopy1  = Copy(user=userUser, book=akiraBook).put()
+
+
+db.delete(Request.all().fetch(512))
+Request(user=nilsenUser,copy=justinCopy1).put()
+Request(user=billyUser,copy=justinCopy1).put()
+Request(user=nilsenUser,copy=kafkaCopy1).put()

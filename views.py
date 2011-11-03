@@ -92,7 +92,7 @@ class ProfileOffersView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesOf(user)
+            'copies'      : Copy.allCopiesWithRequests(user)
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
@@ -101,7 +101,7 @@ class CopyOffersView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesOf(user)
+            'copies'      : Copy.allCopiesWithRequests(user)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
         
