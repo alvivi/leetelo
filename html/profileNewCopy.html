@@ -4,7 +4,8 @@
 {% block nav_profile_copies %} class="active" {% endblock %}
 
 {% block profileContent %}
-
+<h6>Añadir un nuevo ejemplar de...</h6>
+<div class="row">
 <form action="/profile/fillnewcopy" method="post">
 	<fieldset>
 		<legend></legend>
@@ -13,17 +14,19 @@
 		<div class="input">
 				<p>
 				  <select name="titleBook">
-				    
+
 				{% for b in books %}
-					
+
 				    <option>{{b.title}}</option>
-				    
+
 				{% endfor %}
-				
+
 			      </select>
           		  </p>
                   </p>
-	  	</div>  
+	  	</div>
+
+	  	<!--
 	    <br>
 		<table width="921" border="0">
 		  	<tr>
@@ -105,7 +108,7 @@
                   </div></td>
 		        </tr>
 			    <tr>
-			      <td height="64" colspan="2">Fecha límite de la oferta: 
+			      <td height="64" colspan="2">Fecha límite de la oferta:
 			        <label for="limiteoferta"></label>			        <select name="limiteoferta" size="1" id="limiteoferta">
 		            </select>			        <label for="fechalimiteoferta"></label></td>
 			      <td><p align="center">
@@ -115,7 +118,7 @@
 		          <p align="center">&nbsp;</p></td>
 		        </tr>
 	      </table>
-              
+
 				<p>
 				  <label for="operaciones"></label>
 	  Histórico de operaciones con libro: </p>
@@ -123,12 +126,13 @@
 				  <textarea name="operaciones" id="operaciones" cols="207" rows="5"></textarea>
 				  <br />
 		  </p>
-	  </div>
+	  </div> -->
 		<div class="actions">
 		  <input type="submit" class="btn primary" value="Añadir ejemplar" />
 		  <a href="/profile/copies" class="btn">Cancelar</a>
 		</div>
 	</fieldset>
 </form>
+</div>
 
 {% endblock %}
