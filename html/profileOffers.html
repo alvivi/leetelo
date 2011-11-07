@@ -13,7 +13,7 @@
                   <div class="input">
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
-                                <option onclick="window.location.href='/profile/copyoffers'">
+                                <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
                                     {{copy.book.title}}
                                 </option>
                             {% endfor %}

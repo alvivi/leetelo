@@ -90,9 +90,9 @@ class ProfileNewCopyView(UserView):
 class ProfileOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user)
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user)            
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
@@ -114,12 +114,34 @@ class ProfileApplicationsView(UserView):
 
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user)
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
+        
+class AppliantCopiesView(UserView):
+    def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        appliantUser = self.request.get('appliant')
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'appliantUser' : appliantUser,
+            'appliantCopies' : Copy.allCopiesOf(appliantUser)
+        }
+        self.response.out.write(template.render('html/appliantCopies.html', values))
         
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
