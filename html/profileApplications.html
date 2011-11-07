@@ -1,0 +1,29 @@
+{% extends "profile.html" %}
+
+{% block nav_profile_requests %} class="active" {% endblock %}
+
+{% block profileContent %}
+<h6> Contenido de solicitudes </h6>
+
+<a href="#" class="btn disabled">Elminar solicitudes seleccionadas</a>
+
+<table id="requestsTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue">Título</th>
+			<th class="header blue">Autor</th>
+			<th class="header blue">Propietario</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for request in requests %}
+		<tr>
+			<td>{{request.copy.book.title}}</td>
+			<td>{{request.copy.book.author}}</td>
+			<td>{{copy.user.nickname}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}

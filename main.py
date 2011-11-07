@@ -20,7 +20,7 @@ def main():
         ('/profile/historial', ProfileHistorialView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/offers', ProfileOffersView),
-        ('/profile/applications', ProfileApplicationsView),
+        ('/profile/requests', ProfileRequestsView),
         ('/profile/copyoffers', CopyOffersView)
         ], debug=True)
     util.run_wsgi_app(application)
