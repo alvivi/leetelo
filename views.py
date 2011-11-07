@@ -83,8 +83,33 @@ class ProfileNewCopyView(UserView):
     def post_as_user(self, user, logoutUri):
         title = self.request.get('titleBook')
         logging.debug(title)
+        
+        tipoOferta = self.request.get('TipoOferta')
+        precio = self.request.get('precio')
+        fechaLim = self.request.get('fechaLimite')
+        
+        #####Conversiones######
+        import time
+        #fechaf=time.strptime(precio, "%d/%m/%Y")
+        from datetime import datetime
+        #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
+        #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
+        fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+        fechaParseada=fechaParseada.date()
+        
+        
+        preciof=float(precio)
+        
+        ###escribir en log#####
+        logging.debug(tipoOferta);
+        logging.debug(preciof);
+        logging.debug(fechaParseada);
+        
+        
+        
         book = Book.all().filter('title =', title).get()
-        Copy(book=book, user=user).put()
+        
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta).put()
         self.redirect('/profile/copies')
 
 class ProfileOffersView(UserView):
@@ -131,7 +156,7 @@ class AppliantCopiesView(UserView):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        appliantUser = self.request.get('appliant')
+        appliantUser = users.User(self.request.get('appliant'))
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),

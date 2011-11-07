@@ -6,7 +6,7 @@
 {% block profileContent %}
 <h6>Añadir un nuevo ejemplar de...</h6>
 <div class="row">
-<form action="/profile/fillnewcopy" method="post">
+<form action="/profile/newcopy"  method="post">
 	<fieldset>
 		<legend></legend>
 	  <div class="clearfix">
@@ -127,6 +127,35 @@
 				  <br />
 		  </p>
 	  </div> -->
+	  <div>
+
+	
+	<div class="clearfix">
+		<div class="input">	  
+		  <input type="Radio" name="TipoOferta" value="Intercambio" checked> Intercambio Directo 
+		  <br> 
+		  <input type="Radio" name="TipoOferta" value="Prestamo"> Prestamo 
+	      <br> 
+		  <input type="Radio" name="TipoOferta" value="Venta"> Venta 
+		</div>
+	</dir>
+	  
+	  
+	  <div class="clearfix">
+		<label for="precio">Precio</label>
+		<div class="input">
+			<input type="text" name="precio" id="precio" />
+		</div>
+	  </div>
+	  
+	  <div class="clearfix">
+		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
+		<div class="input">
+			<input type="text" name="fechaLimite" id="fechaLimite" />
+		</div>
+	  </div>
+	  
+	  </div>
 		<div class="actions">
 		  <input type="submit" class="btn primary" value="Añadir ejemplar" />
 		  <a href="/profile/copies" class="btn">Cancelar</a>
