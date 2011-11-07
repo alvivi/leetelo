@@ -11,14 +11,15 @@ class Book(db.Model):
     title  = db.StringProperty(required=True)
     author = db.StringProperty()
     genre = db.StringProperty(choices=set(["Novela","Aventuras","Poesía","Narrativa","Histórico","Ciencia Ficción","Romántico","Ensayo"]))
-
+    year = db.StringProperty()
+    
 # El ejemplar del libro
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
     user = db.UserProperty()
     copyState = db.StringProperty(choices=set(["Excelente","Bueno","Deteriorado","Muy viejo"]))
     offerState = db.StringProperty(choices=set(["No disponible","En oferta",
-                                                "Con solicitud","Esperando confirmación",
+                                                "Con solicitud","Esperando confirmacion",
                                                 "Esperando recepción", "Prestado",
                                                 "Intercambiado","Vendido"]))
     pages = db.IntegerProperty()
@@ -28,7 +29,7 @@ class Copy(db.Model):
     publishing = db.StringProperty()
     limitOfferDate = db.DateProperty()
     salePrice = db.FloatProperty()
-    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo"]))
+    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo","Ninguno"]))
     # Método de clase que devuelve todos los ejemplares que posee un usuario
     @classmethod
     def allCopiesOf(cls, user):
@@ -36,8 +37,8 @@ class Copy(db.Model):
     # Método de clase que devuelve todos los ejemplares que posee un usuario que están en oferta y tienen alguna solicitud
     @classmethod
     def allCopiesWithRequests(cls, user):
-        return cls.all().filter('user =', user).filter('offerState =', "Con solicitud").fetch(128)
-
+        return cls.all().filter('user =', user).filter('offerState =', "Con solicitud").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Esperando confirmacion").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Esperando recepcion").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Prestado").fetch(128)
+        
 
 # Solicitud sobre un libro
 class Request(db.Model):
@@ -53,3 +54,4 @@ class Request(db.Model):
     @classmethod
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).fetch(128)
+    

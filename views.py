@@ -150,6 +150,35 @@ class CopyOffersView(UserView):
             'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
+    
+    def post_as_user(self, user, logoutUri):
+        action = self.request.get('processOffer')
+        appliantUser = users.User(self.request.get('offersRadios'))
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('user =',appliantUser).filter('copy =',selectedCopy).get()
+        
+        if action=="Vender" :
+            selectedCopy.offerState='Esperando confirmacion'
+            request.state='Negociando'
+            selectedCopy.put()
+            request.put()
+        elif action=="Prestar" :
+            selectedCopy.offerState='Esperando confirmacion'
+            selectedCopy.put()
+        elif action=="Rechazar oferta" :
+            selectedCopy.offerState='Esperando confirmacion'
+            selectedCopy.put()
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy)
+        }
+        
+        self.response.out.write(template.render('html/copyOffers.html', values))
         
 class AppliantCopiesView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -167,7 +196,15 @@ class AppliantCopiesView(UserView):
             'appliantCopies' : Copy.allCopiesOf(appliantUser)
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
-        
+    
+    def post_as_user(self, user, logoutUri):
+        action = self.request.get('processOffer')
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+            
+        self.redirect('/profile/copyoffers')
+
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {

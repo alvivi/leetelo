@@ -5,24 +5,26 @@
 <p> <strong> Mostrando ofertas para: </strong>{{selectedCopy.book.title}}</p>
 <p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
 
-<form>
+    
+<form action="/profile/copyoffers" method="post">
+    <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <table class="bordered-table sortable" id="offersTable">
         <thead>
             <tr>
                 <th></th>
                 <th class="blue header">Lo quiere...</th>
-                <th class="yellow header">Calificaci&oacuten</th>
-                <th class="green header">Estado de la transacci&oacuten</th>
-                <th class="red header"> </th>
+                <th class="blue header">Calificaci&oacuten</th>
+                <th class="blue header">Estado de la transacci&oacuten</th>
+                <th class="blue header"> </th>
             </tr>
         </thead>
         <tbody>
             {% for offer in copyOffers %}
             <tr>
                 {% ifequal selectedCopy.offerType "Intercambio" %}
-                    <th><input type="radio" name="offersRadios" onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></th>
+                    <th><input type="radio" name="offersRadios" value={{offer.user}} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></th>
                 {% else %}
-                    <th><input type="radio"></th>
+                    <th><input type="radio" name="offersRadios" value={{offer.user}}></th>
                 {% endifequal %}
                 <th class="appliant-column-name">{{offer.user}}</th>
                 <th>****</th>
@@ -34,12 +36,12 @@
     </table>
     <div style="text-align: center" id="exchange-buttons">
         {% ifequal selectedCopy.offerType "Intercambio" %}
-            <button class="btn primary disabled"> Proponer intercambio indirecto </button>
+            <input type="submit" class="btn primary disabled" name="processOffer" value="Proponer intercambio indirecto">
         {% endifequal %}
-        {% ifequal selectedCopy.offerType "Venta" %} <button class="btn primary disabled"> Aceptar Oferta </button>{% endifequal %}
-        {% ifequal selectedCopy.offerType "Prestamo" %} <button class="btn primary disabled"> Aceptar Oferta </button>{% endifequal %}
+        {% ifequal selectedCopy.offerType "Venta" %} <input type="submit" class="btn primary disabled" name="processOffer" value="Vender">{% endifequal %}
+        {% ifequal selectedCopy.offerType "Prestamo" %} <input type="submit" class="btn primary disabled" name="processOffer" value="Prestar">{% endifequal %}
     
-        <button class="btn primary disabled"> Rechazar oferta </button>    
+        <input type="submit" class="btn primary disabled" name="processOffer" value="Rechazar oferta">    
     </div>
 </form>
 {% block appliant_copies %}{% endblock %}

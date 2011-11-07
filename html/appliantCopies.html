@@ -10,7 +10,7 @@
 
 
 <p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
-<form>
+<form method="post">
     <table class="zebra-striped sortable" id="appliantCopiesTable">
         <thead>
             <tr>
@@ -34,7 +34,7 @@
         </tbody>
     </table>
     <div style="text-align: center" id="exchange-buttons2">
-        <button class="btn primary disabled"> Proponer este libro para intercambio </button>
+        <button class="btn primary disabled" name="processOffer" value="directo"> Proponer este libro para intercambio </button>
     </div>
 </form>
 {% endblock %}

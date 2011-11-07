@@ -14,7 +14,7 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
     application = webapp.WSGIApplication([
         ('/',     IndexView),
-		('/search', SearchView),
+        ('/search', SearchView),
         ('/profile', ProfileView),
         ('/profile/alerts', ProfileAlertsView),
         ('/profile/copies', ProfileCopiesView),
@@ -23,10 +23,7 @@ def main():
         ('/profile/offers', ProfileOffersView),
         ('/profile/applications', ProfileApplicationsView),
         ('/profile/copyoffers', CopyOffersView),
-
-        ('/profile/copyoffers', CopyOffersView),
         ('/profile/appliantcopies', AppliantCopiesView)
-
         ], debug=True)
     util.run_wsgi_app(application)
 
