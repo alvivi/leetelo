@@ -5,41 +5,43 @@
 <p> <strong> Mostrando ofertas para: </strong>{{selectedCopy.book.title}}</p>
 <p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
 
-<table class="bordered-table sortable" id="offersTable">
-    <thead>
-        <tr>
-            <th></th>
-            <th class="blue header">Lo quiere...</th>
-            <th class="yellow header">Calificaci&oacuten</th>
-            <th class="green header">Estado de la transacci&oacuten</th>
-            <th class="red header"> </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for offer in copyOffers %}
-        <tr>
-            {% ifequal selectedCopy.offerType "Intercambio" %}
-                <th><input type="checkbox"  {% block checkbox %} {% endblock %} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}};appliant={{offer.user}}'"></th>
-            {% else %}
-                <th><input type="checkbox"></th>
-            {% endifequal %}
-            <th>{{offer.user}}</th>
-            <th>****</th>
-            <th>Sin contestar</th>
-            <th><a href="#" class="btn">Enviar Mensaje</a> </th>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<div style="text-align: center">
-    {% ifequal selectedCopy.offerType "Intercambio" %}
-        <button class="btn primary"> Proponer intercambio indirecto </button>
-    {% endifequal %}
-    {% ifequal selectedCopy.offerType "Venta" %} <button class="btn primary"> Aceptar Oferta </button>{% endifequal %}
-    {% ifequal selectedCopy.offerType "Prestamo" %} <button class="btn primary"> Aceptar Oferta </button>{% endifequal %}
-
-    <button class="btn primary"> Rechazar oferta </button>    
-</div>
+<form>
+    <table class="bordered-table sortable" id="offersTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="blue header">Lo quiere...</th>
+                <th class="yellow header">Calificaci&oacuten</th>
+                <th class="green header">Estado de la transacci&oacuten</th>
+                <th class="red header"> </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for offer in copyOffers %}
+            <tr>
+                {% ifequal selectedCopy.offerType "Intercambio" %}
+                    <th><input type="radio" name="offersRadios" onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></th>
+                {% else %}
+                    <th><input type="radio"></th>
+                {% endifequal %}
+                <th class="appliant-column-name">{{offer.user}}</th>
+                <th>****</th>
+                <th>{{offer.state}}</th>
+                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: center" id="exchange-buttons">
+        {% ifequal selectedCopy.offerType "Intercambio" %}
+            <button class="btn primary disabled"> Proponer intercambio indirecto </button>
+        {% endifequal %}
+        {% ifequal selectedCopy.offerType "Venta" %} <button class="btn primary disabled"> Aceptar Oferta </button>{% endifequal %}
+        {% ifequal selectedCopy.offerType "Prestamo" %} <button class="btn primary disabled"> Aceptar Oferta </button>{% endifequal %}
+    
+        <button class="btn primary disabled"> Rechazar oferta </button>    
+    </div>
+</form>
 {% block appliant_copies %}{% endblock %}
 
 {% endblock %}

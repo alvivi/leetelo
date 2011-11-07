@@ -10,30 +10,31 @@
 
 
 <p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
-<table class="zebra-striped sortable" id="appliantCopiesTable">
-    <thead>
-        <tr>
-            <th></th>
-            <th class="blue header">Libro</th>
-            <th class="yellow header">Calificaci&oacuten</th>
-            <th class="green header">Estado de la transacci&oacuten</th>
-            <th class="red header"> </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for appCopy in appliantCopies %}
-        <tr>
-            <th><input type="checkbox"></th>
-            <th>{{appCopy.book.title}}</th>
-            <th>****</th>
-            <th>Sin contestar</th>
-            <th><a href="#" class="btn">Enviar Mensaje</a> </th>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<div style="text-align: center">
-    <button class="btn primary"> Proponer este libro para intercambio </button>
-</div>
-
+<form>
+    <table class="zebra-striped sortable" id="appliantCopiesTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="blue header">Libro</th>
+                <th class="yellow header">Calificaci&oacuten</th>
+                <th class="green header">Estado de la transacci&oacuten</th>
+                <th class="red header"> </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appCopy in appliantCopies %}
+            <tr>
+                <th><input type="radio" name="appliantCopiesRadios"></th>
+                <th>{{appCopy.book.title}}</th>
+                <th>****</th>
+                <th>Sin contestar</th>
+                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: center" id="exchange-buttons2">
+        <button class="btn primary disabled"> Proponer este libro para intercambio </button>
+    </div>
+</form>
 {% endblock %}
