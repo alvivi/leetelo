@@ -83,20 +83,45 @@ class ProfileNewCopyView(UserView):
     def post_as_user(self, user, logoutUri):
         title = self.request.get('titleBook')
         logging.debug(title)
+        
+        tipoOferta = self.request.get('TipoOferta')
+        precio = self.request.get('precio')
+        fechaLim = self.request.get('fechaLimite')
+        
+        #####Conversiones######
+        import time
+        #fechaf=time.strptime(precio, "%d/%m/%Y")
+        from datetime import datetime
+        #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
+        #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
+        fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+        fechaParseada=fechaParseada.date()
+        
+        
+        preciof=float(precio)
+        
+        ###escribir en log#####
+        logging.debug(tipoOferta);
+        logging.debug(preciof);
+        logging.debug(fechaParseada);
+        
+        
+        
         book = Book.all().filter('title =', title).get()
-        Copy(book=book, user=user).put()
+        
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta).put()
         self.redirect('/profile/copies')
 
 class ProfileOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user)
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user)            
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
-class ProfileRequestsView(UserView):
+class ProfileApplicationsView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
             'requests'     : Request.allRequestsOf(user),
@@ -114,12 +139,34 @@ class ProfileRequestsView(UserView):
 
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user)
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
+        
+class AppliantCopiesView(UserView):
+    def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        appliantUser = users.User(self.request.get('appliant'))
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'appliantUser' : appliantUser,
+            'appliantCopies' : Copy.allCopiesOf(appliantUser)
+        }
+        self.response.out.write(template.render('html/appliantCopies.html', values))
         
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -129,6 +176,23 @@ class ProfileHistorialView(UserView):
         }
         self.response.out.write(template.render('html/profileHistorial.html', values))
 
+# Página del buscador.
+class SearchView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/search.html', values))
+
+    def get_as_anom(self):
+        values = {
+            'loginUri'   : users.create_login_url(self.request.uri),
+            'newUserUri' : 'http://accounts.google.com'
+        }
+        self.response.out.write(template.render('html/search.html', values))
+		
+		
 # Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri):
