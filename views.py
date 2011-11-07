@@ -151,6 +151,23 @@ class ProfileHistorialView(UserView):
         }
         self.response.out.write(template.render('html/profileHistorial.html', values))
 
+# Página del buscador.
+class SearchView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/search.html', values))
+
+    def get_as_anom(self):
+        values = {
+            'loginUri'   : users.create_login_url(self.request.uri),
+            'newUserUri' : 'http://accounts.google.com'
+        }
+        self.response.out.write(template.render('html/search.html', values))
+		
+		
 # Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri):

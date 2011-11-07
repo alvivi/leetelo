@@ -1,0 +1,93 @@
+
+{% extends "base.html" %}
+
+{% block nav_search %} class="active" {% endblock %}
+
+{% block content %}
+<center><h3>Buscador (sin acabar)</h3></center>
+
+<div class="container-fluid">
+<div class="sidebar">
+			<div class = row>
+					Nombre: 
+					<input type="text" placeholder="Introduce un nombre"</input>
+			</div>
+			
+			<div class = row>
+					Autor: 
+					<input type="text" placeholder="Introduce un autor"</input>
+			</div>
+			
+			<div class = row>
+					Editorial: 
+					<input type="text" placeholder="Introduce una editorial"</input>
+			</div>
+			
+			<div class = row>
+					Genero: 
+		      <div class="input">
+              <select name="normalSelect" id="normalSelect">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+			</div>
+			
+			<div class = row>
+					Anyo: 
+					<p>
+					<input class="span2" type="text" placeholder="Desde" </input>
+					---
+					<input class="span2" type="text" placeholder="Hasta" </input>
+					</p>
+			</div>
+			<div class = row>
+			     <p alignment="left"> Disponible por...</p>
+		    </div>
+				  
+                  <label>
+				    <p alignment="left">intercambio
+                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
+                  </label>
+                 
+				 
+   				 
+                  <label>
+				  <p alignment="left">prestamo
+                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
+                    
+
+                  </label>
+                  
+				 
+				
+                  <label>
+				  <p alignment="left">venta
+                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
+                    
+
+                  </label>
+			
+			
+			<div class = row>
+			______________________________
+			     <input type="submit" class="span4 btn primary" value="Comezar busqueda"> 
+		    </div>  
+				  
+                
+			
+</div>
+<div class="content">
+<h3><p align="center">Resultados de la busqueda:</p></h3>
+</div>
+</div>
+		
+
+	
+	
+
+
+{% endblock %}
