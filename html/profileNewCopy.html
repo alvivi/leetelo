@@ -4,16 +4,33 @@
 {% block nav_profile_copies %} class="active" {% endblock %}
 
 {% block profileContent %}
+
+ 
+
+
+<script type="text/javascript">
+
+
+		function ShowSelected()
+		{
+			var combo = document.getElementById("titleBook");
+			var selected = combo.options[combo.selectedIndex].text;
+			alert(selected);
+			window.location="/profile/newcopy?selectedCopyTitle="+selected;
+		}
+		
+		</script>
+		
 <h6>Añadir un nuevo ejemplar de...</h6>
 <div class="row">
-<form action="/profile/newcopy"  method="post">
+<form action="/profile/newcopy" method="post">
 	<fieldset>
 		<legend></legend>
 	  <div class="clearfix">
 		<label for="titleBook">Libro</label>
 		<div class="input">
 				<p>
-				  <select name="titleBook">
+				  <select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
 
 				{% for b in books %}
 
@@ -24,7 +41,16 @@
 			      </select>
           		  </p>
                   </p>
-	  	</div>
+	  	</div class="clearfix">
+
+		
+		<div class="clearfix">
+			<label for="Genero">{{book.author}}</label>
+	    </div>
+		
+		<hr></hr>
+
+
 
 	  	<!--
 	    <br>
@@ -127,18 +153,72 @@
 				  <br />
 		  </p>
 	  </div> -->
+	  
+	  
 	  <div>
+	  
+	  <div class="clearfix">
+		<label for="edicion">Edicion</label>
+		<div class="input">
+			<input type="text" name="Edicion" id="edicion"/>
+		</div>
+	  </div>
+	  
+	  <div class="clearfix">
+		<label for="formato">Idioma</label>
+				<div class="input">
+				<p>
+				  <select name="Idioma">
+				    <option>Castellano</option>
+					<option>Valenciano</option>
+					<option>Ingles</option>
+					<option>Frances</option>
+					<option>Aleman</option>
+					<option>Otros</option>
+			      </select>
+          		  </p>
+                  </p>
+				</div>
+	</div>
+	  
+	  
+	  <div class="clearfix">
+		<label for="paginas">Numero de Paginas</label>
+		<div class="input">
+			<input type="text" name="Paginas" id="paginas"/>
+		</div>
+	  </div>
+	  
+	  <div class="clearfix">
+		<label for="formato">Formato</label>
+				<div class="input">
+				<p>
+				  <select name="Formato">
+				    <option>De Bolsillo</option>
+					<option>Edicion de tapa dura</option>
+					<option>Edicion para coleccionistas</option>
+			      </select>
+          		  </p>
+                  </p>
+				</div>
+	</div>
 
 	
 	<div class="clearfix">
-		<div class="input">	  
-		  <input type="Radio" name="TipoOferta" value="Intercambio" checked> Intercambio Directo 
-		  <br> 
-		  <input type="Radio" name="TipoOferta" value="Prestamo"> Prestamo 
-	      <br> 
-		  <input type="Radio" name="TipoOferta" value="Venta"> Venta 
-		</div>
-	</dir>
+		<label for="TipoOferta">Tipo de oferta</label>
+				<div class="input">
+				<p>
+				  <select name="TipoOferta">
+				    <option>Venta</option>
+					<option>Intercambio</option>
+					<option>Prestamo</option>
+					<option>Nada en este momento</option>
+			      </select>
+          		  </p>
+                  </p>
+				</div>
+	</div>
+	  
 	  
 	  
 	  <div class="clearfix">

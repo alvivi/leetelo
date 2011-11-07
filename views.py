@@ -73,10 +73,13 @@ class ProfileCopiesView(UserView):
 
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
         values = {
             'books'      : Book.all(),
+            'book'       : book,
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
         }
         self.response.out.write(template.render('html/profileNewCopy.html', values))
 
