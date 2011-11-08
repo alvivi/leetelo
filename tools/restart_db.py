@@ -20,7 +20,7 @@ jtBook     = Book(title=u'Canción de hielo y fuego 1: Juego de tronos', author=u
 
 
 db.delete(Copy.all().fetch(512))
-justinCopy1 = Copy(user=testUser, book=justinBook, offerType="Intercambio", offerState="Con solicitud").put()
+justinCopy1 = Copy(user=testUser, book=justinBook, offerType="Intercambio", offerState="Con solicitud",pages=540,format="Bolsillo",salePrice=15,edition=7).put()
 kafkaCopy1  = Copy(user=testUser, book=kafkaBook, offerType="Venta", offerState="Con solicitud").put()
 panCopy1    = Copy(user=testUser, book=panBook, offerType="Prestamo",offerState="Con solicitud").put()
 justinCopy2 = Copy(user=nilsenUser, book=justinBook, offerType="Ninguno").put()

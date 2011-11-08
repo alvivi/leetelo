@@ -6,6 +6,7 @@
 # luego devolver algo al usurio (normalemente una página HTML).
 
 from google.appengine.ext import webapp
+from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from models import *
@@ -90,6 +91,9 @@ class ProfileNewCopyView(UserView):
         tipoOferta = self.request.get('TipoOferta')
         precio = self.request.get('precio')
         fechaLim = self.request.get('fechaLimite')
+        Paginas=self.request.get('Paginas')
+        edicion=self.request.get('Edicion')   
+        formato=self.request.get('Formato')
         
         #####Conversiones######
         import time
@@ -102,6 +106,8 @@ class ProfileNewCopyView(UserView):
         
         
         preciof=float(precio)
+        pagina=int(Paginas)
+        edit=int(edicion)
         
         ###escribir en log#####
         logging.debug(tipoOferta);
@@ -111,8 +117,8 @@ class ProfileNewCopyView(UserView):
         
         
         book = Book.all().filter('title =', title).get()
-        
-        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta).put()
+        #book.put()
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
         self.redirect('/profile/copies')
 
 class ProfileOffersView(UserView):

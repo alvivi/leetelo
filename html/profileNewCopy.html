@@ -89,108 +89,6 @@ function getParameter(parameter){
 
 
 
-	  	<!--
-	    <br>
-		<table width="921" border="0">
-		  	<tr>
-		    		<td width="186" rowspan="8"><p>
-		    		  <textarea name="mislibros2" id="mislibros2" cols="25" rows="20"></textarea>
-		        		</p>
-		      		    <p align="left">
-		    		      <label for="alta"></label>
-		     		      <input type="submit" name="alta" id="alta" value="Alta Libro Lista" />
-		     		    </p></td>
-		      		<td colspan="3" border="0"><div align="center"><strong>Nuevo Ejemplar</strong></div></td>
-            </tr>
-		    <tr>
-			        <td colspan="2" border="0"><p>Número de páginas:</p>
-                      <label>
-                       <input type="text" name="pagesBook" id="pagesBook" />
-                       </label>
-                    </td>
-			        <td width="462" border="0"><p align="center">Autor:
-              autor1</p></td>
-		    </tr>
-			<tr>
-			      <td colspan="2"><p>Edición:</p>
-                    <label>
-                      <input type="text" name="editionBook" id="editionBook" />
-                    </label></td>
-			      <td border="0"><p align="center">Género: genero1</p></td>
-		    </tr>
-     	    <tr>
-			      <td colspan="2"><p>Formato:</p>
-	   	          	<p>
-  					<label for="formatBook"></label>
-			          <select name="formatBook" id="formatBook">
-			            <option> Bolsillo </option>
-		              </select>
-	              	</p>
-                  </td>
-			      <td border="0"><div align="center"></div></td>
-		    </tr>
-			<tr>
-			      <td colspan="2" border="0"><p>Estado:
-                  En Oferta</p>
-                  </td>
-			      <td rowspan="2" border="0"><div align="center"></div></td>
-		   </tr>
-		   <tr>
-			      <td colspan="2"><p>Desde :</p> </td>
-	       </tr>
-		   <tr>
-                  <td width="178">Ofrezco este libro para :
-     			      <center><label> <br />
-                      <br />
-                      </label>
-                  </td>
-			      <td width="417">
-                  <label>
-			        <div align="left">
-			          <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_0" />
-			        Intercambio directo</div>
-			      </label>
-                    <div align="left"><br />
-                    </div>
-                    <label>
-                      <div align="left">
-                        <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_1" />
-                        Venta</div>
-                    </label>
-                    <div align="left"><br />
-                    </div>
-                    <label>
-                      <div align="left">
-                        <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_2" />
-                        Préstamo</div>
-                  </label></td>
-			      <td><p align="center">Precio:</p>
-                    <label for="precio4"></label>
-                    <div align="center">
-                      <input type="text" name="precio" id="precio4" />
-                  </div></td>
-		        </tr>
-			    <tr>
-			      <td height="64" colspan="2">Fecha límite de la oferta:
-			        <label for="limiteoferta"></label>			        <select name="limiteoferta" size="1" id="limiteoferta">
-		            </select>			        <label for="fechalimiteoferta"></label></td>
-			      <td><p align="center">
-			        <label for="eliminar"></label>
-			        <input type="submit" name="eliminar" id="eliminar" value="Eliminar" />
-			      </p>
-		          <p align="center">&nbsp;</p></td>
-		        </tr>
-	      </table>
-
-				<p>
-				  <label for="operaciones"></label>
-	  Histórico de operaciones con libro: </p>
-				<p>
-				  <textarea name="operaciones" id="operaciones" cols="207" rows="5"></textarea>
-				  <br />
-		  </p>
-	  </div> -->
-	  
 	  
 	  <div>
 	  
@@ -230,10 +128,13 @@ function getParameter(parameter){
 		<label for="formato">Formato</label>
 				<div class="input">
 				<p>
+                                  
 				  <select name="Formato">
-				    <option>De Bolsillo</option>
-					<option>Edicion de tapa dura</option>
-					<option>Edicion para coleccionistas</option>
+				    <option>Bolsillo</option>
+					<option>Tapa dura</option>
+                                        <option>Tapa blanda</option>
+					<option>Coleccionistas</option>
+                                             
 			      </select>
           		  </p>
                   </p>
@@ -246,7 +147,7 @@ function getParameter(parameter){
 				<div class="input">
 				<p>
 				  <select name="TipoOferta">
-				  	<option SELECTED>Nada en este momento</option>
+				  	<option SELECTED>Ninguno</option>
 				    <option>Venta</option>
 					<option>Intercambio</option>
 					<option>Prestamo</option>
