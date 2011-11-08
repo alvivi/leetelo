@@ -1,10 +1,6 @@
 {% extends "copyOffers.html" %}
 
-{%block checkbox %}
-    {% ifequal {{offer.user.nickname}} {{appliantUser.nickname}} %}
-        checked="checked"
-    {% endifequal %}
-{%endblock%}
+
 
 {% block appliant_copies %}
 
@@ -16,9 +12,9 @@
             <tr>
                 <th></th>
                 <th class="blue header">Libro</th>
-                <th class="yellow header">Calificaci&oacuten</th>
-                <th class="green header">Estado de la transacci&oacuten</th>
-                <th class="red header"> </th>
+                <th class="blue header">Calificaci&oacuten</th>
+                <th class="blue header">Estado de la transacci&oacuten</th>
+                <th class="blue header"> </th>
             </tr>
         </thead>
         <tbody>

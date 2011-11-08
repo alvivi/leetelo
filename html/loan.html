@@ -1,0 +1,19 @@
+{% extends "profileOffers.html" %}
+
+{% block loan %}
+<p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
+<p><strong>Libro:</strong> {{selectedCopy.book.title}}</p>
+<p><strong>Prestado a:</strong> {{request.user}}</p>
+
+{% ifequal selectedCopy.offerState "Esperando recepcion" %}
+    <p><strong>Esperando que {{request.user}} reciba el libro... </p>
+{% else %}
+    <p><strong>Introduzca fecha de devoluci&oacuten del libro: </p>
+    <form method="post">
+    <div style="text-align: center">
+        <input class="btn primary disabled" name="saveDateForLoan" value="Guardar">
+    </div>
+</form>
+{% endifequal %}
+
+{% endblock %}

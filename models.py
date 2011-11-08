@@ -20,7 +20,7 @@ class Copy(db.Model):
     copyState = db.StringProperty(choices=set(["Excelente","Bueno","Deteriorado","Muy viejo"]))
     offerState = db.StringProperty(choices=set(["No disponible","En oferta",
                                                 "Con solicitud","Esperando confirmacion",
-                                                "Esperando recepción", "Prestado",
+                                                "Esperando recepcion", "Prestado",
                                                 "Intercambiado","Vendido"]))
     pages = db.IntegerProperty()
     edition = db.IntegerProperty()
@@ -42,9 +42,12 @@ class Copy(db.Model):
 
 # Solicitud sobre un libro
 class Request(db.Model):
-    copy = db.ReferenceProperty(Copy)
+    copy = db.ReferenceProperty(Copy,collection_name="owner_copy")
+    exchangeCopy = db.ReferenceProperty(Copy,collection_name="exchange_copy")
     user = db.UserProperty()
     state = db.StringProperty(choices=set(["Sin contestar","Negociando","Aceptada","Rechazada"]))
+    exchangeType = db.StringProperty(choices=set(["Directo","Indirecto"]))
+    
     # Método de clase que devuelve todas las solicitudes que ha realizado un usuario
     @classmethod
     def allRequestsOf(cls, user):
@@ -54,4 +57,18 @@ class Request(db.Model):
     @classmethod
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).fetch(128)
+    
+class Sale(db.Model):
+    copy = db.ReferenceProperty(Copy)
+    vendor = db.UserProperty()
+    buyer = db.UserProperty()
+    date = db.DateProperty()
+    
+class Loan(db.Model):
+    copy = db.ReferenceProperty(Copy)
+    owner = db.UserProperty()
+    lendingTo = db.UserProperty()
+    arrivalDate = db.DateProperty()
+    returningDate = db.DateProperty()
+    
     

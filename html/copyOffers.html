@@ -1,7 +1,7 @@
 {% extends "profileOffers.html" %}
 
 {% block copy_offers %} 
-
+                        
 <p> <strong> Mostrando ofertas para: </strong>{{selectedCopy.book.title}}</p>
 <p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
 
@@ -21,14 +21,15 @@
         <tbody>
             {% for offer in copyOffers %}
             <tr>
-                {% ifequal selectedCopy.offerType "Intercambio" %}
+                {% ifequal selectedCopy.offerType "Intercambio"%}
                     <th><input type="radio" name="offersRadios" value={{offer.user}} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></th>
                 {% else %}
                     <th><input type="radio" name="offersRadios" value={{offer.user}}></th>
                 {% endifequal %}
+                
                 <th class="appliant-column-name">{{offer.user}}</th>
                 <th>****</th>
-                <th>{{offer.state}}</th>
+                <th class="offer-state-column">{{offer.state}}</th>
                 <th><a href="#" class="btn">Enviar Mensaje</a> </th>
             </tr>
             {% endfor %}
@@ -45,5 +46,7 @@
     </div>
 </form>
 {% block appliant_copies %}{% endblock %}
+
+
 
 {% endblock %}

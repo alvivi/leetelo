@@ -12,7 +12,18 @@ $(document).ready(function() {
         if(window.location.pathname == "/profile/copyoffers") {
             var buttons = $("#exchange-buttons");
             $("#offersTable input[type=radio]").live('click', function () {
-                $(buttons).children().removeClass("disabled");
+                var rows = $(".offer-state-column");
+                var flag = false;
+                for (var i = 0; i < rows.length; i++) {
+                    if ($(rows[i]).text() == "Negociando") {
+                        flag = true;
+                    }
+                }
+            
+                if(flag)
+                    $(buttons).children().last().removeClass("disabled");
+                else
+                    $(buttons).children().removeClass("disabled");
             });       
         }
         
