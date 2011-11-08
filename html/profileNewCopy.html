@@ -1,4 +1,4 @@
-ï»¿<label for="mislibros"></label>
+<label for="mislibros"></label>
  {% extends "profile.html" %}
 
 {% block nav_profile_copies %} class="active" {% endblock %}
@@ -10,42 +10,79 @@
 
 <script type="text/javascript">
 
+$(document).ready(function() {
+      if(!getParameter('selectedCopyTitle')){
+  		ShowSelected();
+      }
+    });
 
+
+
+function getParameter(parameter){
+	// Obtiene la cadena completa de URL
+	var url = location.href;
+	/* Obtiene la posicion donde se encuentra el signo ?,
+	ahi es donde empiezan los parametros */
+	var index = url.indexOf("?");
+	/* Obtiene la posicion donde termina el nombre del parametro
+	e inicia el signo = */
+	index = url.indexOf(parameter,index) + parameter.length;
+	/* Verifica que efectivamente el valor en la posicion actual
+	es el signo = */
+	if (url.charAt(index) == "="){
+	// Obtiene el valor del parametro
+	var result = url.indexOf("&",index);
+	if (result == -1){result=url.length;};
+	// Despliega el valor del parametro
+	return (url.substring(index + 1,result));
+	}
+	} 
+
+    
 		function ShowSelected()
 		{
 			var combo = document.getElementById("titleBook");
 			var selected = combo.options[combo.selectedIndex].text;
-			alert(selected);
 			window.location="/profile/newcopy?selectedCopyTitle="+selected;
 		}
 		
 		</script>
 		
-<h6>AÃ±adir un nuevo ejemplar de...</h6>
+<h6>Añadir un nuevo ejemplar de...</h6>
 <div class="row">
 <form action="/profile/newcopy" method="post">
 	<fieldset>
 		<legend></legend>
 	  <div class="clearfix">
 		<label for="titleBook">Libro</label>
-		<div class="input">
-				<p>
+				<div class="input">
 				  <select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
 
 				{% for b in books %}
-
-				    <option>{{b.title}}</option>
-
+					{% ifequal book.title b.title %}
+					<option SELECTED>{{b.title}}</option>
+					{% endifequal %}
+					{% ifnotequal b.title book.title %}
+        			<option>{{b.title}}</option>
+    				{% endifnotequal %}
 				{% endfor %}
 
 			      </select>
-          		  </p>
-                  </p>
-	  	</div class="clearfix">
+          		  </div>
+	  	</div>
 
 		
 		<div class="clearfix">
-			<label for="Genero">{{book.author}}</label>
+			<label for="Autor">Autor:</label>
+			<div class="input">
+			{{book.author}}
+			</div>
+		</div>
+		<div class="clearfix">
+			<label for="Genero">Genero: </label>
+	    	<div class="input">
+			{{book.genre}}
+			</div>
 	    </div>
 		
 		<hr></hr>
@@ -66,7 +103,7 @@
 		      		<td colspan="3" border="0"><div align="center"><strong>Nuevo Ejemplar</strong></div></td>
             </tr>
 		    <tr>
-			        <td colspan="2" border="0"><p>NÃºmero de pÃ¡ginas:</p>
+			        <td colspan="2" border="0"><p>Número de páginas:</p>
                       <label>
                        <input type="text" name="pagesBook" id="pagesBook" />
                        </label>
@@ -75,11 +112,11 @@
               autor1</p></td>
 		    </tr>
 			<tr>
-			      <td colspan="2"><p>EdiciÃ³n:</p>
+			      <td colspan="2"><p>Edición:</p>
                     <label>
                       <input type="text" name="editionBook" id="editionBook" />
                     </label></td>
-			      <td border="0"><p align="center">GÃ©nero: genero1</p></td>
+			      <td border="0"><p align="center">Género: genero1</p></td>
 		    </tr>
      	    <tr>
 			      <td colspan="2"><p>Formato:</p>
@@ -110,22 +147,22 @@
 			      <td width="417">
                   <label>
 			        <div align="left">
-			          <input type="radio" name="RadioGroup1" value="opciÃ³n" id="RadioGroup1_0" />
+			          <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_0" />
 			        Intercambio directo</div>
 			      </label>
                     <div align="left"><br />
                     </div>
                     <label>
                       <div align="left">
-                        <input type="radio" name="RadioGroup1" value="opciÃ³n" id="RadioGroup1_1" />
+                        <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_1" />
                         Venta</div>
                     </label>
                     <div align="left"><br />
                     </div>
                     <label>
                       <div align="left">
-                        <input type="radio" name="RadioGroup1" value="opciÃ³n" id="RadioGroup1_2" />
-                        PrÃ©stamo</div>
+                        <input type="radio" name="RadioGroup1" value="opción" id="RadioGroup1_2" />
+                        Préstamo</div>
                   </label></td>
 			      <td><p align="center">Precio:</p>
                     <label for="precio4"></label>
@@ -134,7 +171,7 @@
                   </div></td>
 		        </tr>
 			    <tr>
-			      <td height="64" colspan="2">Fecha lÃ­mite de la oferta:
+			      <td height="64" colspan="2">Fecha límite de la oferta:
 			        <label for="limiteoferta"></label>			        <select name="limiteoferta" size="1" id="limiteoferta">
 		            </select>			        <label for="fechalimiteoferta"></label></td>
 			      <td><p align="center">
@@ -147,7 +184,7 @@
 
 				<p>
 				  <label for="operaciones"></label>
-	  HistÃ³rico de operaciones con libro: </p>
+	  Histórico de operaciones con libro: </p>
 				<p>
 				  <textarea name="operaciones" id="operaciones" cols="207" rows="5"></textarea>
 				  <br />
@@ -209,10 +246,10 @@
 				<div class="input">
 				<p>
 				  <select name="TipoOferta">
+				  	<option SELECTED>Nada en este momento</option>
 				    <option>Venta</option>
 					<option>Intercambio</option>
 					<option>Prestamo</option>
-					<option>Nada en este momento</option>
 			      </select>
           		  </p>
                   </p>
@@ -229,7 +266,7 @@
 	  </div>
 	  
 	  <div class="clearfix">
-		<label for="fechaLimite">Fecha lÃ­mite(dd/mm/aaaa)</label>
+		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" id="fechaLimite" />
 		</div>
@@ -237,7 +274,7 @@
 	  
 	  </div>
 		<div class="actions">
-		  <input type="submit" class="btn primary" value="AÃ±adir ejemplar" />
+		  <input type="submit" class="btn primary" value="Añadir ejemplar" />
 		  <a href="/profile/copies" class="btn">Cancelar</a>
 		</div>
 	</fieldset>
