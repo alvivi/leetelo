@@ -13,9 +13,27 @@
                   <div class="input">
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
-                                <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
-                                    {{copy.book.title}}
-                                </option>
+                                {% ifequal copy.offerState "Esperando recepcion" %}
+                                    {% ifequal copy.offerType "Venta" %}
+                                        <option onclick="window.location.href='/profile/sale?selectedCopyTitle={{copy.book.title}}'">
+                                            {{copy.book.title}}
+                                        </option>
+                                    {% endifequal%}
+                                    {% ifequal copy.offerType "Prestamo" %}
+                                        <option onclick="window.location.href='/profile/loan?selectedCopyTitle={{copy.book.title}}'">
+                                            {{copy.book.title}}
+                                        </option>
+                                    {% endifequal%}
+                                    {% ifequal copy.offerType "Intercambio" %}
+                                        <option onclick="window.location.href='/profile/exchange?selectedCopyTitle={{copy.book.title}}'">
+                                            {{copy.book.title}}
+                                        </option>
+                                    {% endifequal%}
+                                {% else %}
+                                    <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
+                                        {{copy.book.title}}
+                                    </option>   
+                                {% endifequal %}
                             {% endfor %}
                         </select>
                     </div>
@@ -23,8 +41,12 @@
         </div>
         <div class="span12">
             {% block copy_offers %} {% endblock %}
+            {% block sale %}        {% endblock %}
+            {% block loan %}        {% endblock %}
+            {% block exchange %}    {% endblock %}
         </div>
     </div>
+
 
 
 

@@ -6,6 +6,7 @@
 # luego devolver algo al usurio (normalemente una página HTML).
 
 from google.appengine.ext import webapp
+from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from models import *
@@ -90,6 +91,9 @@ class ProfileNewCopyView(UserView):
         tipoOferta = self.request.get('TipoOferta')
         precio = self.request.get('precio')
         fechaLim = self.request.get('fechaLimite')
+        Paginas=self.request.get('Paginas')
+        edicion=self.request.get('Edicion')   
+        formato=self.request.get('Formato')
         
         #####Conversiones######
         import time
@@ -102,6 +106,8 @@ class ProfileNewCopyView(UserView):
         
         
         preciof=float(precio)
+        pagina=int(Paginas)
+        edit=int(edicion)
         
         ###escribir en log#####
         logging.debug(tipoOferta);
@@ -111,8 +117,8 @@ class ProfileNewCopyView(UserView):
         
         
         book = Book.all().filter('title =', title).get()
-        
-        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta).put()
+        #book.put()
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
         self.redirect('/profile/copies')
 
 class ProfileOffersView(UserView):
@@ -153,7 +159,7 @@ class CopyOffersView(UserView):
             'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
-    
+ 
     def post_as_user(self, user, logoutUri):
         action = self.request.get('processOffer')
         appliantUser = users.User(self.request.get('offersRadios'))
@@ -169,10 +175,16 @@ class CopyOffersView(UserView):
             request.put()
         elif action=="Prestar" :
             selectedCopy.offerState='Esperando confirmacion'
+            request.state='Negociando'
+            request.put()
             selectedCopy.put()
-        elif action=="Rechazar oferta" :
+        elif action=="Proponer intercambio indirecto" :
             selectedCopy.offerState='Esperando confirmacion'
+            request.exchangeType='Indirecto'
+            request.state='Negociando'
+            request.put()
             selectedCopy.put()
+            
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -182,6 +194,57 @@ class CopyOffersView(UserView):
         }
         
         self.response.out.write(template.render('html/copyOffers.html', values))
+        
+        
+        
+        
+class SaleView(UserView):
+    def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'request'  : request
+        }
+        self.response.out.write(template.render('html/sale.html', values))
+    
+    
+class LoanView(UserView):
+    def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'request'  : request
+        }
+        self.response.out.write(template.render('html/loan.html', values))
+    
+class ExchangeView(UserView):
+    def get_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'request'  : request
+        }
+        self.response.out.write(template.render('html/exchange.html', values))
+        
+        
         
 class AppliantCopiesView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -205,8 +268,31 @@ class AppliantCopiesView(UserView):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-            
-        self.redirect('/profile/copyoffers')
+        appliantUser = users.User(self.request.get('appliant'))
+        
+        if action=="Proponer intercambio indirecto" :
+            selectedCopy.offerState='Esperando confirmacion'
+            request.exchangeType='Indirecto'
+            request.state='Negociando'
+            selectedCopy.put()
+            request.put()
+        elif action=="Proponer este libro para intercambio" :
+            selectedCopy.offerState='Esperando confirmacion'
+            request.state='Negociando'
+            request.exchangeType='Directo'
+            request.put()
+            selectedCopy.put()
+        
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'selectedCopy': selectedCopy,
+            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'appliantUser' : appliantUser,
+            'appliantCopies' : Copy.allCopiesOf(appliantUser)
+        }
+        self.response.out.write(template.render('html/appliantCopies.html', values))
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):

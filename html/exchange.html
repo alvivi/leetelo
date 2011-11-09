@@ -1,0 +1,21 @@
+{% extends "profileOffers.html" %}
+
+{% block exchange %}
+<p><strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
+<p><strong> Tipo de intercambio: </strong>{{request.exchangeType}}</p>
+<p><strong>Libro:</strong> {{selectedCopy.book.title}}</p>
+<p><strong>Intercambiado a:</strong> {{request.user}}</p>
+
+{% ifequal selectedCopy.exchangeType "Indirecto" %}
+    <p><strong>Esperando que {{request.user}} reciba el libro... </p>
+{% else %}
+    <p><strong>Por:</strong> {{request.exchangeCopy.book.title}}</p>
+    <p><strong>Introduzca fecha de llegada del libro: </p>
+    <form method="post">
+    <div style="text-align: center">
+        <input class="btn primary disabled" name="saveDateForExchange" value="Guardar">
+    </div>
+</form>
+{% endifequal %}
+
+{% endblock %}

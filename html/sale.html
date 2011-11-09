@@ -1,0 +1,8 @@
+{% extends "profileOffers.html" %}
+
+{% block sale %}
+<p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
+<p><strong>Libro:</strong> {{selectedCopy.book.title}}</p>
+<p><strong>Vendido a:</strong> {{request.user}}</p>
+<p><strong>Esperando a que {{request.user}} reciba el libro... </p>
+{% endblock %}
