@@ -29,7 +29,7 @@
                 <div class="clearfix">
                  <label for="page">Páginas:</label>
                   <div class="input">
-                   <input class="npage" id="page" value="{{selectedCopy.book.pages}}" name="page" size="20" type= "text"/>
+                   <input class="npage" id="page" value="{{selectedCopy.pages}}" name="page" size="20" type= "text"/>
                   </div>
                  </div>
              
@@ -39,10 +39,14 @@
                  <div class="clearfix">
                   <label for="edition">Edición:</label>
                    <div class="input">
-                    <input class="edit" id="edition" value="{{selectedCopy.book.edition}}" name="edition" size="20" type= "text"/>
+                    <input class="edit" id="edition" value="{{selectedCopy.edition}}" name="edition" size="20" type= "text"/>
                    </div>
                   </div>
-                
+                 
+                  <div class="clearfix">
+                  <label for="estado">Estado:</label>
+                  <label for="state">{{selectedCopy.offerState}}</label>
+                   </div>
 
                   
 		 <div class="clearfix">
@@ -71,7 +75,7 @@
 		      <option>Bolsillo</option>
 		      <option>Tapa dura</option>
                       <option>Tapa blanda</option>
-		      <option>Coleccionistas</option>
+		      <option>Coleccionista</option>
 	             </select>
           	   </p>
                  </div>
@@ -99,7 +103,7 @@
 	  <div class="clearfix">
 		<label for="precio">Precio</label>
 		<div class="input">
-			<input type="text" value="{{selectedCopy.book.salePrice}}" name="precio" id="precio" />
+			<input type="text" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
 		</div>
 	  </div>
          
@@ -107,7 +111,7 @@
 	  <div class="clearfix">
 		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
 		<div class="input">
-			<input type="text" name="fechaLimite" value="{{selectedCopy.book.limitOfferDate}}" id="fechaLimite" />
+			<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
 		</div>
 	  </div>
 	  

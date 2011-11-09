@@ -137,10 +137,10 @@ class ProfileNewCopyView1(UserView):
         self.response.out.write(template.render('html/profileNewCopy1.html', values))
 
     def post_as_user(self, user, logoutUri):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy=Copy.all().filter('user=',user).filter('book=',book).get()
-	db.delete(selectedCopy)
+        title = self.request.get('titleBook')
+        #book = Book.all().filter('title =',title).get()
+        #selectedCopy=Copy.all().filter('user=',user).filter('book=',book).get()
+	#db.delete(selectedCopy)
 
         logging.debug(title)
         tipoOferta = self.request.get('TipoOferta')
@@ -164,6 +164,8 @@ class ProfileNewCopyView1(UserView):
         
         
         preciof=float(precio)
+        pagina=int(Paginas)
+        edit=int(edicion)
         
         ###escribir en log#####
         logging.debug(tipoOferta);
@@ -174,6 +176,7 @@ class ProfileNewCopyView1(UserView):
         
         
         #book.put()
+        book = Book.all().filter('title =',title).get()
         Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit,language=lang).put()
         self.redirect('/profile/copies')
 
