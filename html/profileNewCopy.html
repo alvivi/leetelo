@@ -10,10 +10,42 @@
 
 <script type="text/javascript">
 
+/*$('#TipoOferta').change(function()
+		{
+			alert("molee");
+		   //alert('Value change to ' + $(this).attr('value'));
+		});
+*/
+function JSTipoOferta()
+{
+	var opc_sel=$('#TipoOferta').attr('value');
+    if(opc_sel == 2)
+    {
+    	$("#idprecio").css("display", "block");
+        /*$("#idprecio").toggle(200);*/
+    }
+    else
+    {
+    	$("#idprecio").css("display", "none");
+ 		/*$("#idprecio").toggle(200);*/       
+    }
+
+    if(opc_sel == 2 || opc_sel == 3 || opc_sel == 4)
+    {
+    	$("#idfecha").css("display", "block");
+        
+    }else{$("#idfecha").css("display", "none");}
+}
+
+
 $(document).ready(function() {
       if(!getParameter('selectedCopyTitle')){
   		ShowSelected();
       }
+
+	/*Ocultar/Mostra los campos segun valores de select*/
+	JSTipoOferta();
+	
     });
 
 
@@ -245,11 +277,11 @@ function getParameter(parameter){
 		<label for="TipoOferta">Tipo de oferta</label>
 				<div class="input">
 				<p>
-				  <select name="TipoOferta">
-				  	<option SELECTED>Nada en este momento</option>
-				    <option>Venta</option>
-					<option>Intercambio</option>
-					<option>Prestamo</option>
+				  <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
+				  	<option value="1">Nada en este momento</option>
+				    <option value="2">Venta</option>
+					<option value="3">Intercambio</option>
+					<option value="4">Prestamo</option>
 			      </select>
           		  </p>
                   </p>
@@ -258,14 +290,14 @@ function getParameter(parameter){
 	  
 	  
 	  
-	  <div class="clearfix">
+	  <div id="idprecio" class="clearfix">
 		<label for="precio">Precio</label>
 		<div class="input">
 			<input type="text" name="precio" id="precio" />
 		</div>
 	  </div>
 	  
-	  <div class="clearfix">
+	  <div id="idfecha" class="clearfix">
 		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" id="fechaLimite" />
