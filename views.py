@@ -121,6 +121,64 @@ class ProfileNewCopyView(UserView):
         Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
         self.redirect('/profile/copies')
 
+
+class ProfileNewCopyView1(UserView):
+
+    def get_as_user(self, user, logoutUri):
+        title= self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+       
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'selectedCopy': selectedCopy
+        }
+        self.response.out.write(template.render('html/profileNewCopy1.html', values))
+
+    def post_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy=Copy.all().filter('user=',user).filter('book=',book).get()
+	db.delete(selectedCopy)
+
+        logging.debug(title)
+        tipoOferta = self.request.get('TipoOferta')
+        precio = self.request.get('precio')
+        fechaLim = self.request.get('fechaLimite')
+        Paginas=self.request.get('page')
+        edicion=self.request.get('edition')   
+        formato=self.request.get('Formato')
+        lang=self.request.get('Idioma')
+        
+        
+        
+        #####Conversiones######
+        import time
+        #fechaf=time.strptime(precio, "%d/%m/%Y")
+        from datetime import datetime
+        #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
+        #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
+        fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+        fechaParseada=fechaParseada.date()
+        
+        
+        preciof=float(precio)
+        
+        ###escribir en log#####
+        logging.debug(tipoOferta);
+        logging.debug(preciof);
+        logging.debug(fechaParseada);
+        
+        
+        
+        
+        #book.put()
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit,language=lang).put()
+        self.redirect('/profile/copies')
+
+
+
 class ProfileOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
