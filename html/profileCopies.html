@@ -13,13 +13,23 @@
 		<tr>
 			<th class="header blue">Título</th>
 			<th class="header blue">Autor</th>
+                        <th class="header blue">Estado</th>
 		</tr>
 	</thead>
 	<tbody>
 	{% for copy in copies %}
 		<tr>
-			<td>{{copy.book.title}}</td>
+			<td>            
+                            <a>
+                                <option onclick="window.location.href='/profile/newcopy1?selectedCopyTitle={{copy.book.title}}'">
+                                  {{copy.book.title}}
+                                </option>
+                           </a>
+                          
+                        </td>
 			<td>{{copy.book.author}}</td>
+
+                        <td>{{copy.offerState}}</td>
 		</tr>
 	{% endfor %}
 	</tbody>

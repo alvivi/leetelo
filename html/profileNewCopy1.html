@@ -1,0 +1,127 @@
+﻿<label for="mislibros"></label>
+ {% extends "profile.html" %}
+
+{% block nav_profile_copies %} class="active" {% endblock %}
+
+{% block profileContent %}
+<h6>Modificar...</h6>
+
+<div class="row">
+<form action="/profile/newcopy1"  method="post">
+	<fieldset>
+		<legend></legend>
+	  <div class="clearfix">
+		<label for="titleBook">Libro: </label>
+                <label for="tit"> {{selectedCopy.book.title}}</label>
+          </div>
+
+              <div class="clearfix">
+                  <label for="autor">Autor:</label>
+                  <label for="aut"> {{selectedCopy.book.author}}</label>
+                 </div>
+               
+                 <div class="clearfix">
+                  <label for="genero">Género:</label>
+                   <label for="gen"> {{selectedCopy.book.genre}}</label>
+                  </div>
+                    
+            
+                <div class="clearfix">
+                 <label for="page">Páginas:</label>
+                  <div class="input">
+                   <input class="npage" id="page" value="{{selectedCopy.pages}}" name="page" size="20" type= "text"/>
+                  </div>
+                 </div>
+             
+                     
+               
+                
+                 <div class="clearfix">
+                  <label for="edition">Edición:</label>
+                   <div class="input">
+                    <input class="edit" id="edition" value="{{selectedCopy.edition}}" name="edition" size="20" type= "text"/>
+                   </div>
+                  </div>
+                 
+                  <div class="clearfix">
+                  <label for="estado">Estado:</label>
+                  <label for="state">{{selectedCopy.offerState}}</label>
+                   </div>
+
+                  
+		 <div class="clearfix">
+		   <label for="idioma">Idioma</label>
+		     <div class="input"  >
+                     
+		      <p>
+		        <select name="Idioma" >
+		          <option>Valenciano</option>
+			  <option>Ingles</option>
+			  <option>Frances</option>
+			  <option>Aleman</option>
+			  <option>Otros</option>
+			 </select>
+          	       </p>
+                  
+		     </div>
+	           </div>
+
+
+	  <div class="clearfix">
+		<label for="formato">Formato</label>
+		 <div class="input">
+		   <p>
+		    <select name="Formato">
+		      <option>Bolsillo</option>
+		      <option>Tapa dura</option>
+                      <option>Tapa blanda</option>
+		      <option>Coleccionista</option>
+	             </select>
+          	   </p>
+                 </div>
+	  </div>
+
+
+       
+	
+	<div class="clearfix">
+		<label for="TipoOferta">Tipo de oferta</label>
+				<div class="input">
+				<p>
+				  <select name="TipoOferta">
+				    <option>Venta</option>
+					<option>Intercambio</option>
+					<option>Prestamo</option>
+					<option>Ninguno</option>
+			      </select>
+          		  </p>
+                  </p>
+				</div>
+	</div>
+	  
+	
+	  <div class="clearfix">
+		<label for="precio">Precio</label>
+		<div class="input">
+			<input type="text" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
+		</div>
+	  </div>
+         
+	  
+	  <div class="clearfix">
+		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
+		<div class="input">
+			<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
+		</div>
+	  </div>
+	  
+	  </div>
+		<div class="actions">
+		  <input type="submit" class="btn primary" value="Guardar Cambios" />
+		  <a href="/profile/copies" class="btn">Cancelar</a>
+		</div>
+	</fieldset>
+</form>
+</div>
+
+{% endblock %}
