@@ -4,85 +4,113 @@
 {% block nav_search %} class="active" {% endblock %}
 
 {% block content %}
-<center><h3>Buscador (sin acabar)</h3></center>
 
 <div class="container-fluid">
 <div class="sidebar">
-			<div class = row>
+<form action="/search" method="get" align="left">
+			
+			
+			<div class = row >
 					Nombre: 
-					<input type="text" placeholder="Introduce un nombre"</input>
+					<input type="text" name="title" placeholder="Introduce un nombre"</input>
 			</div>
 			
 			<div class = row>
 					Autor: 
-					<input type="text" placeholder="Introduce un autor"</input>
+					<input type="text" name="author" placeholder="Introduce un autor"</input>
 			</div>
 			
 			<div class = row>
 					Editorial: 
-					<input type="text" placeholder="Introduce una editorial"</input>
+					<input type="text" name="publisher" placeholder="Introduce una editorial"</input>
 			</div>
 			
-			<div class = row>
-					Genero: 
-		      <div class="input">
-              <select name="normalSelect" id="normalSelect">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
-            </div>
+			<div class = row align=left>
+			                 Genero:
+			
+			
+			              <select name="genre" id="genre">
+						<option>------</option>
+						<option>Novela</option>
+						<option>Aventuras</option>
+						<option>Poesia</option>
+						<option>Historico</option>
+						<option>Ciencia Ficcion</option>
+						<option>Romantico</option>
+						<option>Ensayo</option>
+			               </select>
+			
 			</div>
 			
-			<div class = row>
+			<div class = row >
 					Anyo: 
 					<p>
-					<input class="span2" type="text" placeholder="Desde" </input>
+					<input class="span2" name="yearFrom" type="text" placeholder="Desde" </input>
 					---
-					<input class="span2" type="text" placeholder="Hasta" </input>
+					<input class="span2" name="yearTo" type="text" placeholder="Hasta" </input>
 					</p>
 			</div>
 			<div class = row>
-			     <p alignment="left"> Disponible por...</p>
-		    </div>
+			     <p align="left"> Disponible por...</p>
+		    
 				  
                   <label>
-				    <p alignment="left">intercambio
-                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
+				    <p>intercambio <input type="checkbox" name="optionsExchange"/></p>
                   </label>
                  
 				 
    				 
                   <label>
-				  <p alignment="left">prestamo
-                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
-                    
-
-                  </label>
+				  <p>prestamo <input type="checkbox" name="optionsRent"/></p>
+                    </label>
                   
 				 
 				
                   <label>
-				  <p alignment="left">venta
-                    <input type="checkbox" name="optionsCheckboxes" value="option1" /></p>
+				  <p>venta <input type="checkbox" name="optionsSell"/></p>
                     
 
                   </label>
-			
+			</div>
 			
 			<div class = row>
 			______________________________
-			     <input type="submit" class="span4 btn primary" value="Comezar busqueda"> 
+			
+			     <input type="submit" class="span4 btn primary" value="Buscar"> 
+			</form>
 		    </div>  
 				  
                 
 			
 </div>
 <div class="content">
-<h3><p align="center">Resultados de la busqueda:</p></h3>
+<h3><center><h3>Resultados de la busqueda:</h3></center></h3>
+<table id="resTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue" style="width: 195px;">Titulo</th>
+			<th class="header blue" style="width: 170px;">Autor</th>
+			<th class="header blue" style="width: 50px;">Anyo</th>
+			<th class="header blue" style="width: 85px;">Genero</th>
+			<th class="header blue" style="width: 110px;"></th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for res in results %}
+		<tr>
+			<td>{{res.title}}</td>
+			<td>{{res.author}}</td>
+			<td>{{res.date}}</td>
+			<td>{{res.genre}}</td>
+			<td><input type="submit" class="span2 btn primary" value="Detalles"></td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+
 </div>
+
 </div>
 		
 
