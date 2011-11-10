@@ -13,7 +13,7 @@
                   <div class="input">
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
-                                {% ifequal copy.offerState "Esperando recepcion" %}
+                                {% ifnotequal copy.offerState "Con solicitud"%}
                                     {% ifequal copy.offerType "Venta" %}
                                         <option onclick="window.location.href='/profile/sale?selectedCopyTitle={{copy.book.title}}'">
                                             {{copy.book.title}}
@@ -33,7 +33,7 @@
                                     <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
                                         {{copy.book.title}}
                                     </option>   
-                                {% endifequal %}
+                                {% endifnotequal %}
                             {% endfor %}
                         </select>
                     </div>

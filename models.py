@@ -69,6 +69,6 @@ class Loan(db.Model):
     owner = db.UserProperty()
     lendingTo = db.UserProperty()
     arrivalDate = db.DateProperty()
-    returningDate = db.DateProperty()
+    returningDate = db.DateProperty(auto_now=True)
     
     

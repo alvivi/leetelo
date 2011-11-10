@@ -8,10 +8,11 @@
 {% ifequal selectedCopy.offerState "Esperando recepcion" %}
     <p><strong>Esperando que {{request.user}} reciba el libro... </p>
 {% else %}
-    <p><strong>Introduzca fecha de devoluci&oacuten del libro: </p>
-    <form method="post">
+<form action="/profile/loan" method="post">
+    <p><strong>Para que el pr&eacutestamo quede completado, debe hacer click aqu&iacute cuando su libro le sea devuelto. </p>
+    <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <div style="text-align: center">
-        <input class="btn primary disabled" name="saveDateForLoan" value="Guardar">
+        <input type="submit" class="btn primary" name="saveDateForLoan" value="Ya me han devuelto el libro">
     </div>
 </form>
 {% endifequal %}

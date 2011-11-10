@@ -228,6 +228,21 @@ class LoanView(UserView):
             'request'  : request
         }
         self.response.out.write(template.render('html/loan.html', values))
+        
+    def post_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        
+        selectedCopy.offerState = "No disponible"
+        selectedCopy.put()
+        
+        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user).put()
+        
+        request.delete()
+        
+        self.redirect('/html/profileOffers.html')
     
 class ExchangeView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -243,7 +258,21 @@ class ExchangeView(UserView):
             'request'  : request
         }
         self.response.out.write(template.render('html/exchange.html', values))
+    
+    def post_as_user(self, user, logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
         
+        selectedCopy.offerState = "No disponible"
+        selectedCopy.put()
+        
+        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user).put()
+        
+        request.delete()
+        
+        self.redirect('/html/profileOffers.html')
         
         
 class AppliantCopiesView(UserView):
