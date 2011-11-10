@@ -200,13 +200,6 @@ class ProfileApplicationsView(UserView):
         }
         self.response.out.write(template.render('html/profileApplications.html', values))
 
-    def post_as_user(self, user, logoutUri):
-        title = self.request.get('titleBook')
-        logging.debug(title)
-        book = Book.all().filter('title =', title).get()
-        Request(Copy=copy, User=user).put()
-        self.redirect('/profile/applications')
-
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
         title = self.request.get('selectedCopyTitle')
@@ -229,16 +222,11 @@ class CopyOffersView(UserView):
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         request = Request.all().filter('user =',appliantUser).filter('copy =',selectedCopy).get()
         
-        if action=="Vender" :
+        if action=="Vender" or action=="Prestar":
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
             selectedCopy.put()
             request.put()
-        elif action=="Prestar" :
-            selectedCopy.offerState='Esperando confirmacion'
-            request.state='Negociando'
-            request.put()
-            selectedCopy.put()
         elif action=="Proponer intercambio indirecto" :
             selectedCopy.offerState='Esperando confirmacion'
             request.exchangeType='Indirecto'
@@ -257,7 +245,39 @@ class CopyOffersView(UserView):
         self.response.out.write(template.render('html/copyOffers.html', values))
         
         
+class ApplicationContentView(UserView):
+    def get_as_user(self,user,logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        ownerUser = users.User(self.request.get('owner'))
+        book = Book.all().filter('title =', title).get()
+        selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
+        request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
         
+	values = {
+            'requests'     : Request.allRequestsOf(user),
+            'selectedCopy' : selectedCopy,
+            'request'    : request,
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/applicationcontent.html',values))
+    
+    def post_as_user(self,user,logoutUri):
+        title = self.request.get('selectedCopyTitle')
+        ownerUser = users.User(self.request.get('owner'))
+        selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
+	selectedCopy.offerState='Esperando confirmacion'
+	selectedCopy.put()
+	
+	request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
+	request.state='Aceptada'
+	request.put()
+        values = {
+            'requests'     : Request.allRequestsOf(user),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/')
+        }
+        self.response.out.write(template.render('html/profileApplications.html',values))
         
 class SaleView(UserView):
     def get_as_user(self, user, logoutUri):

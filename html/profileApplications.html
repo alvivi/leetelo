@@ -4,8 +4,10 @@
 
 {% block profileContent %}
 <h6> Contenido de solicitudes </h6>
+{{ownerUser}}
+{{selectedCopy}}
 <form action="profile/applications" method="post">
-    <input type="hidden" value="{{selectedRequest}}" name="selectedRequest">
+	
 	<table id="requestsTable" class="zebra-striped sortable">
 		<thead>
 			<tr>
@@ -20,21 +22,21 @@
 		<tbody>
 		 {% for request in requests %}
          	   <tr>
-            	    <th><input type="radio" name="RequestRadios" value={{request.copy.book.title}} onclick="selectedRequest={{request.state}}"></th>
-                	<th>{{request.copy.book.title}}</th>
+            	    <th><input type="radio" name="RequestRadios" value="{{request.state}}" 
+			       onclick="window.location.href='/profile/applicationcontent?selectedCopyTitle={{request.copy.book.title}}&owner={{request.copy.user}}'"></th>
+                	<th class="request-copy-column">{{request.copy.book.title}}</th>
                 	<th>{{request.copy.book.author}}</th>
-                	<th>{{request.copy.user}}</th>
+                	<th class="request-owner-column">{{request.copy.user}}</th>
                 	<th>{{request.state}}</th>
                 	<th><a href="#" class="btn">Enviar Mensaje</a> </th>
             	</tr>
             	{% endfor %}
 		</tbody>
 	</table>
-	 <div style="text-align: center" id="confirmRequestResponse">
-	   {% ifequal selectedRequest.state "Aceptada" %}
-    	    <input type="submit" class="btn primary disabled" name="processConfirmRequest" value="Confirmar intercambio">
-    	{% endifequal %}
-    	</div>
-	</form>
+	{% block application_content %}
+	
+	 {% endblock %}
+</form>
+
 
 {% endblock %}

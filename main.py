@@ -27,7 +27,8 @@ def main():
         ('/profile/appliantcopies', AppliantCopiesView),
         ('/profile/sale', SaleView),
         ('/profile/loan', LoanView),
-        ('/profile/exchange', ExchangeView)
+        ('/profile/exchange', ExchangeView),
+        ('/profile/applicationcontent', ApplicationContentView)
         ], debug=True)
     util.run_wsgi_app(application)
 

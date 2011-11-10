@@ -43,12 +43,22 @@ $(document).ready(function() {
                 $(buttons).children().removeClass("disabled");
             });  
         }
-        if(window.location.pathname == "/profile/applications") {
-            var button = $ ("#confirmRequestResponse");
-            $("#requestsTable input[type=radio]").live('click', function () {
-                $(button).children().removeClass("disabled");
-            });  
-
+        
+        if(window.location.pathname == "/profile/applicationcontent") {
+            var owner = (RegExp("owner=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
+            var copy = (RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1];
+            var owners = $(".request-owner-column");
+            var copies = $(".request-copy-column");
+            var inputs = $("#requestsTable input[type=radio]");
+            
+            for (var i = 0; i < owners.length; i++) {
+                if ( $(owners[i]).text() == owner && $(copies[i]).text() == copy) {
+                    $(inputs[i]).attr("checked", "");
+                }
+            }
         }
+        
+       
+
 });
 
