@@ -366,19 +366,47 @@ class ProfileHistorialView(UserView):
 # Página del buscador.
 class SearchView(UserView):
     def get_as_user(self, user, logoutUri):
-        values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
-        }
-        self.response.out.write(template.render('html/search.html', values))
-
-    def get_as_anom(self):
-        values = {
-            'loginUri'   : users.create_login_url(self.request.uri),
-            'newUserUri' : 'http://accounts.google.com'
-        }
-        self.response.out.write(template.render('html/search.html', values))
+        title = self.request.get("title")
+        author = self.request.get("author")
+        publisher = self.request.get("publisher")
+        genre = self.request.get("genre")	
+        yearFrom = self.request.get("yearFrom")
+        yearTo = self.request.get("yearTo")
+        optionsExchange = self.request.get("optionsExchange")
+        optionsRent = self.request.get("optionsRent")
+        optionsSell = self.request.get("optionsSell")	
 		
+        res = SearchResults.searchAll(title,author,genre,publisher,yearFrom,yearTo,optionsExchange,optionsRent,optionsSell)
+		
+        values = {
+		'user'       : user,
+		'logoutUri'  : users.create_logout_url('/'),
+		'results' : res
+        }
+        self.response.out.write(template.render('html/search.html', values))
+			
+	
+    def get_as_anom(self):
+        title = self.request.get("title")
+        author = self.request.get("author")
+        publisher = self.request.get("publisher")
+        genre = self.request.get("genre")	
+        yearFrom = self.request.get("yearFrom")
+        yearTo = self.request.get("yearTo")
+        optionsExchange = self.request.get("optionsExchange")
+        optionsRent = self.request.get("optionsRent")
+        optionsSell = self.request.get("optionsSell")	
+		
+        res = SearchResults.searchAll(title,author,genre,publisher,yearFrom,yearTo,optionsExchange,optionsRent,optionsSell)
+		
+        values = {
+		'loginUri'   : users.create_login_url(self.request.uri),
+		'newUserUri' : 'http://accounts.google.com',
+		'results' : res
+        }
+        self.response.out.write(template.render('html/search.html', values))
+	
+
 		
 # Página principal.
 class IndexView(UserView):
