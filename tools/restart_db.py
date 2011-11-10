@@ -52,7 +52,7 @@ Request(user=nilsenUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=testUser,copy=panCopy2, state="Sin contestar").put()
 Request(user=testUser,copy=cienCopy1, state="Sin contestar").put()
-Request(user=testUser,copy=akiraCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=akiraCopy1, state="Aceptada").put()
 Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
 
 Request(user=nilsenUser,copy=cienCopy1, state="Aceptada").put()

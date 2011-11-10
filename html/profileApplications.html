@@ -4,34 +4,37 @@
 
 {% block profileContent %}
 <h6> Contenido de solicitudes </h6>
-
-<table id="requestsTable" class="zebra-striped sortable">
-	<thead>
-		<tr>
-			<th class="header blue"></th>
-			<th class="header blue">Título</th>
-			<th class="header blue">Autor</th>
-			<th class="header blue">Propietario</th>
-			<th class="header blue">Transacción</th>
-			<th class="header blue"></th>
-		</tr>
-	</thead>
-	<tbody>
-	 {% for request in requests %}
-            <tr>
-                <th><input type="radio" name="RequestRadios"></th>
-                <th class="appliant-column-name">{{request.copy.book.title}}</th>
-                <th>{{request.copy.book.author}}</th>
-                <th>{{request.copy.user}}</th>
-                <th>{{request.copy.offerType}}</th>
-                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
-            </tr>
-            {% endfor %}
-	</tbody>
-</table>
- <div style="text-align: center" id="exchange-buttons">
-        <input class="btn primary disabled" name="processCancelRequest" value="cancelar intercambio">
-    </div>
-</form>
+<form action="profile/applications" method="post">
+    <input type="hidden" value="{{selectedRequest}}" name="selectedRequest">
+	<table id="requestsTable" class="zebra-striped sortable">
+		<thead>
+			<tr>
+				<th class="header blue"></th>
+				<th class="header blue">Título</th>
+				<th class="header blue">Autor</th>
+				<th class="header blue">Propietario</th>
+				<th class="header blue">Estado</th>
+				<th class="header blue"></th>
+			</tr>
+		</thead>
+		<tbody>
+		 {% for request in requests %}
+         	   <tr>
+            	    <th><input type="radio" name="RequestRadios" value={{request.copy.book.title}} onclick="selectedRequest={{request.state}}"></th>
+                	<th>{{request.copy.book.title}}</th>
+                	<th>{{request.copy.book.author}}</th>
+                	<th>{{request.copy.user}}</th>
+                	<th>{{request.state}}</th>
+                	<th><a href="#" class="btn">Enviar Mensaje</a> </th>
+            	</tr>
+            	{% endfor %}
+		</tbody>
+	</table>
+	 <div style="text-align: center" id="confirmRequestResponse">
+	   {% ifequal selectedRequest.state "Aceptada" %}
+    	    <input type="submit" class="btn primary disabled" name="processConfirmRequest" value="Confirmar intercambio">
+    	{% endifequal %}
+    	</div>
+	</form>
 
 {% endblock %}

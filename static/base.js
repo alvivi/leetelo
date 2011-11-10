@@ -43,5 +43,12 @@ $(document).ready(function() {
                 $(buttons).children().removeClass("disabled");
             });  
         }
+        if(window.location.pathname == "/profile/applications") {
+            var button = $ ("#confirmRequestResponse");
+            $("#requestsTable input[type=radio]").live('click', function () {
+                $(button).children().removeClass("disabled");
+            });  
+
+        }
 });
 
