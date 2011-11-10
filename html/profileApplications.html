@@ -5,25 +5,33 @@
 {% block profileContent %}
 <h6> Contenido de solicitudes </h6>
 
-<a href="#" class="btn disabled">Elminar solicitudes seleccionadas</a>
-
 <table id="requestsTable" class="zebra-striped sortable">
 	<thead>
 		<tr>
+			<th class="header blue"></th>
 			<th class="header blue">Título</th>
 			<th class="header blue">Autor</th>
 			<th class="header blue">Propietario</th>
+			<th class="header blue">Transacción</th>
+			<th class="header blue"></th>
 		</tr>
 	</thead>
 	<tbody>
-	{% for request in requests %}
-		<tr>
-			<td>{{request.copy.book.title}}</td>
-			<td>{{request.copy.book.author}}</td>
-			<td>{{request.copy.user}}</td>
-		</tr>
-	{% endfor %}
+	 {% for request in requests %}
+            <tr>
+                <th><input type="radio" name="RequestRadios"></th>
+                <th class="appliant-column-name">{{request.copy.book.title}}</th>
+                <th>{{request.copy.book.author}}</th>
+                <th>{{request.copy.user}}</th>
+                <th>{{request.copy.offerType}}</th>
+                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+            </tr>
+            {% endfor %}
 	</tbody>
 </table>
+ <div style="text-align: center" id="exchange-buttons">
+        <input class="btn primary disabled" name="processCancelRequest" value="cancelar intercambio">
+    </div>
+</form>
 
 {% endblock %}
