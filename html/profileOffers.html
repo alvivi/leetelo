@@ -13,27 +13,33 @@
                   <div class="input">
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
-                                {% ifnotequal copy.offerState "Con solicitud"%}
-                                    {% ifequal copy.offerType "Venta" %}
-                                        <option onclick="window.location.href='/profile/sale?selectedCopyTitle={{copy.book.title}}'">
-                                            {{copy.book.title}}
-                                        </option>
-                                    {% endifequal%}
-                                    {% ifequal copy.offerType "Prestamo" %}
-                                        <option onclick="window.location.href='/profile/loan?selectedCopyTitle={{copy.book.title}}'">
-                                            {{copy.book.title}}
-                                        </option>
-                                    {% endifequal%}
-                                    {% ifequal copy.offerType "Intercambio" %}
-                                        <option onclick="window.location.href='/profile/exchange?selectedCopyTitle={{copy.book.title}}'">
-                                            {{copy.book.title}}
-                                        </option>
-                                    {% endifequal%}
-                                {% else %}
+                                {% ifequal copy.offerState "Con solicitud"%}
                                     <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
                                         {{copy.book.title}}
-                                    </option>   
-                                {% endifnotequal %}
+                                    </option>
+                                {% else %}
+                                    {% ifequal copy.offerState "Esperando confirmacion"%}
+                                        <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
+                                           {{copy.book.title}}
+                                        </option>
+                                    {% else %}
+                                        {% ifequal copy.offerType "Venta" %}
+                                            <option onclick="window.location.href='/profile/sale?selectedCopyTitle={{copy.book.title}}'">
+                                                {{copy.book.title}}
+                                            </option>
+                                        {% endifequal%}
+                                        {% ifequal copy.offerType "Prestamo" %}
+                                            <option onclick="window.location.href='/profile/loan?selectedCopyTitle={{copy.book.title}}'">
+                                                {{copy.book.title}}
+                                            </option>
+                                        {% endifequal%}
+                                        {% ifequal copy.offerType "Intercambio" %}
+                                            <option onclick="window.location.href='/profile/exchange?selectedCopyTitle={{copy.book.title}}'">
+                                                {{copy.book.title}}
+                                            </option>
+                                        {% endifequal%}
+                                    {% endifequal %}
+                                {% endifequal %}
                             {% endfor %}
                         </select>
                     </div>

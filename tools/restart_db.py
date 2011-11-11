@@ -21,10 +21,10 @@ jtBook     = Book(title=u'Canción de hielo y fuego 1: Juego de tronos', author=u
 
 db.delete(Copy.all().fetch(512))
 justinCopy1 = Copy(user=testUser, book=justinBook, offerType="Intercambio", offerState="Con solicitud",language="Frances",pages=250,edition=8,genre="Novela").put()
-kafkaCopy1  = Copy(user=testUser, book=kafkaBook, offerType="Venta", offerState="Con solicitud",language="Ingles",pages=550,edition=9,genre="Novela").put()
 mistCopy1  = Copy(user=testUser, book=mistBook, offerType="Intercambio", offerState="Esperando recepcion",language="Frances",pages=200,edition=4,genre="Novela").put()
-cienCopy1 = Copy(user=testUser, book=cienBook, offerType="Venta", offerState="Esperando recepcion",language="Frances",pages=255,edition=6,genre="Novela").put()
-akiraCopy1  = Copy(user=testUser, book=akiraBook, offerType="Venta", offerState="Con solicitud",language="Frances",pages=320,edition=8,genre="Novela").put()
+kafkaCopy1  = Copy(user=testUser, book=kafkaBook, offerType="Venta", offerState="En oferta",language="Ingles",pages=550,edition=9,genre="Novela").put()
+cienCopy1 = Copy(user=testUser, book=cienBook, offerType="Venta", offerState="Esperando confirmacion",language="Frances",pages=255,edition=6,genre="Novela").put()
+akiraCopy1  = Copy(user=testUser, book=akiraBook, offerType="Venta", offerState="Esperando recepcion",language="Frances",pages=320,edition=8,genre="Novela").put()
 panCopy1    = Copy(user=testUser, book=panBook, offerType="Prestamo",offerState="Esperando confirmacion",language="Frances",pages=220,edition=5,genre="Novela").put()
 jtCopy1    = Copy(user=testUser, book=jtBook, offerType="Prestamo",offerState="Esperando recepcion",language="Frances",pages=250,edition=1,genre="Novela").put()
 justinCopy2 = Copy(user=nilsenUser, book=justinBook, offerType="Ninguno").put()
@@ -37,7 +37,11 @@ Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=justinCopy1, state="Sin contestar").put()
 
-Request(user=nilsenUser,copy=akiraCopy1, state="Sin contestar").put()
+Request(user=nilsenUser,copy=cienCopy1, state="Negociando").put()
+Request(user=billyUser,copy=cienCopy1, state="Sin contestar").put()
+Request(user=lolUser,copy=cienCopy1, state="Sin contestar").put()
+
+Request(user=nilsenUser,copy=akiraCopy1, state="Aceptada").put()
 Request(user=billyUser,copy=akiraCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=akiraCopy1, state="Sin contestar").put()
 
@@ -45,3 +49,6 @@ Request(user=nilsenUser,copy=panCopy1, state="Negociando").put()
 Request(user=billyUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
 
+Request(user=nilsenUser,copy=jtCopy1, state="Aceptada").put()
+Request(user=billyUser,copy=jtCopy1, state="Sin contestar").put()
+Request(user=lolUser,copy=jtCopy1, state="Sin contestar").put()

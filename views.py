@@ -362,6 +362,8 @@ class AppliantCopiesView(UserView):
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         appliantUser = users.User(self.request.get('appliant'))
+        request = Request.all().filter('copy =', selectedCopy).filter('user =', appliantUser).get()
+        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -369,7 +371,8 @@ class AppliantCopiesView(UserView):
             'selectedCopy': selectedCopy,
             'copyOffers'  : Request.allRequestsFor(selectedCopy),
             'appliantUser' : appliantUser,
-            'appliantCopies' : Copy.allCopiesOf(appliantUser)
+            'appliantCopies' : Copy.allCopiesOf(appliantUser),
+            'request' : request
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
     
@@ -379,6 +382,7 @@ class AppliantCopiesView(UserView):
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         appliantUser = users.User(self.request.get('appliant'))
+        request = Request.all().filter('copy =', selectedCopy).filter('user =', appliantUser).get()
         
         if action=="Proponer intercambio indirecto" :
             selectedCopy.offerState='Esperando confirmacion'
@@ -386,10 +390,11 @@ class AppliantCopiesView(UserView):
             request.state='Negociando'
             selectedCopy.put()
             request.put()
-        elif action=="Proponer este libro para intercambio" :
+        elif action=="Proponer este libro para intercambio":
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
             request.exchangeType='Directo'
+            request.exchangeCopy=''
             request.put()
             selectedCopy.put()
         

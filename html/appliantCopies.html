@@ -6,15 +6,15 @@
 
 
 <p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
-<form method="post">
+<form action="/profile/appliantcopies" method="post">
+    <input type="hidden" value={{appliantUser}} name="appliant">
+    <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <table class="zebra-striped sortable" id="appliantCopiesTable">
         <thead>
             <tr>
                 <th></th>
                 <th class="blue header">Libro</th>
-                <th class="blue header">Calificaci&oacuten</th>
-                <th class="blue header">Estado de la transacci&oacuten</th>
-                <th class="blue header"> </th>
+                <th class="blue header">Autor</th>
             </tr>
         </thead>
         <tbody>
@@ -22,15 +22,18 @@
             <tr>
                 <th><input type="radio" name="appliantCopiesRadios"></th>
                 <th>{{appCopy.book.title}}</th>
-                <th>****</th>
-                <th>Sin contestar</th>
-                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+                <th>{{appCopy.book.author}}</th>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <div style="text-align: center" id="exchange-buttons2">
-        <button class="btn primary disabled" name="processOffer" value="directo"> Proponer este libro para intercambio </button>
+        <input type="submit" class="btn primary disabled" name="processOffer" value="Proponer este libro para intercambio">
     </div>
+    
+    {% ifequal request.exchangeType "Directo" %}
+        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
+    {% endifequal %}
+    
 </form>
 {% endblock %}
