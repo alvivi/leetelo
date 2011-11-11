@@ -21,6 +21,8 @@ def main():
         ('/profile/historial', ProfileHistorialView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/newcopy1', ProfileNewCopyView1),
+        ('/profile/newcopy2', ProfileNewCopyView2),
+        ('/profile/newBook', ProfileNewBookView),
         ('/profile/offers', ProfileOffersView),
         ('/profile/applications', ProfileApplicationsView),
         ('/profile/copyoffers', CopyOffersView),

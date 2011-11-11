@@ -1,13 +1,57 @@
-﻿<label for="mislibros"></label>
+<label for="mislibros"></label>
  {% extends "profile.html" %}
 
 {% block nav_profile_copies %} class="active" {% endblock %}
 
 {% block profileContent %}
+
+
+<script type="text/javascript">
+
+/*
+	$('#TipoOferta').change(function()
+		{
+			alert("molee");
+		   //alert('Value change to ' + $(this).attr('value'));
+		});
+*/
+function JSTipoOferta()
+{
+	var opc_sel=$('#TipoOferta').attr('value');
+    if(opc_sel == 2)
+    {
+    	$("#idprecio").css("display", "block");
+        /*$("#idprecio").toggle(200);*/
+    }
+    else
+    {
+    	$("#idprecio").css("display", "none");
+ 		/*$("#idprecio").toggle(200);*/       
+    }
+
+    if(opc_sel == 2 || opc_sel == 3 || opc_sel == 4)
+    {
+    	$("#idfecha").css("display", "block");
+        
+    }else{$("#idfecha").css("display", "none");}
+}
+
+$(document).ready(function() {
+     
+
+	/*Ocultar/Mostra los campos segun valores de select*/
+	JSTipoOferta();
+	
+    });
+		
+		</script>
+
+
+
 <h6>Modificar...</h6>
 
 <div class="row">
-<form action="/profile/newcopy1"  method="post">
+<form action="/profile/newcopy1?selectedCopyTitle={{selectedCopy.book.title}}"  method="post">
 	<fieldset>
 		<legend></legend>
 	  <div class="clearfix">
@@ -28,6 +72,7 @@
             
                 <div class="clearfix">
                  <label for="page">Páginas:</label>
+                
                   <div class="input">
                    <input class="npage" id="page" value="{{selectedCopy.pages}}" name="page" size="20" type= "text"/>
                   </div>
@@ -83,21 +128,21 @@
 
 
        
-	
-	<div class="clearfix">
+        <div class="clearfix">
 		<label for="TipoOferta">Tipo de oferta</label>
 				<div class="input">
-				<p>
-				  <select name="TipoOferta">
-				    <option>Venta</option>
-					<option>Intercambio</option>
-					<option>Prestamo</option>
-					<option>Ninguno</option>
-			      </select>
-          		  </p>
-                  </p>
+				  <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
+				  	<option value="1">Ninguna</option>
+				    <option value="2">Venta</option>
+					<option value="3">Intercambio</option>
+					<option value="4">Prestamo</option>
+				  </select>
 				</div>
 	</div>
+
+
+
+
 	  
 	
 	  <div class="clearfix">
@@ -106,7 +151,7 @@
 			<input type="text" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
 		</div>
 	  </div>
-         
+       
 	  
 	  <div class="clearfix">
 		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
