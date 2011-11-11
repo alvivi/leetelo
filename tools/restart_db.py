@@ -57,4 +57,4 @@ Request(user=nilsenUser,copy=mistCopy1, state="Aceptada").put()
 Request(user=nilsenUser, copy=bibCopy, state="Negociando").put()
 
 db.delete(Exchange.all().fetch(512))
-Exchange(copy1=bibCopy, owner1=nilsenUser, copy2=akiraCopy1, owner2=testUser).put()
+Exchange(copy1=bibCopy, owner1=testUser, copy2=justinCopy1, owner2=nilsenUser).put()

@@ -10,19 +10,25 @@
 
 
     {% ifequal selectedCopy.offerType "Intercambio" %}
-    <div ><strong>Intercambio propuesto</strong></div>  <!debe mostrar el libro que me ofrecen>
+    <div ><strong>te han propuesto...</strong></div>  <!debe mostrar el libro que me ofrecen>
     <table id="exchangeTable" class="zebra-striped sortable">
         <thead>
             <tr>
+                <th class="header yellow"></th>
                 <th class="header red">Título</th>
                 <th class="header red">Autor</th>
             </tr>
         </thead>
         <tbody>
+            {% for exch in exchanges %}
                <tr>
-                    <th>{{exchange.copy2.title}}</th>
-                    <th>{{exchange.copy2.author}}</th>
+                    {% ifequal exchange.copy1.user selectedCopy.user %}
+                    <th><strong>Intercambio!</strong></th>
+                    <th>{{exch.copy2.book.title}}</th>
+                    <th>{{exch.copy2.book.author}}</th>
+                    {% endifequal %}
                 </tr>
+                {% endfor %}
         </tbody>
     </table>
     {% endifequal %}

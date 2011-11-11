@@ -341,7 +341,8 @@ class ApplicationContentView(UserView):
             'selectedCopy' : selectedCopy,
             'request'    : request,
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
+            'exchange'  : Exchange.allExchangesFromUser(user),
+            'logoutUri'  : users.create_logout_url('/')
             
         }
         self.response.out.write(template.render('html/applicationcontent.html',values))
@@ -356,16 +357,16 @@ class ApplicationContentView(UserView):
             selectedCopy.state='Aceptada'
 
 
-	selectedCopy.offerState='Esperando confirmacion'
-	selectedCopy.put()
+	#selectedCopy.offerState='Esperando confirmacion'
+	#selectedCopy.put()
 	
-	request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
-	request.state='Aceptada'
-	request.put()
+	#request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
+	#request.state='Aceptada'
+	#request.put()
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
-            'exchange'  : Exchange.switchFor(title, ownerUser),
+            'exchanges'  : Exchange.allExchangesFromUser(user),
             'logoutUri'  : users.create_logout_url('/')
         }
         self.response.out.write(template.render('html/profileApplications.html',values))

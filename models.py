@@ -79,8 +79,12 @@ class Exchange(db.Model):
     exchangeDate = db.DateProperty(auto_now=True)
 
     @classmethod
+    def allExchangesFromUser(cls, user):
+        return cls.all().filter('owner2', user).fetch(128)
+
+    @classmethod
     def switchFor(cls, copy, user):
-        return cls.all().filter('copy =', copy).filter('owner2 =', user).fetch(128)
+        return cls.all().filter('copy1 =', copy).filter('copy2.user =', user).fetch(128)
                 
 class SearchResults(db.Model):
     
