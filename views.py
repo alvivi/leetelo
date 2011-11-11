@@ -97,28 +97,28 @@ class ProfileNewCopyView(UserView):
         
         #####Conversiones######
         import time
-        #fechaf=time.strptime(precio, "%d/%m/%Y")
         from datetime import datetime
-        #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
-        #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
         fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
         fechaParseada=fechaParseada.date()
-        
         
         preciof=float(precio)
         pagina=int(Paginas)
         edit=int(edicion)
+        
+        ####Cambiar estado según tipo de oferta####
+        if tipoOferta=='Ninguna':
+            estadoOferta='No disponible'
+        else: 
+            estadoOferta='Disponible'
         
         ###escribir en log#####
         logging.debug(tipoOferta);
         logging.debug(preciof);
         logging.debug(fechaParseada);
         
-        
-        
         book = Book.all().filter('title =', title).get()
         #book.put()
-        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
+        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerState=estadoOferta, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
         self.redirect('/profile/copies')
 
 
