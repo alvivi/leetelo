@@ -352,14 +352,21 @@ class ApplicationContentView(UserView):
             'selectedCopy' : selectedCopy,
             'request'    : request,
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'exchange'  : Exchange.switchFor(title, ownerUser)
         }
         self.response.out.write(template.render('html/applicationcontent.html',values))
     
     def post_as_user(self,user,logoutUri):
+        action = self.request.get('processConfirm')
         title = self.request.get('selectedCopyTitle')
         ownerUser = users.User(self.request.get('owner'))
         selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
+
+        if action=="Confirmar":
+            selectedCopy.state='Aceptada'
+
+
 	selectedCopy.offerState='Esperando confirmacion'
 	selectedCopy.put()
 	

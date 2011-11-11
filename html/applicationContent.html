@@ -9,24 +9,38 @@
 {% ifequal request.state "Negociando" %}
 
     <div style="text-align: center" id="confirmRequestResponse">
-    	<input type="submit" class="btn primary" name="processConfirmRequest" value="Confirmar">
+    	<input type="submit" class="btn primary" name="processConfirm" value="Confirmar">
     </div>
     {% ifequal selectedCopy.offerType "Intercambio" %}
-    <div >{{selectedCopy.book.title}}</div>  <!aqui va la muerte>
+    <div >Intercambio</div>  <!debe mostrar el libro que me ofrecen>
+    <table id="exchangeTable" class="zebra-striped sortable">
+        <thead>
+            <tr>
+                <th class="header red">Título</th>
+                <th class="header red">Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+               <tr>
+                    <th>{{exchange.copy2.title}}</th>
+                    <th>{{exchange.copy2.author}}</th>
+                </tr>
+        </tbody>
+    </table>
     {% endifequal %}
 
     {% ifequal selectedCopy.offerType "Venta" %}
-    <div >{{selectedCopy.book.title}}</div>
+    <div >Venta</div>
     {% endifequal %}
 
     {% ifequal selectedCopy.offerType "Prestamo" %}
-    <div >{{selectedCopy.book.title}}</div>
+    <div >Prestamo</div>
     {% endifequal %}
 {% endifequal %}
 
 {% ifequal request.state "Aceptada" %}
     <div style="text-align: center" id="confirmRecieved">
-        <input type="submit" class="btn primary" name="processConfirmRecieve" value="Recibido!">
+        <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
     </div>
 {% endifequal %}    
 

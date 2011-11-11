@@ -77,7 +77,11 @@ class Exchange(db.Model):
     copy2 = db.ReferenceProperty(Copy,collection_name="copy2")
     owner2 = db.UserProperty()
     exchangeDate = db.DateProperty(auto_now=True)
-    
+
+    @classmethod
+    def switchFor(cls, copy, user):
+        return cls.all().filter('copy =', copy).filter('owner2 =', user).fetch(128)
+                
 class SearchResults(db.Model):
     
     
