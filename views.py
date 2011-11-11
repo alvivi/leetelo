@@ -122,30 +122,23 @@ class ProfileNewCopyView(UserView):
             pagina=int(Paginas)
             edit=int(edicion)
 
-            if tipoOferta == "2":
+            if tipoOferta == "Venta":
                precio = self.request.get('precio')
                fechaLim = self.request.get('fechaLimite')
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
                preciof=float(precio)
-               Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
+               Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
        
-            if tipoOferta == "3":
+            if tipoOferta == "Intercambio" or tipoOferta == "Prestamo":
                fechaLim = self.request.get('fechaLimite')
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
-               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType="Intercambio",format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
+               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
             
-            if tipoOferta == "4":
-               fechaLim = self.request.get('fechaLimite')
-               fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-               fechaParseada=fechaParseada.date()
-               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType="Prestamo",format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
-            
-
-            
-            if tipoOferta == "1":
-               Copy(book=book, user=user, offerType="Ninguno", format=formato, pages=pagina, edition=edit, offerState="No disponible").put() 
+                        
+            if tipoOferta == "Ninguno":
+               Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, offerState="No disponible").put() 
 
             ###escribir en log#####
             logging.debug(tipoOferta);
@@ -153,15 +146,11 @@ class ProfileNewCopyView(UserView):
             #logging.debug(fechaParseada);
         
         
-        
-            #book = Book.all().filter('title =', title).get()
-            #Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
             self.redirect('/profile/copies')
         
         except:
             title = self.request.get('selectedCopyTitle')
             book = Book.all().filter('title =', title).get()
-            #selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
             values = {
                 'book' : book,
                 'books'     : Book.all(),
