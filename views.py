@@ -317,6 +317,7 @@ class LoanView(UserView):
         request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
         
         selectedCopy.offerState = "No disponible"
+        selectedCopy.offerType = "Ninguna"
         selectedCopy.put()
         
         Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user).put()
@@ -346,10 +347,11 @@ class ExchangeView(UserView):
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
         
-        selectedCopy.offerState = "No disponible"
+        selectedCopy.offerState = "Intercambiado"
+        selectedCopy.offerType = "Ninguna"
         selectedCopy.put()
         
-        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user).put()
+        Exchange(copy1=selectedCopy, owner1=users.get_current_user(), copy2=request.exchangeCopy, owner2=request.user).put()
         
         request.delete()
         
@@ -405,7 +407,8 @@ class AppliantCopiesView(UserView):
             'selectedCopy': selectedCopy,
             'copyOffers'  : Request.allRequestsFor(selectedCopy),
             'appliantUser' : appliantUser,
-            'appliantCopies' : Copy.allCopiesOf(appliantUser)
+            'appliantCopies' : Copy.allCopiesOf(appliantUser),
+            'request' : request
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
 

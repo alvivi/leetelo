@@ -12,7 +12,7 @@
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <p><strong>Por:</strong> {{request.exchangeCopy.book.title}}</p>
     <p><strong>Para que el intercambio quede completado, debe hacer click aqu&iacute cuando reciba el libro. </p>
-    <form method="post">
+    <form action="/profile/exchange" method="post">
         <div style="text-align: center">
             <input type="submit" class="btn primary" name="saveDateForExchange" value="Ya he recibido el libro">
         </div>

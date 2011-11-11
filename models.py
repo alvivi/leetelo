@@ -71,7 +71,12 @@ class Loan(db.Model):
     arrivalDate = db.DateProperty()
     returningDate = db.DateProperty(auto_now=True)
     
-    
+class Exchange(db.Model):
+    copy1 = db.ReferenceProperty(Copy,collection_name="copy1")
+    owner1 = db.UserProperty()
+    copy2 = db.ReferenceProperty(Copy,collection_name="copy2")
+    owner2 = db.UserProperty()
+    exchangeDate = db.DateProperty(auto_now=True)
     
 class SearchResults(db.Model):
     

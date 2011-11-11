@@ -27,8 +27,8 @@ cienCopy1 = Copy(user=testUser, book=cienBook, offerType="Venta", offerState="Es
 akiraCopy1  = Copy(user=testUser, book=akiraBook, offerType="Venta", offerState="Esperando recepcion",language="Frances",pages=320,edition=8,genre="Novela").put()
 panCopy1    = Copy(user=testUser, book=panBook, offerType="Prestamo",offerState="Esperando confirmacion",language="Frances",pages=220,edition=5,genre="Novela").put()
 jtCopy1    = Copy(user=testUser, book=jtBook, offerType="Prestamo",offerState="Esperando recepcion",language="Frances",pages=250,edition=1,genre="Novela").put()
-justinCopy2 = Copy(user=nilsenUser, book=justinBook, offerType="Ninguno").put()
-kafkaCopy2  = Copy(user=nilsenUser, book=kafkaBook, offerType="Ninguno").put()
+justinCopy2 = Copy(user=nilsenUser, book=justinBook, offerType="Ninguna").put()
+kafkaCopy2  = Copy(user=nilsenUser, book=kafkaBook, offerType="Ninguna").put()
 panCopy2    = Copy(user=nilsenUser, book=panBook, offerType="Intercambio").put()
 
 
@@ -52,3 +52,5 @@ Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=nilsenUser,copy=jtCopy1, state="Aceptada").put()
 Request(user=billyUser,copy=jtCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=jtCopy1, state="Sin contestar").put()
+
+Request(user=nilsenUser,copy=mistCopy1, state="Aceptada").put()

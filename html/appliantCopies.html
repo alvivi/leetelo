@@ -7,7 +7,7 @@
 
 <p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
 <form action="/profile/appliantcopies" method="post">
-    <input type="hidden" value={{appliantUser}} name="appliant">
+    <input type="hidden" value="{{appliantUser}}" name="appliant">
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <table class="zebra-striped sortable" id="appliantCopiesTable">
         <thead>
