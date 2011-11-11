@@ -18,7 +18,7 @@
 function JSTipoOferta()
 {
 	var opc_sel=$('#TipoOferta').attr('value');
-    if(opc_sel == 2)
+    if(opc_sel == 'Venta')
     {
     	$("#idprecio").css("display", "block");
         /*$("#idprecio").toggle(200);*/
@@ -29,7 +29,7 @@ function JSTipoOferta()
  		/*$("#idprecio").toggle(200);*/       
     }
 
-    if(opc_sel == 2 || opc_sel == 3 || opc_sel == 4)
+    if(opc_sel != 'Ninguno')
     {
     	$("#idfecha").css("display", "block");
         
@@ -132,10 +132,10 @@ $(document).ready(function() {
 		<label for="TipoOferta">Tipo de oferta</label>
 				<div class="input">
 				  <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
-				  	<option value="1">Ninguna</option>
-				    <option value="2">Venta</option>
-					<option value="3">Intercambio</option>
-					<option value="4">Prestamo</option>
+				  	<option value="Ninguno">Ninguno</option>
+				    <option value="Venta">Venta</option>
+					<option value="Intercambio">Intercambio</option>
+					<option value="Prestamo">Prestamo</option>
 				  </select>
 				</div>
 	</div>
