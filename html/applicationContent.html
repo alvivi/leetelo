@@ -1,0 +1,34 @@
+{% extends "profileApplications.html" %}
+
+{% block application_content %}
+
+<form action="/profile/applicationcontent" method="post">
+<input type="hidden" name="selectedCopyTitle" value="{{selectedCopy.book.title}}">
+<input type="hidden" name="owner" value="{{selectedCopy.user}}">
+    
+{% ifequal request.state "Negociando" %}
+
+    <div style="text-align: center" id="confirmRequestResponse">
+    	<input type="submit" class="btn primary" name="processConfirmRequest" value="Confirmar">
+    </div>
+
+{% else %}
+    {% ifequal selectedCopy.offerType "Intercambio" %}
+    <div >{{selectedCopy.book.title}}</div>
+    {% endifequal %}
+
+    {% ifequal selectedCopy.offerType "Venta" %}
+    <div >{{selectedCopy.book.title}}</div>
+    {% endifequal %}
+
+    {% ifequal selectedCopy.offerType "Prestamo" %}
+    <div >{{selectedCopy.book.title}}</div>
+    {% endifequal %}
+
+
+
+{% endifequal %}
+
+
+</form>
+{% endblock %}
