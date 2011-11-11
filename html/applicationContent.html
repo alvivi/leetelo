@@ -8,11 +8,9 @@
     
 {% ifequal request.state "Negociando" %}
 
-    <div style="text-align: center" id="confirmRequestResponse">
-    	<input type="submit" class="btn primary" name="processConfirm" value="Confirmar">
-    </div>
+
     {% ifequal selectedCopy.offerType "Intercambio" %}
-    <div >Intercambio</div>  <!debe mostrar el libro que me ofrecen>
+    <div ><strong>Intercambio propuesto</strong></div>  <!debe mostrar el libro que me ofrecen>
     <table id="exchangeTable" class="zebra-striped sortable">
         <thead>
             <tr>
@@ -28,7 +26,9 @@
         </tbody>
     </table>
     {% endifequal %}
-
+    <div style="text-align: center" id="confirmRequestResponse">
+        <input type="submit" class="btn primary" name="processConfirm" value="Confirmar">
+    </div>
     {% ifequal selectedCopy.offerType "Venta" %}
     <div >Venta</div>
     {% endifequal %}

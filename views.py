@@ -353,7 +353,7 @@ class ApplicationContentView(UserView):
             'request'    : request,
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'exchange'  : Exchange.switchFor(title, ownerUser)
+            
         }
         self.response.out.write(template.render('html/applicationcontent.html',values))
     
@@ -376,6 +376,7 @@ class ApplicationContentView(UserView):
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
+            'exchange'  : Exchange.switchFor(title, ownerUser),
             'logoutUri'  : users.create_logout_url('/')
         }
         self.response.out.write(template.render('html/profileApplications.html',values))
