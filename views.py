@@ -11,7 +11,8 @@ from google.appengine.api import users
 from google.appengine.ext.webapp import template
 from models import *
 import logging
-
+import time
+from datetime import datetime
 
 # Clase que ayuda a la hora de crear vistas que requieran un usuario. Las
 # clases que hereden de ella deben implementar get_as_user (si requiren de un
@@ -72,114 +73,207 @@ class ProfileCopiesView(UserView):
         }
         self.response.out.write(template.render('html/profileCopies.html', values))
 
+
+class ProfileNewBookView(UserView):
+    def get_as_user(self, user, logoutUri):
+        values = {
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            
+        }
+        self.response.out.write(template.render('html/profileNewBook.html', values))
+
+
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):
         title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        values = {
-            'books'      : Book.all(),
-            'book'       : book,
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-        }
+        book = Book.all().filter('title =', title).get()
+        values = {}
+        if book:         
+            values = {
+                'book' : book,
+                'books'     : Book.all(),
+                'user'       : user,
+                'logoutUri'  : users.create_logout_url('/'),
+                'error'      : False
+            }
+        else:
+            values = {
+                'book' : Book.all().get(),
+                'books'     : Book.all(),
+                'user'       : user,
+                'logoutUri'  : users.create_logout_url('/'),
+                'error'      : False
+            }
         self.response.out.write(template.render('html/profileNewCopy.html', values))
 
     def post_as_user(self, user, logoutUri):
-        title = self.request.get('titleBook')
-        logging.debug(title)
         
-        tipoOferta = self.request.get('TipoOferta')
-        precio = self.request.get('precio')
-        fechaLim = self.request.get('fechaLimite')
-        Paginas=self.request.get('Paginas')
-        edicion=self.request.get('Edicion')   
-        formato=self.request.get('Formato')
-        
-        #####Conversiones######
-        import time
-        from datetime import datetime
-        fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-        fechaParseada=fechaParseada.date()
-        
-        preciof=float(precio)
-        pagina=int(Paginas)
-        edit=int(edicion)
-        
-        ####Cambiar estado según tipo de oferta####
-        if tipoOferta=='Ninguna':
-            estadoOferta='No disponible'
-        else: 
-            estadoOferta='Disponible'
-        
-        ###escribir en log#####
-        logging.debug(tipoOferta);
-        logging.debug(preciof);
-        logging.debug(fechaParseada);
-        
-        book = Book.all().filter('title =', title).get()
-        #book.put()
-        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerState=estadoOferta, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
-        self.redirect('/profile/copies')
+        try:
 
+            title = self.request.get('titleBook')
+            logging.debug(title)
+            book = Book.all().filter('title =', title).get()
+            tipoOferta = self.request.get('TipoOferta')
+            logging.debug(tipoOferta)
+            Paginas=self.request.get('Paginas')
+            edicion=self.request.get('Edicion')   
+            formato=self.request.get('Formato')
+            pagina=int(Paginas)
+            edit=int(edicion)
+
+            if tipoOferta == "2":
+               precio = self.request.get('precio')
+               fechaLim = self.request.get('fechaLimite')
+               fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+               fechaParseada=fechaParseada.date()
+               preciof=float(precio)
+               Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
+       
+            if tipoOferta == "3":
+               fechaLim = self.request.get('fechaLimite')
+               fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+               fechaParseada=fechaParseada.date()
+               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType="Intercambio",format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
+            
+            if tipoOferta == "4":
+               fechaLim = self.request.get('fechaLimite')
+               fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+               fechaParseada=fechaParseada.date()
+               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType="Prestamo",format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
+            
+
+            
+            if tipoOferta == "1":
+               Copy(book=book, user=user, offerType="Ninguno", format=formato, pages=pagina, edition=edit, offerState="No disponible").put() 
+
+            ###escribir en log#####
+            logging.debug(tipoOferta);
+            #logging.debug(preciof);
+            #logging.debug(fechaParseada);
+        
+        
+        
+            #book = Book.all().filter('title =', title).get()
+            #Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit).put()
+            self.redirect('/profile/copies')
+        
+        except:
+            title = self.request.get('selectedCopyTitle')
+            book = Book.all().filter('title =', title).get()
+            #selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+            values = {
+                'book' : book,
+                'books'     : Book.all(),
+                'user'       : user,
+                'logoutUri'  : users.create_logout_url('/'),
+                'error'      : True,
+              
+            }
+            
+            self.response.out.write(template.render('html/profileNewCopy.html', values))
 
 class ProfileNewCopyView1(UserView):
 
     def get_as_user(self, user, logoutUri):
         title= self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'selectedCopy': selectedCopy
         }
-        self.response.out.write(template.render('html/profileNewCopy1.html', values))
+        if selectedCopy.offerState == "No disponible" or selectedCopy.offerState == "En oferta":self.response.out.write(template.render('html/profileNewCopy1.html', values))
+        else:self.response.out.write(template.render('html/profileNewCopy2.html', values))
+               
+           
 
     def post_as_user(self, user, logoutUri):
-        title = self.request.get('titleBook')
-        #book = Book.all().filter('title =',title).get()
-        #selectedCopy=Copy.all().filter('user=',user).filter('book=',book).get()
-	#db.delete(selectedCopy)
-
+        title = self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =', title).get()
+        selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+	
         logging.debug(title)
-        tipoOferta = self.request.get('TipoOferta')
-        precio = self.request.get('precio')
-        fechaLim = self.request.get('fechaLimite')
-        Paginas=self.request.get('page')
-        edicion=self.request.get('edition')   
-        formato=self.request.get('Formato')
-        lang=self.request.get('Idioma')
-        
-        
-        
-        #####Conversiones######
-        import time
-        #fechaf=time.strptime(precio, "%d/%m/%Y")
-        from datetime import datetime
-        #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
-        #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
-        fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-        fechaParseada=fechaParseada.date()
-        
-        
-        preciof=float(precio)
-        pagina=int(Paginas)
-        edit=int(edicion)
-        
-        ###escribir en log#####
-        logging.debug(tipoOferta);
-        logging.debug(preciof);
-        logging.debug(fechaParseada);
-        
-        
-        
-        
-        #book.put()
-        book = Book.all().filter('title =',title).get()
-        Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit,language=lang).put()
-        self.redirect('/profile/copies')
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'error'      : False,
+            'selectedCopy': selectedCopy
+            
+        } 
+        try:
+            tipoOferta = self.request.get('TipoOferta')
+	    precio = self.request.get('precio')
+	    fechaLim = self.request.get('fechaLimite')
+            Paginas=self.request.get('page')
+	    edicion=self.request.get('edition')   
+	    formato=self.request.get('Formato')
+	    lang=self.request.get('Idioma')
+            logging.debug(selectedCopy.offerState)
+            estadoOferta=selectedCopy.offerState
+            logging.debug(estadoOferta)
+		
+	    #####Conversiones######
+		
+	    #fechaf=time.strptime(precio, "%d/%m/%Y")
+	    #from datetime import datetime
+	    #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
+	    #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
+	    fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+	    fechaParseada=fechaParseada.date()
+		
+		
+	    preciof=float(precio)
+	    pagina=int(Paginas)
+	    edit=int(edicion)
+		
+	    ###escribir en log#####
+	    logging.debug(tipoOferta);
+	    logging.debug(preciof);
+	    logging.debug(fechaParseada);
+		
+		
+		
+		
+	    #book.put()
+	    book = Book.all().filter('title =',title).get()
+            db.delete(selectedCopy)
+	    Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, language=lang, offerState=estadoOferta).put()
+            logging.debug(book)
+            self.redirect('/profile/copies')
+            
+        except:  
+               title = self.request.get('selectedCopyTitle')
+               book = Book.all().filter('title =', title).get()
+               selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+               values = {
+                    
+                    'user'       : user,
+                    'logoutUri'  : users.create_logout_url('/'),
+                    'error'      : True,
+                    'selectedCopy': selectedCopy
 
+               }   
+               
+	       self.redirect("/profile/newcopy1?selectedCopyTitle="+selectedCopy.book.title)
+               
+   
+
+class ProfileNewCopyView2(UserView):
+     def get_as_user(self, user, logoutUri):
+        title= self.request.get('selectedCopyTitle')
+        book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
+       
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'selectedCopy': selectedCopy
+        }
+        self.response.out.write(template.render('html/profileNewCopy2.html', values))
+       
 
 
 class ProfileOffersView(UserView):

@@ -1,0 +1,86 @@
+﻿<label for="mislibros"></label>
+ {% extends "profile.html" %}
+
+{% block nav_profile_copies %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+
+
+<h6>INFORMACION DEL LIBRO NO EDITABLE</h6>
+<div class="row">
+<form action="/profile/newcopy2?selectedCopyTitle={{selectedCopy.book.title}}"  method="post">
+	<fieldset>
+		<legend></legend>
+	  <div class="clearfix">
+		<label for="titleBook">Libro: </label>
+                <label for="tit"> {{selectedCopy.book.title}}</label>
+          </div>
+
+          <div class="clearfix">
+            <label for="autor">Autor:</label>
+            <label for="aut"> {{selectedCopy.book.author}}</label>
+          </div>
+               
+          <div class="clearfix">
+            <label for="genero">Género:</label>
+            <label for="gen"> {{selectedCopy.book.genre}}</label>
+          </div>
+                    
+            
+          <div class="clearfix">
+            <label for="page">Páginas:</label>
+            <label for="npage">{{selectedCopy.pages}}</label>
+          </div>
+             
+                         
+          <div class="clearfix">
+            <label for="edition">Edición:</label>
+            <label for="npage">{{selectedCopy.edition}}</label>
+          </div>
+                 
+          <div class="clearfix">
+            <label for="estado">Estado:</label>
+            <label for="state">{{selectedCopy.offerState}}</label>
+          </div>
+
+                  
+	  <div class="clearfix">
+	    <label for="idioma">Idioma</label>
+            <label for="lang">{{selectedCopy.language}}</label>
+	  </div>
+
+
+	  <div class="clearfix">
+	    <label for="formato">Formato</label>
+	    <label for="format">{{selectedCopy.format}}</label>
+	  </div>
+
+
+       
+          <div class="clearfix">
+	    <label for="TipoOferta">Tipo de oferta</label>
+	    <label for="offertype">{{selectedCopy.offerType}}</label>		
+	  </div>
+
+          {% ifequal selectedCopy.offerType "Venta"%}
+           <div class="clearfix">
+	     <label for="precio">Precio</label>
+	     <label for="price">{{selectedCopy.salePrice}}</label>		
+	   </div>
+          {% endifequal %}
+	  
+	  <div class="clearfix">
+	    <label for="fechaLimite">Fecha límite(dd/mm/aaaa): </label>
+            <label for="fecha">{{selectedCopy.limitOfferDate}}</label>	
+	  </div>
+	  
+	  
+	    <div class="actions">
+             <a href="/profile/copies" class="btn">Volver</a>
+	    </div>
+	</fieldset>
+  </form>
+</div>
+
+{% endblock %}
