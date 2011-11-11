@@ -11,10 +11,8 @@
     <div style="text-align: center" id="confirmRequestResponse">
     	<input type="submit" class="btn primary" name="processConfirmRequest" value="Confirmar">
     </div>
-
-{% else %}
     {% ifequal selectedCopy.offerType "Intercambio" %}
-    <div >{{selectedCopy.book.title}}</div>
+    <div >{{selectedCopy.book.title}}</div>  <!aqui va la muerte>
     {% endifequal %}
 
     {% ifequal selectedCopy.offerType "Venta" %}
@@ -24,11 +22,13 @@
     {% ifequal selectedCopy.offerType "Prestamo" %}
     <div >{{selectedCopy.book.title}}</div>
     {% endifequal %}
-
-
-
 {% endifequal %}
 
+{% ifequal request.state "Aceptada" %}
+    <div style="text-align: center" id="confirmRecieved">
+        <input type="submit" class="btn primary" name="processConfirmRecieve" value="Recibido!">
+    </div>
+{% endifequal %}    
 
 </form>
 {% endblock %}
