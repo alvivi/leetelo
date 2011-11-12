@@ -17,6 +17,7 @@
 */
 function JSTipoOferta()
 {
+	
 	var opc_sel=$('#TipoOferta').attr('value');
     if(opc_sel == 'Venta')
     {
@@ -99,12 +100,38 @@ $(document).ready(function() {
 		     <div class="input"  >
                      
 		      <p>
-		        <select name="Idioma" >
-		          <option>Valenciano</option>
-			  <option>Ingles</option>
-			  <option>Frances</option>
-			  <option>Aleman</option>
-			  <option>Otros</option>
+		      <select name="Idioma" >
+		     
+		     {% ifequal selectedCopy.language 'Valenciano' %}
+				<option SELECTED>Valenciano</option>	
+			 {% else %}
+			 	<option>Valenciano</option>
+			 {% endifequal %} 
+		      
+			 {% ifequal selectedCopy.language 'Ingles' %}
+				<option SELECTED>Ingles</option>	
+			 {% else %}
+			 	<option>Ingles</option>
+			 {% endifequal %}
+			  
+			 {% ifequal selectedCopy.language 'Frances' %}
+				<option SELECTED>Frances</option>	
+			 {% else %}
+			 	<option>Frances</option>
+			 {% endifequal %}
+			  
+			 {% ifequal selectedCopy.language 'Aleman' %}
+				<option SELECTED>Aleman</option>	
+			 {% else %}
+			 	<option>Aleman</option>
+			 {% endifequal %}
+			 
+			 {% ifequal selectedCopy.language 'Otros' %}
+				<option SELECTED>Otros</option>	
+			 {% else %}
+			 	<option>Otros</option>
+			 {% endifequal %}
+			 
 			 </select>
           	       </p>
                   
@@ -119,9 +146,9 @@ $(document).ready(function() {
 		    <select name="Formato">
 		      <option>Bolsillo</option>
 		      <option>Tapa dura</option>
-                      <option>Tapa blanda</option>
+              <option>Tapa blanda</option>
 		      <option>Coleccionista</option>
-	             </select>
+	         </select>
           	   </p>
                  </div>
 	  </div>
@@ -145,7 +172,7 @@ $(document).ready(function() {
 
 	  
 	
-	  <div class="clearfix">
+	  <div id="idprecio" class="clearfix">
 		<label for="precio">Precio</label>
 		<div class="input">
 			<input type="text" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
@@ -153,7 +180,7 @@ $(document).ready(function() {
 	  </div>
        
 	  
-	  <div class="clearfix">
+	  <div id="idfecha" class="clearfix">
 		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
