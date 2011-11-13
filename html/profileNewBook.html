@@ -5,37 +5,45 @@
 
 {% block profileContent %}
 
- 
-<h6>A�adir un nuevo libro</h6>
 
 
 <div class="row">
-<form action="/profile/newbook" method="post">
-	<fieldset>
-		<legend></legend>
-
-		<div class="clearfix">
-			<label for="Autor">Título:</label>
-			
+	<div class="span4">
+		<h6>Añadir un nuevo libro</h6>
+		<div class="alert-message block-message warning fade in">
+			<a href="#" class="close">x</a>
+			<p>Ten en cuenta que el libro debe ser admitido por un administrador antes de que aparezca en nuestra biblioteca.</p>
 		</div>
-		<div class="clearfix">
-			<label for="Autor">Autor:</label>
-			
-		</div>
-		<div class="clearfix">
-			<label for="Genero">Genero: </label>
-	    	
-	    </div>
-		
-		<hr></hr>
-	  
-	  </div>
-		<div class="actions">
-		  <input type="submit" class="btn primary" value="A�adir ejemplar" />
-		  <a href="/profile/copies" class="btn">Cancelar</a>
-		</div>
-	</fieldset>
-</form>
+	</div>
+	<div class="span12">
+		<form action="/profile/book" method="post">
+			<fieldset>
+				<legend>Nuevo libro</legend>
+				<div class="clearfix">
+					<label for="title">Título</label>
+					<div class="input">
+						<input class="xlarge" id="title" name="title" size="90" type="text">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="author">Autor</label>
+					<div class="input">
+						<input class="xlarge" id="author" name="author" size="90" type="text">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="genre">Género</label>
+					<div class="input">
+						<input class="xlarge" id="genre" name="genre" size="90" type="text">
+					</div>
+				</div>
+				<div class="actions">
+					<input type="submit" class="btn primary" value="Añadir ejemplar">
+					<a href="/profile/copies" class="btn">Cancelar</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 </div>
 
 {% endblock %}

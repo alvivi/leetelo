@@ -17,7 +17,7 @@ cienBook   = Book(title=u'Cien años de soledad', author=u'Gabriel García Márquez
 akiraBook  = Book(title=u'Akira', author=u'Katsuhiro Otomo',genre=u'Novela').put()
 panBook    = Book(title=u'Pan', author=u'Knut Hamsun',genre=u'Novela').put()
 jtBook     = Book(title=u'Canción de hielo y fuego 1: Juego de tronos', author=u'George R.R. Martin',genre=u'Novela').put()
-
+bibBook    = Book(title=u'La Biblia', author=u'Dios', genre=u'Novela').put()
 
 db.delete(Copy.all().fetch(512))
 justinCopy1 = Copy(user=testUser, book=justinBook, offerType="Intercambio", offerState="Con solicitud",language="Frances",pages=250,edition=8,genre="Novela").put()
@@ -30,7 +30,7 @@ jtCopy1    = Copy(user=testUser, book=jtBook, offerType="Prestamo",offerState="E
 justinCopy2 = Copy(user=nilsenUser, book=justinBook, offerType="Ninguno").put()
 kafkaCopy2  = Copy(user=nilsenUser, book=kafkaBook, offerType="Ninguno").put()
 panCopy2    = Copy(user=nilsenUser, book=panBook, offerType="Intercambio").put()
-
+bibCopy     = Copy(user=testUser, book=bibBook, offerType="Intercambio").put()
 
 db.delete(Request.all().fetch(512))
 Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
@@ -54,3 +54,7 @@ Request(user=billyUser,copy=jtCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=jtCopy1, state="Sin contestar").put()
 
 Request(user=nilsenUser,copy=mistCopy1, state="Aceptada").put()
+Request(user=nilsenUser, copy=bibCopy, state="Negociando").put()
+
+db.delete(Exchange.all().fetch(512))
+Exchange(copy1=bibCopy, owner1=testUser, copy2=justinCopy1, owner2=nilsenUser).put()

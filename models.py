@@ -29,7 +29,7 @@ class Copy(db.Model):
     publishing = db.StringProperty()
     limitOfferDate = db.DateProperty()
     salePrice = db.FloatProperty()
-    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo","Ninguno"]))
+    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo","Ninguna"]))
     # Método de clase que devuelve todos los ejemplares que posee un usuario
     @classmethod
     def allCopiesOf(cls, user):
@@ -77,7 +77,15 @@ class Exchange(db.Model):
     copy2 = db.ReferenceProperty(Copy,collection_name="copy2")
     owner2 = db.UserProperty()
     exchangeDate = db.DateProperty(auto_now=True)
-    
+
+    @classmethod
+    def allExchangesFromUser(cls, user):
+        return cls.all().filter('owner2', user).fetch(128)
+
+    @classmethod
+    def switchFor(cls, copy, user):
+        return cls.all().filter('copy1 =', copy).filter('copy2.user =', user).fetch(128)
+                
 class SearchResults(db.Model):
     
     
