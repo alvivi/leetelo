@@ -29,11 +29,13 @@ $(document).ready(function() {
         
         if(window.location.pathname == "/profile/appliantcopies") {
             var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-            var rows = $(".appliant-column-name");
             
-            for (var i = 0; i < rows.length; i++) {
-                if ($(rows[i]).text() == user) {
-                    $(rows[i]).parent().children().first().children().first().attr("checked", "");
+            var appliants = $(".appliant-column-name");
+            var inputs = $("#offersTable input[type=radio]");
+            
+            for (var i = 0; i <appliants.length; i++) {
+                if ($(appliants[i]).text() == user) {
+                    $(inputs[i]).attr("checked", "");
                 }
             }
             $("#exchange-buttons").children().removeClass("disabled");

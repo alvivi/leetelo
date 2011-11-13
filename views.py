@@ -418,7 +418,7 @@ class LoanView(UserView):
         
         request.delete()
         
-        self.redirect('/html/profileOffers.html')
+        self.redirect('html/profileOffers.html')
     
 class ExchangeView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -449,7 +449,7 @@ class ExchangeView(UserView):
         
         request.delete()
         
-        self.redirect('/html/profileOffers.html')
+        self.redirect('html/profileOffers.html')
         
         
 class AppliantCopiesView(UserView):
@@ -482,16 +482,22 @@ class AppliantCopiesView(UserView):
         
         if action=="Proponer intercambio indirecto" :
             selectedCopy.offerState='Esperando confirmacion'
-            request.exchangeType='Indirecto'
-            request.state='Negociando'
             selectedCopy.put()
+            
+            request.state = 'Negociando'
+            request.exchangeType = 'Indirecto'
             request.put()
+        
         elif action=="Proponer este libro para intercambio":
-            selectedCopy.offerState='Esperando confirmacion'
-            request.state='Negociando'
+            wantedBook = Book.all().filter('title =', self.request.get('appliantCopiesRadios')).get()
+            wantedCopy = Copy.all().filter('user =', appliantUser).filter('book =', wantedBook).get()
+            
+            request.exchangeCopy = wantedCopy
+            request.state = 'Negociando'
             request.exchangeType='Directo'
-            request.exchangeCopy=''
             request.put()
+            
+            selectedCopy.offerState='Esperando confirmacion'
             selectedCopy.put()
         
         values = {
@@ -499,12 +505,9 @@ class AppliantCopiesView(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy),
-            'appliantUser' : appliantUser,
-            'appliantCopies' : Copy.allCopiesOf(appliantUser),
-            'request' : request
+            'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
-        self.response.out.write(template.render('html/appliantCopies.html', values))
+        self.response.out.write(template.render('html/copyOffers.html', values))
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
