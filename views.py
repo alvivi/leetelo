@@ -274,9 +274,9 @@ class ProfileNewCopyView1(UserView):
                     'selectedCopy': selectedCopy
 
                }   
-               
-	       self.redirect("/profile/newcopy1?selectedCopyTitle="+selectedCopy.book.title)
-               
+               self.response.out.write(template.render('html/profileNewCopy1.html', values))  
+	      # self.redirect("/profile/newcopy1?selectedCopyTitle="+selectedCopy.book.title)
+              
    
 
 class ProfileNewCopyView2(UserView):

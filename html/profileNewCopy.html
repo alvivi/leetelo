@@ -81,14 +81,12 @@ function getParameter(parameter){
 		
 		</script>
 
-
-
 <h6>Añadir un nuevo ejemplar de...</h6>
 
 
 <div class="row">
 
-<form action="/profile/newcopy" method="post">
+<form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post">
 	<fieldset>
 		<legend></legend>
 
