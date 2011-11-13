@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="/static/base.css"/>
     <script type="text/javascript" src="/static/jquery.js"></script>
     <script type="text/javascript" src="/static/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-alerts.js"></script>
     <script type="text/javascript" src="/static/base.js"></script>
 
     {% block head %} {% endblock %}
@@ -19,7 +21,7 @@
                 <a id="logo" class="nav" href="/">Léetelo</a>
                 <ul class="nav">
                     <li {% block nav_index %} {% endblock %}><a href="/">Inicio</a></li>
-					<li {% block nav_search %} {% endblock %}><a href="/search">Buscador</a></li>
+                    <li {% block nav_search %} {% endblock %}><a href="/search">Buscador</a></li>
                     {%if user %}
                     <li {% block nav_profile %} {% endblock %}><a href="/profile">Perfil</a></li>
                     <li><a href="{{logoutUri}}">Cerrar sesión</a></li>
@@ -32,7 +34,7 @@
     {% if user %}
     {% else %}
     <div class="container">
-        <div class="alert-message warning">
+        <div class="alert-message warning fade in">
             <a class="close" href="#">×</a>
             <p><strong>¡Hola anónimo!</strong> Si quieres disfrutar al máximo de léetelo
                 <a href="{{newUserUri}}">registrate</a> o

@@ -30,3 +30,15 @@ thead th {
     font-weight: bold;
 }
 
+.nopadding {
+    padding: 0;
+}
+
+.littlepadding {
+    padding: 5px;
+}
+.centerrow {
+    text-align: center;
+    padding-top: 9px;
+}
+

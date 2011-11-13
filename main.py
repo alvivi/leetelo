@@ -18,6 +18,7 @@ def main():
         ('/profile', ProfileView),
         ('/profile/alerts', ProfileAlertsView),
         ('/profile/copies', ProfileCopiesView),
+        ('/profile/copies/delete', ProfileDeleteCopiesView),
         ('/profile/historial', ProfileHistorialView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/newcopy1', ProfileNewCopyView1),
