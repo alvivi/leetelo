@@ -99,6 +99,17 @@ class ProfileNewBookView(UserView):
         }
         self.response.out.write(template.render('html/profileNewBook.html', values))
 
+    def post_as_user(self, user, logoutUri):
+        try:
+            title = self.request.get('title')
+            author = self.request.get('author')
+            genre = self.request.get('genre')
+            Book(title=title, author=author, genre=genre).put()
+            self.redirect('/profile/newcopy')
+        except:
+            self.redirect('/profile/book?error=true')
+
+
 
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):

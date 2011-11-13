@@ -5,7 +5,7 @@
 
 {% block profileContent %}
 
- 
+
 
 
 <script type="text/javascript">
@@ -28,13 +28,13 @@ function JSTipoOferta()
     else
     {
     	$("#idprecio").css("display", "none");
- 		/*$("#idprecio").toggle(200);*/       
+ 		/*$("#idprecio").toggle(200);*/
     }
 
     if(opc_sel != 'Ninguna')
     {
     	$("#idfecha").css("display", "block");
-        
+
     }else{$("#idfecha").css("display", "none");}
 }
 
@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 	/*Ocultar/Mostra los campos segun valores de select*/
 	JSTipoOferta();
-	
+
     });
 
 
@@ -69,35 +69,40 @@ function getParameter(parameter){
 		// Despliega el valor del parametro
 	return (url.substring(index + 1,result));
 	}
-	} 
+	}
 
-    
+
 		function ShowSelected()
 		{
 			var combo = document.getElementById("titleBook");
 			var selected = combo.options[combo.selectedIndex].text;
 			window.location="/profile/newcopy?selectedCopyTitle="+selected;
 		}
-		
+
 		</script>
 
-<h6>Añadir un nuevo ejemplar de...</h6>
+<h6>AÃ±adir un nuevo ejemplar</h6>
 
+<div class="alert-message block-message info fade in">
+	<a href="#" class="close">x</a>
+	<p>Â¿No encuentras el libro que buscabas? <strog><a href="/profile/book">AÃ±ade tu libro</a></strog> en nuestra biblioteca.</p>
+</div>
 
 <div class="row">
+
 
 <form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post">
 	<fieldset>
 		<legend></legend>
 
-         <div class="clearfix">
+		<div class="clearfix">
 		<label for="titleBook">Libro</label>
 				<div class="input">
 				  <select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
 
 				{% for b in books %}
 					{% ifequal book.title b.title %}
-					<option SELECTED>{{b.title}}</option>
+					<option selected>{{b.title}}</option>
 					{% endifequal %}
 					{% ifnotequal b.title book.title %}
         			<option>{{b.title}}</option>
@@ -106,9 +111,10 @@ function getParameter(parameter){
 
 			      </select>
           		  </div>
+
 	  	</div>
 
-		
+
 		<div class="clearfix">
 			<label for="Autor">Autor:</label>
 			<div id="autorBook" class="input">
@@ -121,21 +127,21 @@ function getParameter(parameter){
 			{{book.genre}}
 			</div>
 	    </div>
-		
+
 		<hr></hr>
 
 
 
-	  
+
 	  <div>
-	  
+
 	  <div class="clearfix">
 		<label for="edicion">Edicion</label>
 		<div class="input">
 			<input type="text" name="Edicion" id="edicion"/>
 		</div>
 	  </div>
-	  
+
 	  <div class="clearfix">
 		<label for="formato">Idioma</label>
 				<div class="input">
@@ -152,33 +158,33 @@ function getParameter(parameter){
                   </p>
 				</div>
 	</div>
-	  
-	  
+
+
 	  <div class="clearfix">
 		<label for="paginas">Numero de Paginas</label>
 		<div class="input">
 			<input type="text" name="Paginas" id="paginas"/>
 		</div>
 	  </div>
-	  
+
 	  <div class="clearfix">
 		<label for="formato">Formato</label>
 				<div class="input">
 				<p>
-                                  
+
 				  <select name="Formato">
 				    <option>Bolsillo</option>
 					<option>Tapa dura</option>
                                         <option>Tapa blanda</option>
 					<option>Coleccionista</option>
-                                             
+
 			      </select>
           		  </p>
                   </p>
 				</div>
 	</div>
 
-	
+
 	<div class="clearfix">
 		<label for="TipoOferta">Tipo de oferta</label>
 				<div class="input">
@@ -190,26 +196,26 @@ function getParameter(parameter){
 				  </select>
 				</div>
 	</div>
-	  
-	  
-	  
+
+
+
 	  <div id="idprecio" class="clearfix">
 		<label for="precio">Precio</label>
 		<div class="input">
 			<input type="text" name="precio" id="precio" />
 		</div>
 	  </div>
-	  
+
 	  <div id="idfecha" class="clearfix">
-		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
+		<label for="fechaLimite">Fecha l?mite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" id="fechaLimite" />
 		</div>
 	  </div>
-	  
+
 	  </div>
 		<div class="actions">
-		  <input type="submit" class="btn primary" value="Añadir ejemplar" />
+		  <input type="submit" class="btn primary" value="A?adir ejemplar" />
 		  <a href="/profile/copies" class="btn">Cancelar</a>
 		</div>
 	</fieldset>
