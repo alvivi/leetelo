@@ -119,6 +119,7 @@ class ProfileNewCopyView(UserView):
             Paginas=self.request.get('Paginas')
             edicion=self.request.get('Edicion')   
             formato=self.request.get('Formato')
+            lang=self.request.get('Idioma')
             pagina=int(Paginas)
             edit=int(edicion)
 
@@ -128,17 +129,17 @@ class ProfileNewCopyView(UserView):
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
                preciof=float(precio)
-               Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
+               Copy(book=book, user=user, salePrice=preciof, language=lang, limitOfferDate=fechaParseada, offerType=tipoOferta, offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
        
             if tipoOferta == "Intercambio" or tipoOferta == "Prestamo":
                fechaLim = self.request.get('fechaLimite')
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
-               Copy(book=book, user=user, limitOfferDate=fechaParseada, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
+               Copy(book=book, user=user, limitOfferDate=fechaParseada, language=lang, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()       
             
                         
-            if tipoOferta == "Ninguno":
-               Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, offerState="No disponible").put() 
+            if tipoOferta == "Ninguna":
+               Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put() 
 
             ###escribir en log#####
             logging.debug(tipoOferta);
@@ -193,16 +194,51 @@ class ProfileNewCopyView1(UserView):
             
         } 
         try:
+            
             tipoOferta = self.request.get('TipoOferta')
-	    precio = self.request.get('precio')
-	    fechaLim = self.request.get('fechaLimite')
             Paginas=self.request.get('page')
-	    edicion=self.request.get('edition')   
+            edicion=self.request.get('edition')   
 	    formato=self.request.get('Formato')
-	    lang=self.request.get('Idioma')
-            logging.debug(selectedCopy.offerState)
-            estadoOferta=selectedCopy.offerState
-            logging.debug(estadoOferta)
+            lang=self.request.get('Idioma')
+        
+            pagina=int(Paginas)
+	    edit=int(edicion)
+
+            if tipoOferta == "Venta": 
+  
+	      precio = self.request.get('precio')
+              preciof=float(precio)
+	      fechaLim = self.request.get('fechaLimite')
+              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+	      fechaParseada=fechaParseada.date()
+	      db.delete(selectedCopy)
+              Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+ 
+            if tipoOferta == "Intercambio": 
+  
+	      fechaLim = self.request.get('fechaLimite')
+              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+	      fechaParseada=fechaParseada.date()
+              db.delete(selectedCopy)
+              Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Intercambio", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+
+            if tipoOferta == "Prestamo": 
+  
+	      fechaLim = self.request.get('fechaLimite')             
+              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+	      fechaParseada=fechaParseada.date() 
+              db.delete(selectedCopy)
+              Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Prestamo", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+		
+	    if tipoOferta == "Ninguna": 
+  
+	      db.delete(selectedCopy)
+              Copy(book=book, user=user, offerType="Ninguna", format=formato, pages=pagina, edition=edit, language=lang, offerState="No disponible").put()
+            self.redirect('/profile/copies')
+     
+	    #logging.debug(selectedCopy.offerState)
+            #estadoOferta=selectedCopy.offerState
+            #logging.debug(estadoOferta)
 		
 	    #####Conversiones######
 		
@@ -210,28 +246,21 @@ class ProfileNewCopyView1(UserView):
 	    #from datetime import datetime
 	    #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
 	    #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
-	    fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-	    fechaParseada=fechaParseada.date()
-		
-		
-	    preciof=float(precio)
-	    pagina=int(Paginas)
-	    edit=int(edicion)
-		
+	    	    		
 	    ###escribir en log#####
-	    logging.debug(tipoOferta);
-	    logging.debug(preciof);
-	    logging.debug(fechaParseada);
+	    #logging.debug(tipoOferta);
+	    #logging.debug(preciof);
+	    #logging.debug(fechaParseada);
 		
 		
 		
 		
 	    #book.put()
-	    book = Book.all().filter('title =',title).get()
-            db.delete(selectedCopy)
-	    Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, language=lang, offerState=estadoOferta).put()
-            logging.debug(book)
-            self.redirect('/profile/copies')
+	    #book = Book.all().filter('title =',title).get()
+            #db.delete(selectedCopy)
+	    #Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, language=lang, offerState=estadoOferta).put()
+            #logging.debug(book)
+         
             
         except:  
                title = self.request.get('selectedCopyTitle')

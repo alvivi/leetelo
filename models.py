@@ -29,7 +29,7 @@ class Copy(db.Model):
     publishing = db.StringProperty()
     limitOfferDate = db.DateProperty()
     salePrice = db.FloatProperty()
-    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo","Ninguno"]))
+    offerType = db.StringProperty(choices=set(["Intercambio","Venta","Prestamo","Ninguna"]))
     # Método de clase que devuelve todos los ejemplares que posee un usuario
     @classmethod
     def allCopiesOf(cls, user):

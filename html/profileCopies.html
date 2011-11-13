@@ -28,8 +28,11 @@
                           
                         </td>
 			<td>{{copy.book.author}}</td>
-
+                       {% ifequal copy.offerState "No disponible" %}
+                        <td>Disponible</td>
+                       {% else %}   
                         <td>{{copy.offerState}}</td>
+                       {% endifequal %}
 		</tr>
 	{% endfor %}
 	</tbody>

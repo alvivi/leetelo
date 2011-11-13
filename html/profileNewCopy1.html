@@ -30,7 +30,7 @@ function JSTipoOferta()
  		/*$("#idprecio").toggle(200);*/       
     }
 
-    if(opc_sel != 'Ninguno')
+    if(opc_sel != 'Ninguna')
     {
     	$("#idfecha").css("display", "block");
         
@@ -91,8 +91,13 @@ $(document).ready(function() {
                  
                   <div class="clearfix">
                   <label for="estado">Estado:</label>
-                  <label for="state">{{selectedCopy.offerState}}</label>
-                   </div>
+                  {% ifequal selectedCopy.offerState "No disponible" %}
+                    <label for="state">Disponible</label>
+                  {% else %}
+                    <label for="state">{{selectedCopy.offerState}}</label>
+                  {% endifequal %}
+                 
+                 </div>
 
                   
 		 <div class="clearfix">
@@ -102,6 +107,10 @@ $(document).ready(function() {
 		      <p>
 		      <select name="Idioma" >
 		     
+                      <!--<option>Castellano</option>
+		      <option>Valenciano</option>
+                      <option>Aleman</option>
+		      <option>Otros</option>-->
 		     {% ifequal selectedCopy.language 'Valenciano' %}
 				<option SELECTED>Valenciano</option>	
 			 {% else %}
@@ -144,10 +153,30 @@ $(document).ready(function() {
 		 <div class="input">
 		   <p>
 		    <select name="Formato">
-		      <option>Bolsillo</option>
-		      <option>Tapa dura</option>
-              <option>Tapa blanda</option>
-		      <option>Coleccionista</option>
+		         {% ifequal selectedCopy.format 'Bolsillo' %}
+				<option SELECTED>Bolsillo</option>	
+			 {% else %}
+			 	<option>Bolsillo</option>
+			 {% endifequal %} 
+		      
+			 {% ifequal selectedCopy.format 'Tapa dura' %}
+				<option SELECTED>Tapa dura</option>	
+			 {% else %}
+			 	<option>Tapa dura</option>
+			 {% endifequal %}
+			  
+			 {% ifequal selectedCopy.format 'Tapa blanda' %}
+				<option SELECTED>Tapa blanda</option>	
+			 {% else %}
+			 	<option>Tapa blanda</option>
+			 {% endifequal %}
+			  
+			 {% ifequal selectedCopy.format 'Coleccionista' %}
+				<option SELECTED>Coleccionista</option>	
+			 {% else %}
+			 	<option>Coleccionista</option>
+			 {% endifequal %}
+			  
 	         </select>
           	   </p>
                  </div>
@@ -157,15 +186,39 @@ $(document).ready(function() {
        
         <div class="clearfix">
 		<label for="TipoOferta">Tipo de oferta</label>
-				<div class="input">
-				  <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
-				  	<option value="Ninguno">Ninguno</option>
-				    <option value="Venta">Venta</option>
-					<option value="Intercambio">Intercambio</option>
-					<option value="Prestamo">Prestamo</option>
-				  </select>
-				</div>
-	</div>
+		  <div class="input">
+		    <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
+
+                         {% ifequal selectedCopy.offerType 'Ninguna' %}
+				<option value="Ninguna" SELECTED>Ninguna</option>	
+			 {% else %}
+                               <option>Ninguna</option>
+			 {% endifequal %} 
+ 
+
+                         {% ifequal selectedCopy.offerType 'Venta' %}
+				<option value="Venta" SELECTED>Venta</option>	
+			 {% else %}
+			 	<option>Venta</option>
+			 {% endifequal %} 
+
+
+                         {% ifequal selectedCopy.offerType 'Prestamo' %}
+				<option value="Prestamo" SELECTED>Prestamo</option>	
+			 {% else %}
+			 	<option>Prestamo</option>
+			 {% endifequal %} 
+
+		      
+                         {% ifequal selectedCopy.offerType 'Intercambio' %}
+				<option value="Intercambio" SELECTED>Intercambio</option>	
+			 {% else %}
+			 	<option>Intercambio</option>
+			 {% endifequal %} 
+
+		      </select>
+		</div>
+ 	   </div>
 
 
 

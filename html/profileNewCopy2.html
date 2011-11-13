@@ -41,7 +41,11 @@
                  
           <div class="clearfix">
             <label for="estado">Estado:</label>
-            <label for="state">{{selectedCopy.offerState}}</label>
+              {% ifequal selectedCopy.offerState "No disponible" %}
+                  <label for="state">Disponible</label>
+              {% else %}
+                  <label for="state">{{selectedCopy.offerState}}</label>
+              {% endifequal %}
           </div>
 
                   
