@@ -4,16 +4,10 @@
 
 {% block appliant_copies %}
 
-{% ifequal request.exchangeType "Directo" %}
-        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
-{% endifequal %}
-{% ifequal request.exchangeType "Indirecto" %}
-    <p style="margin-top:50px"><strong>Se está negociando un intercambio indirecto. </strong></p>
-{% endifequal %}
 
 <p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
 <form action="/profile/appliantcopies" method="post">
-    <input type="hidden" value="{{appliantUser}}" name="appliant" id="appliant">
+    <input type="hidden" value="{{appliantUser}}" name="appliant">
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <table class="zebra-striped sortable" id="appliantCopiesTable">
         <thead>
@@ -26,7 +20,7 @@
         <tbody>
             {% for appCopy in appliantCopies %}
             <tr>
-                <th><input type="radio" name="appliantCopiesRadios" value="{{appCopy.book.title}}"></th>
+                <th><input type="radio" name="appliantCopiesRadios"></th>
                 <th>{{appCopy.book.title}}</th>
                 <th>{{appCopy.book.author}}</th>
             </tr>
@@ -37,6 +31,9 @@
         <input type="submit" class="btn primary disabled" name="processOffer" value="Proponer este libro para intercambio">
     </div>
     
+    {% ifequal request.exchangeType "Directo" %}
+        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
+    {% endifequal %}
     
 </form>
 {% endblock %}

@@ -23,7 +23,7 @@ def main():
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/newcopy1', ProfileNewCopyView1),
         ('/profile/newcopy2', ProfileNewCopyView2),
-        ('/profile/book', ProfileNewBookView),
+        ('/profile/newBook', ProfileNewBookView),
         ('/profile/offers', ProfileOffersView),
         ('/profile/applications', ProfileApplicationsView),
         ('/profile/copyoffers', CopyOffersView),

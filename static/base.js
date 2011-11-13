@@ -1,8 +1,5 @@
 
 
-$('.close').live('click', function() {
-    $(this).parent().slideUp();
-});
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
@@ -18,18 +15,6 @@ var localScripts = {
         }
         $("#exchange-buttons").children().removeClass("disabled");
 
-$(document).ready(function() {
-        $(".sortable").tablesorter();
-        
-        if(window.location.pathname == "/profile/copyoffers") {
-            var buttons = $("#exchange-buttons");
-            $("#offersTable input[type=radio]").live('click', function () {
-                var rows = $(".offer-state-column");
-                var flag = false;
-                for (var i = 0; i < rows.length; i++) {
-                    if ($(rows[i]).text() == "Negociando") {
-                        flag = true;
-                    }
         var buttons = $("#exchange-buttons2");
         $("#appliantCopiesTable input[type=radio]").live('click', function () {
             $(buttons).children().removeClass("disabled");
@@ -61,21 +46,6 @@ $(document).ready(function() {
                 if (count <= 0) {
                     button.addClass('disabled');
                 }
-            
-                if(flag)
-                    $(buttons).children().last().removeClass("disabled");
-                else
-                    $(buttons).children().removeClass("disabled");
-            });       
-        }
-        
-        if(window.location.pathname == "/profile/appliantcopies") {
-            var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-            var rows = $(".appliant-column-name");
-            
-            for (var i = 0; i < rows.length; i++) {
-                if ($(rows[i]).text() == user) {
-                    $(rows[i]).parent().children().first().children().first().attr("checked", "");
             }
         });
 
@@ -85,14 +55,6 @@ $(document).ready(function() {
                 if ($(c).attr('checked')) {
                     keys = (keys == '') ? keys : keys + ',';
                     keys += $(c).parent().parent().find('span').text();
-
-
-
-
-
-
-
-
                 }
             });
             $.ajax({
@@ -121,24 +83,7 @@ $(document).ready(function() {
             if ( $(owners[i]).text() == owner && $(copies[i]).text() == copy) {
                 $(inputs[i]).attr("checked", "");
             }
-            $("#exchange-buttons").children().removeClass("disabled");
-            
-            var buttons = $("#exchange-buttons2");
-            $("#appliantCopiesTable input[type=radio]").live('click', function () {
-                $(buttons).children().removeClass("disabled");
-            });  
         }
-        
-        if(window.location.pathname == "/profile/applicationcontent") {
-            var owner = (RegExp("owner=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-            var copy = (RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1];
-            var owners = $(".request-owner-column");
-            var copies = $(".request-copy-column");
-            var inputs = $("#requestsTable input[type=radio]");
-            
-            for (var i = 0; i < owners.length; i++) {
-                if ( $(owners[i]).text() == owner && $(copies[i]).text() == copy) {
-                    $(inputs[i]).attr("checked", "");
     },
 
     "/profile/copyoffers" : function () {
@@ -151,9 +96,6 @@ $(document).ready(function() {
                     flag = true;
                 }
             }
-        }
-        
-       
 
             if(flag)
                 $(buttons).children().last().removeClass("disabled");

@@ -99,17 +99,6 @@ class ProfileNewBookView(UserView):
         }
         self.response.out.write(template.render('html/profileNewBook.html', values))
 
-    def post_as_user(self, user, logoutUri):
-        try:
-            title = self.request.get('title')
-            author = self.request.get('author')
-            genre = self.request.get('genre')
-            Book(title=title, author=author, genre=genre).put()
-            self.redirect('/profile/newcopy')
-        except:
-            self.redirect('/profile/book?error=true')
-
-
 
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -472,7 +461,7 @@ class LoanView(UserView):
 
         request.delete()
 
-        self.redirect('html/profileOffers.html')
+        self.redirect('/html/profileOffers.html')
 
 class ExchangeView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -503,7 +492,7 @@ class ExchangeView(UserView):
 
         request.delete()
 
-        self.redirect('html/profileOffers.html')
+        self.redirect('/html/profileOffers.html')
 
 
 class AppliantCopiesView(UserView):
@@ -536,22 +525,16 @@ class AppliantCopiesView(UserView):
 
         if action=="Proponer intercambio indirecto" :
             selectedCopy.offerState='Esperando confirmacion'
+            request.exchangeType='Indirecto'
+            request.state='Negociando'
             selectedCopy.put()
-            
-            request.state = 'Negociando'
-            request.exchangeType = 'Indirecto'
             request.put()
-        
         elif action=="Proponer este libro para intercambio":
-            wantedBook = Book.all().filter('title =', self.request.get('appliantCopiesRadios')).get()
-            wantedCopy = Copy.all().filter('user =', appliantUser).filter('book =', wantedBook).get()
-            
-            request.exchangeCopy = wantedCopy
-            request.state = 'Negociando'
-            request.exchangeType='Directo'
-            request.put()
-            
             selectedCopy.offerState='Esperando confirmacion'
+            request.state='Negociando'
+            request.exchangeType='Directo'
+            request.exchangeCopy=''
+            request.put()
             selectedCopy.put()
 
         values = {
@@ -559,9 +542,12 @@ class AppliantCopiesView(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy)
+            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'appliantUser' : appliantUser,
+            'appliantCopies' : Copy.allCopiesOf(appliantUser),
+            'request' : request
         }
-        self.response.out.write(template.render('html/copyOffers.html', values))
+        self.response.out.write(template.render('html/appliantCopies.html', values))
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -631,3 +617,4 @@ class IndexView(UserView):
             'newUserUri' : 'http://accounts.google.com'
         }
         self.response.out.write(template.render('html/index.html', values))
+
