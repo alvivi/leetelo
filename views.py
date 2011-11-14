@@ -204,10 +204,10 @@ class ProfileNewCopyView(UserView):
 
             self.response.out.write(template.render('html/profileNewCopy.html', values))
 
-class ProfileNewCopyView1(UserView):
+class ProfileEditCopyView(UserView):
 
     def get_as_user(self, user, logoutUri):
-        key= self.request.get('selectedCopyTitle')
+        key= self.request.get('selected')
         selectedCopy = Copy.get(key)
         #selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
 
@@ -216,8 +216,8 @@ class ProfileNewCopyView1(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'selectedCopy': selectedCopy
         }
-        if selectedCopy.offerState == "No disponible" or selectedCopy.offerState == "En oferta":self.response.out.write(template.render('html/profileNewCopy1.html', values))
-        else:self.response.out.write(template.render('html/profileNewCopy2.html', values))
+        if selectedCopy.offerState == "No disponible" or selectedCopy.offerState == "En oferta":self.response.out.write(template.render('html/profileEditCopy.html', values))
+        else:self.response.out.write(template.render('html/profileDataCopy.html', values))
 
 
 
@@ -284,13 +284,13 @@ class ProfileNewCopyView1(UserView):
                     'selectedCopy': selectedCopy
 
                }
-               self.response.out.write(template.render('html/profileNewCopy1.html', values))
+               self.response.out.write(template.render('html/profileEditCopy.html', values))
 
 
 
-class ProfileNewCopyView2(UserView):
+class ProfileDataCopyView(UserView):
      def get_as_user(self, user, logoutUri):
-        key= self.request.get('selectedCopyTitle')
+        key= self.request.get('selected')
         #book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.get(key)
 
@@ -299,7 +299,7 @@ class ProfileNewCopyView2(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'selectedCopy': selectedCopy
         }
-        self.response.out.write(template.render('html/profileNewCopy2.html', values))
+        self.response.out.write(template.render('html/profileDataCopy.html', values))
 
 
 
