@@ -21,7 +21,8 @@ class Copy(db.Model):
     offerState = db.StringProperty(choices=set(["No disponible","Disponible","En oferta",
                                                 "Con solicitud","Esperando confirmacion",
                                                 "Esperando recepcion", "Prestado",
-                                                "Intercambiado","Vendido","Llega1","Llega2"]))
+                                                "Intercambiado","Vendido"]))
+    
     pages = db.IntegerProperty()
     edition = db.IntegerProperty()
     language = db.StringProperty()
@@ -49,7 +50,8 @@ class Request(db.Model):
     user = db.UserProperty()
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
     exchangeType = db.StringProperty(choices=set(['Directo','Indirecto']))
-
+    llegaCopia1 = db.BooleanProperty()
+    llegaCopia2 = db.BooleanProperty()
     # Método de clase que devuelve todas las solicitudes que ha realizado un usuario
     @classmethod
     def allRequestsOf(cls, user):

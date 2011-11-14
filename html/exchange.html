@@ -11,7 +11,7 @@
 {% else %}
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <p><strong>Por:</strong> {{request.exchangeCopy.book.title}}</p>
-    {% ifequal selectedCopy.offerState "Llega1" %}
+    {% if request.llegaCopia2 %}
         <p><strong>Esperando que {{request.user}} reciba el libro... </p>
     {% else %}
         <p><strong>Para que el intercambio quede completado, debe hacer click aqu&iacute cuando reciba el libro. </p>
@@ -21,7 +21,7 @@
                 <input type="submit" class="btn primary" name="saveDateForExchange" value="Ya he recibido el libro">
             </div>
         </form>
-    {% endifequal %}
+    {% endif %}
 {% endifequal %}
 
 {% endblock %}
