@@ -8,7 +8,7 @@
     
 <form action="/profile/copyoffers" method="post">
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
-    <table class="bordered-table sortable" id="offersTable">
+    <table class="zebra-striped sortable" id="offersTable">
         <thead>
             <tr>
                 <th></th>
@@ -22,15 +22,15 @@
             {% for offer in copyOffers %}
             <tr>
                 {% ifequal selectedCopy.offerType "Intercambio"%}
-                    <th><input type="radio" name="offersRadios" value={{offer.user}} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></th>
+                    <td><input type="radio" name="offersRadios" value={{offer.user}} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></td>
                 {% else %}
-                    <th><input type="radio" name="offersRadios" value={{offer.user}}></th>
+                    <td><input type="radio" name="offersRadios" value={{offer.user}}></td>
                 {% endifequal %}
                 
-                <th class="appliant-column-name">{{offer.user}}</th>
-                <th>****</th>
-                <th class="offer-state-column">{{offer.state}}</th>
-                <th><a href="#" class="btn">Enviar Mensaje</a> </th>
+                <td class="appliant-column-name">{{offer.user}}</td>
+                <td>****</td>
+                <td class="offer-state-column">{{offer.state}}</td>
+                <td><a href="#" class="btn">Enviar Mensaje</a> </td>
             </tr>
             {% endfor %}
         </tbody>

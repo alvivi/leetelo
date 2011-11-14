@@ -4,9 +4,8 @@
 
 {% block profileContent %}
 <h6> Contenido de solicitudes </h6>
-{{ownerUser}}
-{{selectedCopy}}
-<form action="profile/applications" method="post">
+
+<form action="/profile/applications" method="post">
 	
 	<table id="requestsTable" class="zebra-striped sortable">
 		<thead>
@@ -16,6 +15,7 @@
 				<th class="header blue">Autor</th>
 				<th class="header blue">Propietario</th>
 				<th class="header blue">Estado</th>
+				<th class="header blue">Tipo transacci&oacuten</th>
 				<th class="header blue"></th>
 			</tr>
 		</thead>
@@ -28,15 +28,17 @@
                 	<th>{{request.copy.book.author}}</th>
                 	<th class="request-owner-column">{{request.copy.user}}</th>
                 	<th>{{request.state}}</th>
+			<th>{{request.copy.offerType}}</th>
                 	<th><a href="#" class="btn">Enviar Mensaje</a> </th>
             	</tr>
             	{% endfor %}
 		</tbody>
 	</table>
+</form>
 	{% block application_content %}
 	
 	 {% endblock %}
-</form>
+
 
 
 {% endblock %}

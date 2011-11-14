@@ -4,8 +4,14 @@
 
 {% block appliant_copies %}
 
+{% ifequal request.exchangeType "Directo" %}
+        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
+{% endifequal %}
+{% ifequal request.exchangeType "Indirecto" %}
+    <p style="margin-top:50px"><strong>Se est&aacute negociando un intercambio indirecto. </strong></p>
+{% endifequal %}
 
-<p style="margin-top:50px">Libros que posee el usuario {{appliantUser}}</p>
+<p style="margin-top:20px">Libros que posee el usuario {{appliantUser}}:</p>
 <form action="/profile/appliantcopies" method="post">
     <input type="hidden" value="{{appliantUser}}" name="appliant">
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
@@ -20,20 +26,19 @@
         <tbody>
             {% for appCopy in appliantCopies %}
             <tr>
-                <th><input type="radio" name="appliantCopiesRadios"></th>
-                <th>{{appCopy.book.title}}</th>
-                <th>{{appCopy.book.author}}</th>
+                <td><input type="radio" name="appliantCopiesRadios" value="{{appCopy.book.title}}"></td>
+                <td>{{appCopy.book.title}}</td>
+                <td>{{appCopy.book.author}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <div style="text-align: center" id="exchange-buttons2">
-        <input type="submit" class="btn primary disabled" name="processOffer" value="Proponer este libro para intercambio">
+        <input type="submit" id="direct-exchange-button" class="btn primary disabled" name="processOffer" value="Proponer este libro para intercambio">
     </div>
     
-    {% ifequal request.exchangeType "Directo" %}
-        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
-    {% endifequal %}
-    
 </form>
+
+
+
 {% endblock %}

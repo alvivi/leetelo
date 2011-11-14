@@ -12,13 +12,16 @@ var localScripts = {
     "/profile/appliantcopies" : function () {
         var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(
             window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-        var rows = $(".appliant-column-name");
-
-        for (var i = 0; i < rows.length; i++) {
-            if ($(rows[i]).text() == user) {
-                $(rows[i]).parent().children().first().children().first().attr("checked", "");
+        var appliants = $(".appliant-column-name");
+        var inputs = $("#offersTable input[type=radio]");
+            
+        for (var i = 0; i <appliants.length; i++) {
+            if ($(appliants[i]).text() == user) {
+                $(inputs[i]).attr("checked", "");
             }
         }
+        
+        
         $("#exchange-buttons").children().removeClass("disabled");
 
         var buttons = $("#exchange-buttons2");
@@ -83,7 +86,7 @@ var localScripts = {
 
     "/profile/applicationcontent" : function () {
         var owner = (RegExp("owner=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-        var copy = (RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1];
+        var copy = decodeURI((RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1]);         
         var owners = $(".request-owner-column");
         var copies = $(".request-copy-column");
         var inputs = $("#requestsTable input[type=radio]");
