@@ -222,11 +222,10 @@ class ProfileNewCopyView1(UserView):
 
 
     def post_as_user(self, user, logoutUri):
-        key = self.request.get('selectedCopyTitle')
+        key = self.request.get('selected')
         selectedCopy = Copy.get(key)
-        #selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+        book=selectedCopy.book
 
-        #logging.debug(title)
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -234,78 +233,48 @@ class ProfileNewCopyView1(UserView):
             'selectedCopy': selectedCopy
 
         }
-        try:
 
+        try:
             tipoOferta = self.request.get('TipoOferta')
             Paginas=self.request.get('page')
             edicion=self.request.get('edition')
-	    formato=self.request.get('Formato')
+            formato=self.request.get('Formato')
             lang=self.request.get('Idioma')
 
             pagina=int(Paginas)
-	    edit=int(edicion)
+            edit=int(edicion)
 
             if tipoOferta == "Venta":
+                precio = self.request.get('precio')
+                preciof=float(precio)
+                fechaLim = self.request.get('fechaLimite')
+                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+                fechaParseada=fechaParseada.date()
+                
+                db.delete(selectedCopy)
+                Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+            elif tipoOferta == "Intercambio":
+                fechaLim = self.request.get('fechaLimite')
+                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+                fechaParseada=fechaParseada.date()
 
-	      precio = self.request.get('precio')
-              preciof=float(precio)
-	      fechaLim = self.request.get('fechaLimite')
-              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-	      fechaParseada=fechaParseada.date()
-	      db.delete(selectedCopy)
-              Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
-
-            if tipoOferta == "Intercambio":
-
-	      fechaLim = self.request.get('fechaLimite')
-              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-	      fechaParseada=fechaParseada.date()
-              db.delete(selectedCopy)
-              Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Intercambio", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
-
-            if tipoOferta == "Prestamo":
-
-	      fechaLim = self.request.get('fechaLimite')
-              fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
-	      fechaParseada=fechaParseada.date()
-              db.delete(selectedCopy)
-              Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Prestamo", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
-
-	    if tipoOferta == "Ninguna":
-
-	      db.delete(selectedCopy)
-              Copy(book=book, user=user, offerType="Ninguna", format=formato, pages=pagina, edition=edit, language=lang, offerState="No disponible").put()
+                db.delete(selectedCopy)
+                Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Intercambio", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+            elif tipoOferta == "Prestamo":
+                fechaLim = self.request.get('fechaLimite')
+                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
+                fechaParseada=fechaParseada.date()
+                db.delete(selectedCopy)
+                Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Prestamo", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+            else:
+                db.delete(selectedCopy)
+                Copy(book=book, user=user, offerType="Ninguna", format=formato, pages=pagina, edition=edit, language=lang, offerState="No disponible").put()
             self.redirect('/profile/copies')
 
-	    #logging.debug(selectedCopy.offerState)
-            #estadoOferta=selectedCopy.offerState
-            #logging.debug(estadoOferta)
-
-	    #####Conversiones######
-
-	    #fechaf=time.strptime(precio, "%d/%m/%Y")
-	    #from datetime import datetime
-	    #fechaParseada=date.strftime(fechaLim, "%d/%m/%Y")
-	    #fechaParseada=datetime.datetime(*time.strptime(fechaLim, "%d/%m/%Y")[0:5]);
-
-	    ###escribir en log#####
-	    #logging.debug(tipoOferta);
-	    #logging.debug(preciof);
-	    #logging.debug(fechaParseada);
-
-
-
-
-	    #book.put()
-	    #book = Book.all().filter('title =',title).get()
-            #db.delete(selectedCopy)
-	    #Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType=tipoOferta, format=formato, pages=pagina, edition=edit, language=lang, offerState=estadoOferta).put()
-            #logging.debug(book)
 
 
         except:
-               key = self.request.get('selectedCopyTitle')
-               #book = Book.all().filter('title =', title).get()
+               key = self.request.get('selected')
                selectedCopy = Copy.get(key)
                values = {
 
@@ -316,7 +285,6 @@ class ProfileNewCopyView1(UserView):
 
                }
                self.response.out.write(template.render('html/profileNewCopy1.html', values))
-	      # self.redirect("/profile/newcopy1?selectedCopyTitle="+selectedCopy.book.title)
 
 
 
