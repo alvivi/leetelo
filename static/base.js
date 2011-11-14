@@ -3,6 +3,12 @@
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
+    "/book/new" : function () {
+        if(/.*error=true.*/.test(location.href)) {
+            $("#error-message").show();
+        }
+    },
+
     "/profile/appliantcopies" : function () {
         var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(
             window.location.href.indexOf('?') + 1).split('&')[1]))[1];

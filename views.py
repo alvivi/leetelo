@@ -90,14 +90,24 @@ class ProfileDeleteCopiesView(UserView):
             self.response.out.write(template.render('html/profileCopies.html', values))
 
 
-class ProfileNewBookView(UserView):
+class BookNewView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
-
         }
-        self.response.out.write(template.render('html/profileNewBook.html', values))
+        self.response.out.write(template.render('html/bookNew.html', values))
+
+    def post_as_user(self, user, logoutUri):
+        try:
+            title  = self.request.get('title')
+            author = self.request.get('author')
+            genre  = self.request.get('genre')
+            year   = int(self.request.get('year'))
+            Book(title=title, author=author, genre=genre, year=year).put()
+            self.redirect('/profile/newcopy')
+        except:
+            self.redirect('/book/new?error=true')
 
 
 class ProfileNewCopyView(UserView):
@@ -132,8 +142,8 @@ class ProfileNewCopyView(UserView):
             book = Book.all().filter('title =', title).get()
             tipoOferta = self.request.get('TipoOferta')
             logging.debug(tipoOferta)
-            Paginas=self.request.get('Paginas')
-            edicion=self.request.get('Edicion')
+            Paginas=self.request.get('paginas')
+            edicion=self.request.get('edicion')
             formato=self.request.get('Formato')
             lang=self.request.get('Idioma')
             pagina=int(Paginas)
