@@ -6,9 +6,20 @@
 {% block profileContent %}
 
  
-
-
 <script type="text/javascript">
+
+
+function validar() {  
+    var RegExPattern = /[0-9]+$/;  
+    var errorMessage = 'El valor del precio debe ser un n√∫mero';  
+    if ($('#TipoOferta').attr('value')=="Venta") {
+		if($("#precio").get(0).value.match(RegExPattern)){ return true;}
+		else{
+			alert(errorMessage);
+			return false;    
+			}
+    }   
+}  
 
 /*
 	$('#TipoOferta').change(function()
@@ -47,8 +58,33 @@ $(document).ready(function() {
 	/*Ocultar/Mostra los campos segun valores de select*/
 	JSTipoOferta();
 	
-    });
-
+	
+	/*Validacion de campos*/
+	$("#formCopia").validate({
+  	rules: 
+  	{
+    edicion: {
+	digits: true
+	},
+    paginas: {
+	digits: true, 
+	required: true
+	}	
+	},
+	messages: 
+	{
+	edicion: 
+	{
+	digits: "El campo edici√≥n es num√©rico"
+	},
+	paginas: 
+	{
+	digits: "El campo p√°ginas es num√©rico", 
+	required: "Campo obligatorio"
+	}
+	}
+  });
+});
 
 
 function getParameter(parameter){
@@ -80,13 +116,21 @@ function getParameter(parameter){
 		}
 		
 		</script>
+		
+		
+		<style>
+			label.error {
+			float:right;
+			color:#FF0000;
+			}
+		</style>
 
-<h6>AÒadir un nuevo ejemplar de...</h6>
+<h6>AÔøΩadir un nuevo ejemplar de...</h6>
 
 
 <div class="row">
 
-<form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post">
+<form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post" id="formCopia" onSubmit="return validar();">
 	<fieldset>
 		<legend></legend>
 
@@ -132,7 +176,7 @@ function getParameter(parameter){
 	  <div class="clearfix">
 		<label for="edicion">Edicion</label>
 		<div class="input">
-			<input type="text" name="Edicion" id="edicion"/>
+			<input type="text" name="edicion" id="edicion"/>
 		</div>
 	  </div>
 	  
@@ -157,7 +201,7 @@ function getParameter(parameter){
 	  <div class="clearfix">
 		<label for="paginas">Numero de Paginas</label>
 		<div class="input">
-			<input type="text" name="Paginas" id="paginas"/>
+			<input type="text" name="paginas" id="paginas"/>
 		</div>
 	  </div>
 	  
@@ -201,7 +245,7 @@ function getParameter(parameter){
 	  </div>
 	  
 	  <div id="idfecha" class="clearfix">
-		<label for="fechaLimite">Fecha lÌmite(dd/mm/aaaa)</label>
+		<label for="fechaLimite">Fecha lÔøΩmite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" id="fechaLimite" />
 		</div>
@@ -209,7 +253,7 @@ function getParameter(parameter){
 	  
 	  </div>
 		<div class="actions">
-		  <input type="submit" class="btn primary" value="AÒadir ejemplar" />
+		  <input type="submit" class="btn primary" value="AÔøΩadir ejemplar" />
 		  <a href="/profile/copies" class="btn">Cancelar</a>
 		</div>
 	</fieldset>
