@@ -10,7 +10,7 @@ userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
 
 db.delete(Book.all().fetch(512))
-justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber y María José Espinoza Saavedra',genre=u'Novela').put()
+justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber y María José Espinoza Saavedra',genre=u'Biografía').put()
 mistBook   = Book(title=u'The Mist', author=u'Stephen King',genre=u'Novela').put()
 kafkaBook  = Book(title=u'Kafka en la orilla', author=u'Haruki Murakami',genre=u'Novela').put()
 cienBook   = Book(title=u'Cien años de soledad', author=u'Gabriel García Márquez',genre=u'Novela').put()

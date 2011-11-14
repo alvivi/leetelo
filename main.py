@@ -14,6 +14,7 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
     application = webapp.WSGIApplication([
         ('/',     IndexView),
+        ('/book/new', BookNewView),
         ('/search', SearchView),
         ('/profile', ProfileView),
         ('/profile/alerts', ProfileAlertsView),
@@ -23,7 +24,6 @@ def main():
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/newcopy1', ProfileNewCopyView1),
         ('/profile/newcopy2', ProfileNewCopyView2),
-        ('/profile/newBook', ProfileNewBookView),
         ('/profile/offers', ProfileOffersView),
         ('/profile/applications', ProfileApplicationsView),
         ('/profile/copyoffers', CopyOffersView),
