@@ -386,7 +386,6 @@ class ApplicationContentView(UserView):
             'selectedCopy' : selectedCopy,
             'request'    : request,
             'user'       : user,
-            'exchange'  : Exchange.allExchangesFromUser(user),
             'logoutUri'  : users.create_logout_url('/')
 
         }
@@ -396,25 +395,64 @@ class ApplicationContentView(UserView):
         action = self.request.get('processConfirm')
         title = self.request.get('selectedCopyTitle')
         ownerUser = users.User(self.request.get('owner'))
+        book = Book.all().filter('title =', title).get()
         selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
+        request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
+        
+        if action == "Confirmar":
+            request.state='Aceptada'
+            request.put()
+            
+            selectedCopy.offerState='Esperando recepcion'
+            selectedCopy.put()
+        elif action == "Recibido!":
+            if selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto":
+                selectedCopy.offerState = "No disponible"
+                selectedCopy.offerType = "Ninguna"
+                selectedCopy.owner = user
+                selectedCopy.put()
+                Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=users.get_current_user(), exchangeType='Indirecto').put()
+                request.delete()
+                
+            elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
+                exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', ownerUser).filter('owner2 =',user).filter('exchangeType =','Directo').get()
+                #getDirectExchange(selectedcopy, ownerUser, request.exchangeCopy, users.get_current_user())
+                
+                if exchange==None:
+                    Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=users.get_current_user(), exchangeType='Directo').put()
+                    selectedCopy.offerState = "Llega2"
+                    selectedCopy.put()
+                else:
+                    selectedCopy.offerState = "No disponible"
+                    selectedCopy.offerType = "Ninguna"
+                    selectedCopy.owner = user
+                    selectedCopy.put()
+                    request.delete()
+                    
+            elif selectedCopy.offerType=="Venta":
+                selectedCopy.offerState = "No disponible"
+                selectedCopy.offerType = "Ninguna"
+                selectedCopy.owner = user
+                selectedCopy.put()
+                
+                request.delete()
 
-        if action=="Confirmar":
-            selectedCopy.state='Aceptada'
-
-
-	#selectedCopy.offerState='Esperando confirmacion'
-	#selectedCopy.put()
-
-	#request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
-	#request.state='Aceptada'
-	#request.put()
+                Sale(copy=selectedCopy, vendor=ownerUser, buyer=users.get_current_user()).put()
+                
+            elif selectedCopy.offerType=="Prestamo":
+                selectedCopy.offerState = "Prestado"
+                selectedCopy.put()
+                Loan(copy=selectedCopy, owner=ownerUser, lendingTo=users.get_current_user(), arrivalDate=datetime.now().date()).put()
+                
+        
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
-            'exchanges'  : Exchange.allExchangesFromUser(user),
             'logoutUri'  : users.create_logout_url('/')
         }
-        self.response.out.write(template.render('html/profileApplications.html',values))
+        self.response.out.write(template.render('html/profileApplications.html', values))
+            
+        
 
 class SaleView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -456,12 +494,17 @@ class LoanView(UserView):
         selectedCopy.offerState = "No disponible"
         selectedCopy.offerType = "Ninguna"
         selectedCopy.put()
-
-        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user).put()
+        
+        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user, returningDate=datetime.now().date()).put()
 
         request.delete()
 
-        self.redirect('/html/profileOffers.html')
+        values = {
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user)
+        }
+        self.response.out.write(template.render('html/profileOffers.html', values))
 
 class ExchangeView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -482,17 +525,27 @@ class ExchangeView(UserView):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        request = Request.all().filter('copy =', selectedCopy).filter('state =','Aceptada').get()
 
-        selectedCopy.offerState = "Intercambiado"
-        selectedCopy.offerType = "Ninguna"
-        selectedCopy.put()
+        exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', user).filter('owner2 =', request.user).filter('exchangeType =','Directo').get()
+        #getDirectExchange(selectedcopy, users.get_current_user(), request.exchangeCopy, request.user)
+        if exchange==None:
+            Exchange(copy1=selectedCopy, owner1=users.get_current_user(), copy2=request.exchangeCopy, owner2=request.user, exchangeType='Directo').put()
+            selectedCopy.offerState = "Llega1"
+            selectedCopy.put()
+        else:
+            selectedCopy.offerState = "No disponible"
+            selectedCopy.offerType = "Ninguna"
+            selectedCopy.owner = request.user
+            selectedCopy.put()
+            request.delete()
 
-        Exchange(copy1=selectedCopy, owner1=users.get_current_user(), copy2=request.exchangeCopy, owner2=request.user).put()
-
-        request.delete()
-
-        self.redirect('/html/profileOffers.html')
+        values = {
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            'copies'      : Copy.allCopiesWithRequests(user)
+        }
+        self.response.out.write(template.render('html/profileOffers.html', values))
 
 
 class AppliantCopiesView(UserView):
@@ -530,11 +583,15 @@ class AppliantCopiesView(UserView):
             selectedCopy.put()
             request.put()
         elif action=="Proponer este libro para intercambio":
-            selectedCopy.offerState='Esperando confirmacion'
-            request.state='Negociando'
+            wantedBook = Book.all().filter('title =', self.request.get('appliantCopiesRadios')).get()
+            wantedCopy = Copy.all().filter('user =', appliantUser).filter('book =', wantedBook).get()
+            
+            request.exchangeCopy = wantedCopy
+            request.state = 'Negociando'
             request.exchangeType='Directo'
-            request.exchangeCopy=''
             request.put()
+            
+            selectedCopy.offerState='Esperando confirmacion'
             selectedCopy.put()
 
         values = {
@@ -542,12 +599,9 @@ class AppliantCopiesView(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy),
-            'appliantUser' : appliantUser,
-            'appliantCopies' : Copy.allCopiesOf(appliantUser),
-            'request' : request
+            'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
-        self.response.out.write(template.render('html/appliantCopies.html', values))
+        self.response.out.write(template.render('html/copyOffers.html', values))
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri):
