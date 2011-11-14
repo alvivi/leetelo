@@ -42,7 +42,6 @@ var localScripts = {
         });
 
         $("input[type=checkbox]").live('click', function (e) {
-            console.log(count);
             if ($(this).attr('checked')) {
                 button.removeClass('disabled');
                 count++;
@@ -53,6 +52,10 @@ var localScripts = {
                     button.addClass('disabled');
                 }
             }
+        });
+
+        $('#modal-remove .close').live('click', function (e) {
+            $('#modal-remove').modal('hide');
         });
 
         $('#modal-remove .primary').live('click', function (e) {
