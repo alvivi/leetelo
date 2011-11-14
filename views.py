@@ -192,9 +192,9 @@ class ProfileNewCopyView(UserView):
 class ProfileNewCopyView1(UserView):
 
     def get_as_user(self, user, logoutUri):
-        title= self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
+        key= self.request.get('selectedCopyTitle')
+        selectedCopy = Copy.get(key)
+        #selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
 
         values = {
             'user'       : user,
@@ -207,11 +207,11 @@ class ProfileNewCopyView1(UserView):
 
 
     def post_as_user(self, user, logoutUri):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =', title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+        key = self.request.get('selectedCopyTitle')
+        selectedCopy = Copy.get(key)
+        #selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
 
-        logging.debug(title)
+        #logging.debug(title)
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -289,9 +289,9 @@ class ProfileNewCopyView1(UserView):
 
 
         except:
-               title = self.request.get('selectedCopyTitle')
-               book = Book.all().filter('title =', title).get()
-               selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+               key = self.request.get('selectedCopyTitle')
+               #book = Book.all().filter('title =', title).get()
+               selectedCopy = Copy.get(key)
                values = {
 
                     'user'       : user,
@@ -307,9 +307,9 @@ class ProfileNewCopyView1(UserView):
 
 class ProfileNewCopyView2(UserView):
      def get_as_user(self, user, logoutUri):
-        title= self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
+        key= self.request.get('selectedCopyTitle')
+        #book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.get(key)
 
         values = {
             'user'       : user,
