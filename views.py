@@ -212,9 +212,9 @@ class ProfileNewCopyView(UserView):
 class ProfileNewCopyView1(UserView):
 
     def get_as_user(self, user, logoutUri):
-        title= self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
+        key= self.request.get('selectedCopyTitle')
+        selectedCopy = Copy.get(key)
+        #selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
 
         values = {
             'user'       : user,
@@ -227,11 +227,11 @@ class ProfileNewCopyView1(UserView):
 
 
     def post_as_user(self, user, logoutUri):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =', title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+        key = self.request.get('selectedCopyTitle')
+        selectedCopy = Copy.get(key)
+        #selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
 
-        logging.debug(title)
+        #logging.debug(title)
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -309,9 +309,9 @@ class ProfileNewCopyView1(UserView):
 
 
         except:
-               title = self.request.get('selectedCopyTitle')
-               book = Book.all().filter('title =', title).get()
-               selectedCopy = Copy.all().filter('user =',user).filter('book =', book).get()
+               key = self.request.get('selectedCopyTitle')
+               #book = Book.all().filter('title =', title).get()
+               selectedCopy = Copy.get(key)
                values = {
 
                     'user'       : user,
@@ -327,9 +327,9 @@ class ProfileNewCopyView1(UserView):
 
 class ProfileNewCopyView2(UserView):
      def get_as_user(self, user, logoutUri):
-        title= self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
+        key= self.request.get('selectedCopyTitle')
+        #book = Book.all().filter('title =',title).get()
+        selectedCopy = Copy.get(key)
 
         values = {
             'user'       : user,
@@ -454,9 +454,9 @@ class ApplicationContentView(UserView):
             selectedCopy.put()
         elif action == "Recibido!":
             if selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto":
-                selectedCopy.offerState = "No disponible"
-                selectedCopy.offerType = "Ninguna"
-                selectedCopy.owner = user
+                selectedCopy.offerState = 'No disponible'
+                selectedCopy.offerType = 'Ninguna'
+                selectedCopy.user = users.get_current_user()
                 selectedCopy.put()
                 Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=users.get_current_user(), exchangeType='Indirecto').put()
                 request.delete()
@@ -467,19 +467,24 @@ class ApplicationContentView(UserView):
 
                 if exchange==None:
                     Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=users.get_current_user(), exchangeType='Directo').put()
-                    selectedCopy.offerState = "Llega2"
+                    request.llegaCopia1 = True
                     selectedCopy.put()
+                    request.put()
                 else:
-                    selectedCopy.offerState = "No disponible"
-                    selectedCopy.offerType = "Ninguna"
-                    selectedCopy.owner = user
+                    selectedCopy.offerState = 'No disponible'
+                    selectedCopy.offerType = 'Ninguna'
+                    selectedCopy.user = users.get_current_user()
                     selectedCopy.put()
+                    request.exchangeCopy.offerState = 'No disponible'
+                    request.exchangeCopy.offerType = 'Ninguna'
+                    request.exchangeCopy.user = ownerUser
+                    request.exchangeCopy.put()
                     request.delete()
 
             elif selectedCopy.offerType=="Venta":
-                selectedCopy.offerState = "No disponible"
-                selectedCopy.offerType = "Ninguna"
-                selectedCopy.owner = user
+                selectedCopy.offerState = 'No disponible'
+                selectedCopy.offerType = 'Ninguna'
+                selectedCopy.user = users.get_current_user()
                 selectedCopy.put()
 
                 request.delete()
@@ -487,7 +492,7 @@ class ApplicationContentView(UserView):
                 Sale(copy=selectedCopy, vendor=ownerUser, buyer=users.get_current_user()).put()
 
             elif selectedCopy.offerType=="Prestamo":
-                selectedCopy.offerState = "Prestado"
+                selectedCopy.offerState = 'Prestado'
                 selectedCopy.put()
                 Loan(copy=selectedCopy, owner=ownerUser, lendingTo=users.get_current_user(), arrivalDate=datetime.now().date()).put()
 
@@ -578,13 +583,18 @@ class ExchangeView(UserView):
         #getDirectExchange(selectedcopy, users.get_current_user(), request.exchangeCopy, request.user)
         if exchange==None:
             Exchange(copy1=selectedCopy, owner1=users.get_current_user(), copy2=request.exchangeCopy, owner2=request.user, exchangeType='Directo').put()
-            selectedCopy.offerState = "Llega1"
+            request.llegaCopia2 = True
             selectedCopy.put()
+            request.put()
         else:
-            selectedCopy.offerState = "No disponible"
-            selectedCopy.offerType = "Ninguna"
-            selectedCopy.owner = request.user
+            selectedCopy.offerState = 'No disponible'
+            selectedCopy.offerType = 'Ninguna'
+            selectedCopy.user = request.user
             selectedCopy.put()
+            request.exchangeCopy.offerState = 'No disponible'
+            request.exchangeCopy.offerType = 'Ninguna'
+            request.exchangeCopy.user = users.get_current_user()
+            request.exchangeCopy.put()
             request.delete()
 
         values = {

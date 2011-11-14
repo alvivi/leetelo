@@ -38,23 +38,27 @@
 {% endifequal %}
 
 {% ifequal request.state "Aceptada" %}
-    {% ifequal selectedCopy.offerState "Esperando recepcion" %}
-        <div style="text-align: center" id="confirmRecieved">
-            <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
-        </div>
+    {% ifequal selectedCopy.offerType "Intercambio" %}
+        {% if request.llegaCopia1 %}
+            <p><strong>Esperando que {{selectedCopy.user}} reciba el libro... </p>
+        {% else %}
+            {% ifequal selectedCopy.offerState "Esperando recepcion" %}
+                <div style="text-align: center" id="confirmRecieved">
+                    <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
+                </div>
+            {% endifequal %}
+        {% endif %}
+        
+    {% else %}
+        {% ifequal selectedCopy.offerState "Esperando recepcion" %}
+                <div style="text-align: center" id="confirmRecieved">
+                    <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
+                </div>
+        {% endifequal %}
+        {% ifequal selectedCopy.offerState "Prestado" %}
+            <p><strong>Esperando que {{selectedCopy.user}} reciba el libro de vuelta... </p>
+        {% endifequal %}
     {% endifequal %}
-    {% ifequal selectedCopy.offerState "Prestado" %}
-        <p><strong>Esperando que {{selectedCopy.user}} reciba el libro de vuelta... </p>
-    {% endifequal %}
-    {% ifequal selectedCopy.offerState "Llega1" %}
-        <div style="text-align: center" id="confirmRecieved">
-            <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
-        </div>
-    {% endifequal %}
-    {% ifequal selectedCopy.offerState "Llega2" %}
-        <p><strong>Esperando que {{selectedCopy.user}} reciba el libro de vuelta... </p>
-    {% endifequal %}
-    
 {% endifequal %}    
 
 </form>
