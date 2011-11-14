@@ -17,11 +17,11 @@ class Book(db.Model):
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
     user = db.UserProperty()
-    copyState = db.StringProperty(choices=set(["Excelente","Bueno","Deteriorado","Muy viejo"]))
-    offerState = db.StringProperty(choices=set(["No disponible","Disponible","En oferta",
-                                                "Con solicitud","Esperando confirmacion",
-                                                "Esperando recepcion", "Prestado",
-                                                "Intercambiado","Vendido","Llega1","Llega2"]))
+    copyState = db.StringProperty(choices=set(['Excelente','Bueno','Deteriorado','Muy viejo']))
+    offerState = db.StringProperty(choices=set(['No disponible','Disponible','En oferta',
+                                                'Con solicitud','Esperando confirmacion',
+                                                'Esperando recepcion', 'Prestado',
+                                                'Intercambiado','Vendido','Llega1','Llega2']))
     pages = db.IntegerProperty()
     edition = db.IntegerProperty()
     language = db.StringProperty()
@@ -37,9 +37,9 @@ class Copy(db.Model):
     # Método de clase que devuelve todos los ejemplares que posee un usuario que están en oferta y tienen alguna solicitud
     @classmethod
     def allCopiesWithRequests(cls, user):
-        #return cls.all().filter('user =', user).filter('offerState =', "Con solicitud").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Esperando confirmacion").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Esperando recepcion").fetch(128) + cls.all().filter('user =', user).filter('offerState =', "Prestado").fetch(128)
-        return cls.all().filter('user =', user).filter('offerState !=', "En oferta").fetch(128) + cls.all().filter('user !=', user).filter('offerState =', "No disponible").fetch(128)
-        
+        #return cls.all().filter('user =', user).filter('offerState =', 'Con solicitud').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando confirmacion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando recepcion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Prestado').fetch(128)
+        return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').fetch(128) + cls.all().filter('user !=', user).filter('offerState =', 'No disponible').fetch(128)
+
 
 
 # Solicitud sobre un libro
@@ -79,8 +79,8 @@ class Exchange(db.Model):
     copy2 = db.ReferenceProperty(Copy,collection_name='copy2')
     owner2 = db.UserProperty()
     exchangeDate = db.DateProperty(auto_now=True)
-    exchangeType = db.StringProperty(choices=set(["Directo","Indirecto"]))
-    
+    exchangeType = db.StringProperty(choices=set(['Directo','Indirecto']))
+
     @classmethod
     def allExchangesFromUser(cls, user):
         return cls.all().filter('owner2', user).fetch(128)
@@ -88,42 +88,38 @@ class Exchange(db.Model):
     @classmethod
     def switchFor(cls, copy, user):
         return cls.all().filter('copy1 =', copy).filter('copy2.user =', user).fetch(128)
-    
+
     @classmethod
     def getDirectExchange(cls, copy1, owner1, copy2, owner2):
         return cls.all().filter('copy1 =',copy1).filter('copy2 =',copy2).filter('owner1 =', owner1).filter('owner2 =',owner2).filter('exchangeType =','Directo').fetch(128)
-        
+
 class SearchResults(db.Model):
 
 
     @classmethod
     def searchAll(result,title,author,genre,publisher,yearFrom,yearTo,optionsExchange,optionsRent,optionsSell):
-	result = []
-	listoftitles =[]
+        result = []
+        listoftitles =[]
 
-	q = Book.all()
-	q=SearchResults.searchGenre(q,genre)
-	q=SearchResults.searchYear(q,yearFrom,yearTo)
-	searchlist = q.fetch(100)
+        q = Book.all()
+        q=SearchResults.searchGenre(q,genre)
+        q=SearchResults.searchYear(q,yearFrom,yearTo)
+        searchlist = q.fetch(100)
 
-	searchlist = SearchResults.searchName(searchlist,title)
-	searchlist = SearchResults.searchAuthor(searchlist,author)
-	searchlist = SearchResults.searchPublisher(searchlist,publisher)
-	searchlist = SearchResults.searchAvailabilityEx(searchlist,optionsExchange)
-	searchlist = SearchResults.searchAvailabilityRe(searchlist,optionsRent)
-	searchlist = SearchResults.searchAvailabilitySe(searchlist, optionsSell)
+        searchlist = SearchResults.searchName(searchlist,title)
+        searchlist = SearchResults.searchAuthor(searchlist,author)
+        searchlist = SearchResults.searchPublisher(searchlist,publisher)
+        searchlist = SearchResults.searchAvailabilityEx(searchlist,optionsExchange)
+        searchlist = SearchResults.searchAvailabilityRe(searchlist,optionsRent)
+        searchlist = SearchResults.searchAvailabilitySe(searchlist, optionsSell)
 
 
-	for bk in searchlist:
-	    tit = (bk.title[:43] + '...') if len(bk.title) > 43 else bk.title
-	    aut=(bk.author[:25] + '...') if len(bk.author) > 25 else bk.author
+        for bk in searchlist:
+            if listoftitles.count(bk.title) == 0:
+                result.append(bk)
+                listoftitles.append(bk.title)
 
-	    b = Book(title=tit, author=aut, genre=bk.genre, year=bk.year)
-	    if listoftitles.count(b.title) == 0:
-		result.append(b)
-		listoftitles.append(b.title)
-
-	return result
+        return result
 
 
 

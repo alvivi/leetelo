@@ -15,6 +15,7 @@ def main():
     application = webapp.WSGIApplication([
         ('/',     IndexView),
         ('/book/new', BookNewView),
+        ('/book/details', BookDetailsView),
         ('/search', SearchView),
         ('/profile', ProfileView),
         ('/profile/alerts', ProfileAlertsView),
@@ -26,6 +27,7 @@ def main():
         ('/profile/newcopy2', ProfileNewCopyView2),
         ('/profile/offers', ProfileOffersView),
         ('/profile/applications', ProfileApplicationsView),
+        ('/profile/applications/new', ProfileApplicationsNewView),
         ('/profile/copyoffers', CopyOffersView),
         ('/profile/appliantcopies', AppliantCopiesView),
         ('/profile/sale', SaleView),

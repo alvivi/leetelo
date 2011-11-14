@@ -109,6 +109,26 @@ class BookNewView(UserView):
         except:
             self.redirect('/book/new?error=true')
 
+class BookDetailsView(UserView):
+    def get_as_user(self, user, logoutUri):
+        try:
+            book   = Book.get(self.request.get('book'))
+            copies = Copy.all().filter('book =', book).filter('offerState =', 'Con solicitud').fetch(128) + Copy.all().filter('book =', book).filter('offerState =', 'En oferta').fetch(128)
+            values = {
+                'user'        : user,
+                'logoutUri'   : users.create_logout_url('/'),
+                'copies'      : copies,
+                'book'        : Book.get(self.request.get('book'))
+            }
+            self.response.out.write(template.render('html/bookDetails.html', values))
+        except:
+            values = {
+                'user'        : user,
+                'logoutUri'   : users.create_logout_url('/'),
+                'error'       : True,
+            }
+            self.response.out.write(template.render('html/bookDetails.html', values))
+
 
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -334,9 +354,26 @@ class ProfileApplicationsView(UserView):
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : logoutUri
         }
         self.response.out.write(template.render('html/profileApplications.html', values))
+
+class ProfileApplicationsNewView(UserView):
+    def post_as_user(self, user, logoutUri):
+        try:
+            copy = Copy.get(self.request.get('copy'))
+            if copy.user == user:
+                self.response.out.write(u'Usted ya posee este ejemplar.')
+            elif Request.all().filter('user =', user).filter('copy =', copy).count() > 0:
+                self.response.out.write(u'Ya ha solicitado este ejemplar.')
+            else:
+                Request(copy=copy, user=user, state='Sin contestar').put()
+                copy.offerState = 'Con solicitud'
+                copy.put()
+                self.response.out.write('OK')
+        except:
+            self.response.out.write(u'No ha sido posible realizar su petición.')
+
 
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -408,11 +445,11 @@ class ApplicationContentView(UserView):
         book = Book.all().filter('title =', title).get()
         selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
         request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
-        
+
         if action == "Confirmar":
             request.state='Aceptada'
             request.put()
-            
+
             selectedCopy.offerState='Esperando recepcion'
             selectedCopy.put()
         elif action == "Recibido!":
@@ -423,11 +460,11 @@ class ApplicationContentView(UserView):
                 selectedCopy.put()
                 Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=users.get_current_user(), exchangeType='Indirecto').put()
                 request.delete()
-                
+
             elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
                 exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', ownerUser).filter('owner2 =',user).filter('exchangeType =','Directo').get()
                 #getDirectExchange(selectedcopy, ownerUser, request.exchangeCopy, users.get_current_user())
-                
+
                 if exchange==None:
                     Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=users.get_current_user(), exchangeType='Directo').put()
                     selectedCopy.offerState = "Llega2"
@@ -438,31 +475,31 @@ class ApplicationContentView(UserView):
                     selectedCopy.owner = user
                     selectedCopy.put()
                     request.delete()
-                    
+
             elif selectedCopy.offerType=="Venta":
                 selectedCopy.offerState = "No disponible"
                 selectedCopy.offerType = "Ninguna"
                 selectedCopy.owner = user
                 selectedCopy.put()
-                
+
                 request.delete()
 
                 Sale(copy=selectedCopy, vendor=ownerUser, buyer=users.get_current_user()).put()
-                
+
             elif selectedCopy.offerType=="Prestamo":
                 selectedCopy.offerState = "Prestado"
                 selectedCopy.put()
                 Loan(copy=selectedCopy, owner=ownerUser, lendingTo=users.get_current_user(), arrivalDate=datetime.now().date()).put()
-                
-        
+
+
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/')
         }
         self.response.out.write(template.render('html/profileApplications.html', values))
-            
-        
+
+
 
 class SaleView(UserView):
     def get_as_user(self, user, logoutUri):
@@ -504,7 +541,7 @@ class LoanView(UserView):
         selectedCopy.offerState = "No disponible"
         selectedCopy.offerType = "Ninguna"
         selectedCopy.put()
-        
+
         Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user, returningDate=datetime.now().date()).put()
 
         request.delete()
@@ -595,12 +632,12 @@ class AppliantCopiesView(UserView):
         elif action=="Proponer este libro para intercambio":
             wantedBook = Book.all().filter('title =', self.request.get('appliantCopiesRadios')).get()
             wantedCopy = Copy.all().filter('user =', appliantUser).filter('book =', wantedBook).get()
-            
+
             request.exchangeCopy = wantedCopy
             request.state = 'Negociando'
             request.exchangeType='Directo'
             request.put()
-            
+
             selectedCopy.offerState='Esperando confirmacion'
             selectedCopy.put()
 

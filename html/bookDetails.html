@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+ {% block content %}
+<div class="row">
+	<div id="modal-error" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">x</a>
+			<h3>Error al realizar la solicitud</h3>
+		</div>
+		<div class="modal-body">
+			<p>Error</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Aceptar</a>
+		</div>
+	</div>
+	{% if error %}
+		<div id="error-message" class="alert-message block-message error">
+			<p>El libro indicado no existe.</p>
+		</div>
+	{% else %}
+		<div class="span7">
+			<form>
+				<fieldset>
+					<legend>Detalles del libro</legend>
+					<div class="clearfix">
+						<label>Título</label>
+						<div class="input">
+							<span class="uneditable-input">{{book.title}}</span>
+						</div>
+					</div>
+					<div class="clearfix">
+						<label>Autor</label>
+						<div class="input">
+							<span class="uneditable-input">{{book.author}}</span>
+						</div>
+					</div>
+					<div class="clearfix">
+						<label>Género</label>
+						<div class="input">
+							<span class="uneditable-input">{{book.genre}}</span>
+						</div>
+					</div>
+					<div class="clearfix">
+						<label>Año</label>
+						<div class="input">
+							<span class="uneditable-input">{{book.year}}</span>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="span9">
+			<h6>Ejemplares disponibles</h6>
+			<table id="copiesTable" class="zebra-striped sortable">
+				<thead>
+					<tr>
+						<th class="header blue">Propietrio</th>
+						<th class="header blue">Editorial</th>
+						<th class="header blue">Disponibilidad</th>
+						<th class="header blue">Petición</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for copy in copies %}
+						<tr>
+							<td>{{copy.user.nickname}}</td>
+							<td>{{copy.user.edition}}</td>
+							<td>{{copy.user.offerType}}</td>
+							<td><a class="btn primary" href="#">Solicitar</a><span class="hide">{{copy.key}}</span></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}
