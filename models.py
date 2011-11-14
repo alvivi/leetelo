@@ -17,12 +17,12 @@ class Book(db.Model):
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
     user = db.UserProperty()
-    copyState = db.StringProperty(choices=set(["Excelente","Bueno","Deteriorado","Muy viejo"]))
-    offerState = db.StringProperty(choices=set(["No disponible","Disponible","En oferta",
-                                                "Con solicitud","Esperando confirmacion",
-                                                "Esperando recepcion", "Prestado",
-                                                "Intercambiado","Vendido"]))
-    
+    copyState = db.StringProperty(choices=set(['Excelente','Bueno','Deteriorado','Muy viejo']))
+    offerState = db.StringProperty(choices=set(['No disponible','Disponible','En oferta',
+                                                'Con solicitud','Esperando confirmacion',
+                                                'Esperando recepcion', 'Prestado',
+                                                'Intercambiado','Vendido']))
+
     pages = db.IntegerProperty()
     edition = db.IntegerProperty()
     language = db.StringProperty()

@@ -1,4 +1,4 @@
-<label for="mislibros"></label>
+
  {% extends "profile.html" %}
 
 {% block nav_profile_copies %} class="active" {% endblock %}
@@ -20,7 +20,7 @@
 
 function JSTipoOferta()
 {
-	
+
 	var opc_sel=$('#TipoOferta').attr('value');
     if(opc_sel == 'Venta')
     {
@@ -30,67 +30,99 @@ function JSTipoOferta()
     else
     {
     	$("#idprecio").css("display", "none");
- 		/*$("#idprecio").toggle(200);*/       
+ 		/*$("#idprecio").toggle(200);*/
     }
 
     if(opc_sel != 'Ninguna')
     {
     	$("#idfecha").css("display", "block");
-        
+
     }else{$("#idfecha").css("display", "none");}
 }
 
 $(document).ready(function() {
-     
+
 
 	/*Ocultar/Mostra los campos segun valores de select*/
 	JSTipoOferta();
-	
+
     });
-		
+
 		</script>
 
-
-<h6>Modificar...</h6>
-
 <div class="row">
+	<div class="span7">
+		<form>
+			<fieldset>
+				<legend>Detalles del libro</legend>
+				<div class="clearfix">
+					<label>Título</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.title}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Autor</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.author}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Género</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.genre}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Año</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.year}}</span>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="span9">
+		<form>
+			<fieldset>
+				<legend>Detalles del ejemplar</legend>
+				<div class="clearfix">
+					<label for="title">Páginas</label>
+					<div class="input">
+						<input class="xlarge" id="page" name="page" value="{{selectedCopy.pages}}" type="number" min="1" step="1">
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
+<!--
+
 <form action="/profile/newcopy1?selectedCopyTitle={{selectedCopy.book.title}}"  method="post">
 	<fieldset>
 		<legend></legend>
-	  <div class="clearfix">
-		<label for="titleBook">Libro: </label>
-                <label for="tit"> {{selectedCopy.book.title}}</label>
-          </div>
 
-              <div class="clearfix">
-                  <label for="autor">Autor:</label>
-                  <label for="aut"> {{selectedCopy.book.author}}</label>
-                 </div>
-               
-                 <div class="clearfix">
-                  <label for="genero">Género:</label>
-                   <label for="gen"> {{selectedCopy.book.genre}}</label>
-                  </div>
-                    
-            
+
                 <div class="clearfix">
                  <label for="page">Páginas:</label>
-                
+
                   <div class="input">
                    <input class="npage" id="page" value="{{selectedCopy.pages}}" name="page" size="20" type= "text"/>
                   </div>
                  </div>
-             
-                     
-               
-                
+
+
+
+
                  <div class="clearfix">
                   <label for="edition">Edición:</label>
                    <div class="input">
                     <input class="edit" id="edition" value="{{selectedCopy.edition}}" name="edition" size="20" type= "text"/>
                    </div>
                   </div>
-                 
+
                   <div class="clearfix">
                   <label for="estado">Estado:</label>
                   {% ifequal selectedCopy.offerState "No disponible" %}
@@ -98,54 +130,50 @@ $(document).ready(function() {
                   {% else %}
                     <label for="state">{{selectedCopy.offerState}}</label>
                   {% endifequal %}
-                 
+
                  </div>
 
-                  
+
 		 <div class="clearfix">
 		   <label for="idioma">Idioma</label>
 		     <div class="input"  >
-                     
+
 		      <p>
 		      <select name="Idioma" >
-		     
-                      <!--<option>Castellano</option>
-		      <option>Valenciano</option>
-                      <option>Aleman</option>
-		      <option>Otros</option>-->
+
 		     {% ifequal selectedCopy.language 'Valenciano' %}
-				<option SELECTED>Valenciano</option>	
+				<option SELECTED>Valenciano</option>
 			 {% else %}
 			 	<option>Valenciano</option>
-			 {% endifequal %} 
-		      
+			 {% endifequal %}
+
 			 {% ifequal selectedCopy.language 'Ingles' %}
-				<option SELECTED>Ingles</option>	
+				<option SELECTED>Ingles</option>
 			 {% else %}
 			 	<option>Ingles</option>
 			 {% endifequal %}
-			  
+
 			 {% ifequal selectedCopy.language 'Frances' %}
-				<option SELECTED>Frances</option>	
+				<option SELECTED>Frances</option>
 			 {% else %}
 			 	<option>Frances</option>
 			 {% endifequal %}
-			  
+
 			 {% ifequal selectedCopy.language 'Aleman' %}
-				<option SELECTED>Aleman</option>	
+				<option SELECTED>Aleman</option>
 			 {% else %}
 			 	<option>Aleman</option>
 			 {% endifequal %}
-			 
+
 			 {% ifequal selectedCopy.language 'Otros' %}
-				<option SELECTED>Otros</option>	
+				<option SELECTED>Otros</option>
 			 {% else %}
 			 	<option>Otros</option>
 			 {% endifequal %}
-			 
+
 			 </select>
           	       </p>
-                  
+
 		     </div>
 	           </div>
 
@@ -156,67 +184,67 @@ $(document).ready(function() {
 		   <p>
 		    <select name="Formato">
 		         {% ifequal selectedCopy.format 'Bolsillo' %}
-				<option SELECTED>Bolsillo</option>	
+				<option SELECTED>Bolsillo</option>
 			 {% else %}
 			 	<option>Bolsillo</option>
-			 {% endifequal %} 
-		      
+			 {% endifequal %}
+
 			 {% ifequal selectedCopy.format 'Tapa dura' %}
-				<option SELECTED>Tapa dura</option>	
+				<option SELECTED>Tapa dura</option>
 			 {% else %}
 			 	<option>Tapa dura</option>
 			 {% endifequal %}
-			  
+
 			 {% ifequal selectedCopy.format 'Tapa blanda' %}
-				<option SELECTED>Tapa blanda</option>	
+				<option SELECTED>Tapa blanda</option>
 			 {% else %}
 			 	<option>Tapa blanda</option>
 			 {% endifequal %}
-			  
+
 			 {% ifequal selectedCopy.format 'Coleccionista' %}
-				<option SELECTED>Coleccionista</option>	
+				<option SELECTED>Coleccionista</option>
 			 {% else %}
 			 	<option>Coleccionista</option>
 			 {% endifequal %}
-			  
+
 	         </select>
           	   </p>
                  </div>
 	  </div>
 
 
-       
+
         <div class="clearfix">
 		<label for="TipoOferta">Tipo de oferta</label>
 		  <div class="input">
 		    <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
 
                          {% ifequal selectedCopy.offerType 'Ninguna' %}
-				<option value="Ninguna" SELECTED>Ninguna</option>	
+				<option value="Ninguna" SELECTED>Ninguna</option>
 			 {% else %}
                                <option>Ninguna</option>
-			 {% endifequal %} 
- 
+			 {% endifequal %}
+
 
                          {% ifequal selectedCopy.offerType 'Venta' %}
-				<option value="Venta" SELECTED>Venta</option>	
+				<option value="Venta" SELECTED>Venta</option>
 			 {% else %}
 			 	<option>Venta</option>
-			 {% endifequal %} 
+			 {% endifequal %}
 
 
                          {% ifequal selectedCopy.offerType 'Prestamo' %}
-				<option value="Prestamo" SELECTED>Prestamo</option>	
+				<option value="Prestamo" SELECTED>Prestamo</option>
 			 {% else %}
 			 	<option>Prestamo</option>
-			 {% endifequal %} 
+			 {% endifequal %}
 
-		      
+
                          {% ifequal selectedCopy.offerType 'Intercambio' %}
-				<option value="Intercambio" SELECTED>Intercambio</option>	
+				<option value="Intercambio" SELECTED>Intercambio</option>
 			 {% else %}
 			 	<option>Intercambio</option>
-			 {% endifequal %} 
+			 {% endifequal %}
 
 		      </select>
 		</div>
@@ -225,23 +253,23 @@ $(document).ready(function() {
 
 
 
-	  
-	
+
+
 	  <div id="idprecio" class="clearfix">
 		<label for="precio">Precio</label>
 		<div class="input">
 			<input type="text" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
 		</div>
 	  </div>
-       
-	  
+
+
 	  <div id="idfecha" class="clearfix">
 		<label for="fechaLimite">Fecha límite(dd/mm/aaaa)</label>
 		<div class="input">
 			<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
 		</div>
 	  </div>
-	  
+
 	  </div>
 		<div class="actions">
 		  <input type="submit" class="btn primary" value="Guardar Cambios" />
@@ -249,6 +277,5 @@ $(document).ready(function() {
 		</div>
 	</fieldset>
 </form>
-</div>
 
-{% endblock %}
+-->

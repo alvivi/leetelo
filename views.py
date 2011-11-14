@@ -78,7 +78,8 @@ class ProfileDeleteCopiesView(UserView):
         try:
             copies = self.request.get('selected').split(",")
             for c in Copy.get(copies):
-                c.delete()
+                if c.offerState == 'No disponible' or c.offerState == 'En oferta':
+                    c.delete()
         except:
             pass
         finally:
@@ -158,10 +159,9 @@ class ProfileNewCopyView(UserView):
         try:
 
             title = self.request.get('titleBook')
-            logging.debug(title)
+
             book = Book.all().filter('title =', title).get()
             tipoOferta = self.request.get('TipoOferta')
-            logging.debug(tipoOferta)
             Paginas=self.request.get('paginas')
             edicion=self.request.get('edicion')
             formato=self.request.get('Formato')
@@ -185,12 +185,7 @@ class ProfileNewCopyView(UserView):
 
 
             if tipoOferta == "Ninguna":
-               Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put()
-
-            ###escribir en log#####
-            logging.debug(tipoOferta);
-            #logging.debug(preciof);
-            #logging.debug(fechaParseada);
+                Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put()
 
 
             self.redirect('/profile/copies')
