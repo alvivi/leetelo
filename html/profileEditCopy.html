@@ -1,0 +1,233 @@
+
+ {% extends "profile.html" %}
+
+{% block nav_profile_copies %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+
+<script type="text/javascript">
+
+/*
+	$('#TipoOferta').change(function()
+		{
+			alert("molee");
+		   //alert('Value change to ' + $(this).attr('value'));
+		});
+*/
+
+
+
+function JSTipoOferta()
+{
+
+	var opc_sel=$('#TipoOferta').attr('value');
+    if(opc_sel == 'Venta')
+    {
+    	$("#idprecio").css("display", "block");
+        /*$("#idprecio").toggle(200);*/
+    }
+    else
+    {
+    	$("#idprecio").css("display", "none");
+ 		/*$("#idprecio").toggle(200);*/
+    }
+
+    if(opc_sel != 'Ninguna')
+    {
+    	$("#idfecha").css("display", "block");
+
+    }else{$("#idfecha").css("display", "none");}
+}
+
+$(document).ready(function() {
+
+
+	/*Ocultar/Mostra los campos segun valores de select*/
+	JSTipoOferta();
+
+    });
+
+		</script>
+
+{% if error %}
+<div class="row">
+    <div class="alert-message block-message error span16">
+	    <p>Error al editars los datos del ejemplar.
+	       </p>
+    </div>
+</div>
+{% else %}
+{% endif %}
+<div class="row">
+	<div class="span7">
+		<form>
+			<fieldset>
+				<legend>Detalles del libro</legend>
+				<div class="clearfix">
+					<label>Título</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.title}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Autor</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.author}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Género</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.genre}}</span>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label>Año</label>
+					<div class="input">
+						<span class="uneditable-input">{{selectedCopy.book.year}}</span>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="span9">
+		<form action="/profile/editcopy?selected={{selectedCopy.key}}" method="post">
+			<fieldset>
+				<legend>Detalles del ejemplar</legend>
+				<div class="clearfix">
+					<label for="title">Edición</label>
+					<div class="input">
+						<input class="xlarge" id="edition" value="{{selectedCopy.edition}}" name="edition" type="number" min="1" step="1">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="idioma">Idioma</label>
+					<div class="input">
+						<select name="Idioma" >
+						{% ifequal selectedCopy.language 'Valenciano' %}
+							<option SELECTED>Valenciano</option>
+						 {% else %}
+						 	<option>Valenciano</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.language 'Ingles' %}
+							<option SELECTED>Ingles</option>
+						 {% else %}
+						 	<option>Ingles</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.language 'Frances' %}
+							<option SELECTED>Frances</option>
+						 {% else %}
+						 	<option>Frances</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.language 'Aleman' %}
+							<option SELECTED>Aleman</option>
+						 {% else %}
+						 	<option>Aleman</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.language 'Otros' %}
+							<option SELECTED>Otros</option>
+						 {% else %}
+						 	<option>Otros</option>
+						 {% endifequal %}
+
+			 			</select>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="title">Páginas</label>
+					<div class="input">
+						<input class="xlarge" id="page" name="page" value="{{selectedCopy.pages}}" type="number" min="1" step="1">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="formato">Formato</label>
+					<div class="input">
+					    <select name="Formato">
+						 {% ifequal selectedCopy.format 'Bolsillo' %}
+							<option SELECTED>Bolsillo</option>
+						 {% else %}
+						 	<option>Bolsillo</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.format 'Tapa dura' %}
+							<option SELECTED>Tapa dura</option>
+						 {% else %}
+						 	<option>Tapa dura</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.format 'Tapa blanda' %}
+							<option SELECTED>Tapa blanda</option>
+						 {% else %}
+						 	<option>Tapa blanda</option>
+						 {% endifequal %}
+
+						 {% ifequal selectedCopy.format 'Coleccionista' %}
+							<option SELECTED>Coleccionista</option>
+						 {% else %}
+						 	<option>Coleccionista</option>
+						 {% endifequal %}
+
+						</select>
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="TipoOferta">Tipo de oferta</label>
+					<div class="input">
+					    <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
+
+						 {% ifequal selectedCopy.offerType 'Ninguna' %}
+							<option value="Ninguna" SELECTED>Ninguna</option>
+						 {% else %}
+						       <option>Ninguna</option>
+						 {% endifequal %}
+
+
+						 {% ifequal selectedCopy.offerType 'Venta' %}
+							<option value="Venta" SELECTED>Venta</option>
+						 {% else %}
+						 	<option>Venta</option>
+						 {% endifequal %}
+
+
+						 {% ifequal selectedCopy.offerType 'Prestamo' %}
+							<option value="Prestamo" SELECTED>Prestamo</option>
+						 {% else %}
+						 	<option>Prestamo</option>
+						 {% endifequal %}
+
+
+						 {% ifequal selectedCopy.offerType 'Intercambio' %}
+							<option value="Intercambio" SELECTED>Intercambio</option>
+						 {% else %}
+						 	<option>Intercambio</option>
+						 {% endifequal %}
+					      </select>
+					</div>
+				</div>
+				<div id="idprecio" class="clearfix">
+					<label for="precio">Precio</label>
+					<div class="input">
+						<input type="number" min="1" step="1" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
+					</div>
+				</div>
+				<div id="idfecha" class="clearfix">
+					<label for="fechaLimite">Fecha límite</label>
+					<div class="input">
+						<input type="date" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
+					</div>
+				</div>
+				<div class="actions">
+				  <input type="submit" class="btn primary" value="Guardar Cambios" />
+				  <a href="/profile/copies" class="btn">Cancelar</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
