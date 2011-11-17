@@ -90,7 +90,8 @@ class ProfileDeleteCopiesView(UserView):
             }
             self.response.out.write(template.render('html/profileCopies.html', values))
 
-
+# /book/new
+# Vista utilizada a la hora de crear un nuevo libro
 class BookNewView(UserView):
     def get_as_user(self, user, logoutUri):
         values = {
@@ -105,7 +106,8 @@ class BookNewView(UserView):
             author = self.request.get('author')
             genre  = self.request.get('genre')
             year   = int(self.request.get('year'))
-            Book(title=title, author=author, genre=genre, year=year).put()
+            image  = db.Link(self.request.get('image'))
+            Book(title=title, author=author, genre=genre, year=year, image=image).put()
             self.redirect('/profile/newcopy')
         except:
             self.redirect('/book/new?error=true')
@@ -250,7 +252,7 @@ class ProfileEditCopyView(UserView):
                 fechaLim = self.request.get('fechaLimite')
                 fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                 fechaParseada=fechaParseada.date()
-                
+
                 db.delete(selectedCopy)
                 Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
             elif tipoOferta == "Intercambio":

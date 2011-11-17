@@ -5,63 +5,69 @@
 {% block content %}
 
 <div class="row">
-	<div class="span4">
-		<div id="error-message" class="hide alert-message block-message error">
-			<p><strong>Error al introducir lo datos.</strong> Por favor comprueba que son correctos</p>
-		</div>
-		<div class="alert-message block-message warning">
-			<p>Ten en cuenta que el libro debe ser admitido por un <strong>administrador</strong>
-			   antes de que aparezca en nuestra biblioteca. Aegúrate de que el
-			   libro que vas a introducir no existe ya en nuestra biblioteca
-			   utilizando nuestro <a href="/search">buscador</a>.
-			   </p>
-		</div>
-	</div>
-	<div class="span8">
-		<form action="/book/new" method="post">
-			<fieldset>
-				<legend>Nuevo libro</legend>
-				<div class="clearfix">
-					<label for="title">Título</label>
-					<div class="input">
-						<input class="xlarge" id="title" name="title" size="90" type="text">
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="author">Autor</label>
-					<div class="input">
-						<input class="xlarge" id="author" name="author" size="90" type="text">
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="genre">Género</label>
-					<div class="input">
-						<select id="genre" name="genre">
-							<option>Aventuras</option>
-							<option>Biografía</option>
-							<option>Ciencia Ficción</option>
-							<option>Ensayo</option>
-							<option>Histórico</option>
-							<option>Narrativa</option>
-							<option>Novela</option>
-							<option>Poesía</option>
-							<option>Romántico</option>
-						</select>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="year">Año</label>
-					<div class="input">
-						<input id="year" name="year" type="number" min="868" max ="2011" step="1" value="2011" />
-					</div>
-				</div>
-				<div class="actions">
-					<input type="submit" class="btn primary" value="Añadir ejemplar">
-					<a href="/profile/copies" class="btn">Cancelar</a>
-				</div>
-			</fieldset>
-		</form>
-	</div>
+    <div class="span4">
+        <div id="error-message" class="hide alert-message block-message error">
+            <p><strong>Error al introducir lo datos.</strong> Por favor comprueba que son correctos</p>
+        </div>
+        <div class="alert-message block-message warning">
+            <p>Ten en cuenta que el libro debe ser admitido por un <strong>administrador</strong>
+               antes de que aparezca en nuestra biblioteca. Aegúrate de que el
+               libro que vas a introducir no existe ya en nuestra biblioteca
+               utilizando nuestro <a href="/search">buscador</a>.
+               </p>
+        </div>
+    </div>
+    <div class="span8">
+        <form action="/book/new" method="post">
+            <fieldset>
+                <legend>Nuevo libro</legend>
+                <div class="clearfix">
+                    <label for="title">Título</label>
+                    <div class="input">
+                        <input class="xlarge" id="title" name="title" size="90" type="text">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="author">Autor</label>
+                    <div class="input">
+                        <input class="xlarge" id="author" name="author" size="90" type="text">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="genre">Género</label>
+                    <div class="input">
+                        <select class="xlarge" id="genre" name="genre">
+                            <option>Aventuras</option>
+                            <option>Biografía</option>
+                            <option>Ciencia Ficción</option>
+                            <option>Ensayo</option>
+                            <option>Histórico</option>
+                            <option>Narrativa</option>
+                            <option>Novela</option>
+                            <option>Poesía</option>
+                            <option>Romántico</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="year">Año</label>
+                    <div class="input">
+                        <input class="xlarge" id="year" name="year" type="number" min="868" max ="2011" step="1" value="2011" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="image">Imágen</label>
+                    <div class="input">
+                        <input class="xlarge" id="image" name="image" type="text" value="http://" size="90"/>
+                    </div>
+                </div>
+                <div class="actions">
+                    <input type="submit" class="btn primary" value="Añadir ejemplar">
+                    <a href="/profile/copies" class="btn">Cancelar</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

@@ -6,47 +6,50 @@
 
 
 <div class="row">
-	<div class="span7">
-		<form>
-			<fieldset>
-				<legend>Detalles del libro</legend>
-				<div class="clearfix">
-					<label>Título</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.book.title}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label>Autor</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.book.author}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label>Género</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.book.genre}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label>Año</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.book.year}}</span>
-					</div>
-				</div>
-			</fieldset>
-		</form>
-	</div>
-	<div class="span9">
-		<form action="/profile/datacopy?selected={{selectedCopy.key}}" method="post">
-			<fieldset>
-				<legend>Detalles del ejemplar</legend>
-				<div class="clearfix">
-					<label for="title">Edición</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.edition}}</span>
-					</div>
-				</div>
+    <div class="span7">
+        <form>
+            <fieldset>
+                <legend>Detalles del libro</legend>
+                <div class="clearfix media-grid centerrow">
+                    <img class="thumbnail book-cover" src="{{selectedCopy.book.image}}" alt="{{selectedCopy.book.title}}">
+                </div>
+                <div class="clearfix">
+                    <label>Título</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.book.title}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Autor</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.book.author}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Género</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.book.genre}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Año</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.book.year}}</span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="span9">
+        <form action="/profile/datacopy?selected={{selectedCopy.key}}" method="post">
+            <fieldset>
+                <legend>Detalles del ejemplar</legend>
+                <div class="clearfix">
+                    <label for="title">Edición</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.edition}}</span>
+                    </div>
+                </div>
               <div class="clearfix">
                     <label for="estado">Estado</label>
                     <div class="input">
@@ -57,51 +60,51 @@
                       {% endifequal %}
                     </div>
               </div>
-				<div class="clearfix">
-					<label for="idioma">Idioma</label>
-					<div class="input">
-						<span class="uneditable-input">{{selectedCopy.language}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="title">Páginas</label>
-					<div class="input">
+                <div class="clearfix">
+                    <label for="idioma">Idioma</label>
+                    <div class="input">
+                        <span class="uneditable-input">{{selectedCopy.language}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="title">Páginas</label>
+                    <div class="input">
                         <span class="uneditable-input">{{selectedCopy.pages}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="formato">Formato</label>
-					<div class="input">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="formato">Formato</label>
+                    <div class="input">
                         <span class="uneditable-input">{{selectedCopy.format}}</span>
-					</div>
-				</div>
-				<div class="clearfix">
-					<label for="TipoOferta">Tipo de oferta</label>
-					<div class="input">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="TipoOferta">Tipo de oferta</label>
+                    <div class="input">
                         <span class="uneditable-input">{{selectedCopy.offerType}}</span>
-					</div>
-				</div>
+                    </div>
+                </div>
                 {% ifequal selectedCopy.offerType "Venta"%}
-				<div id="idprecio" class="clearfix">
-					<label for="precio">Precio</label>
-					<div class="input">
+                <div id="idprecio" class="clearfix">
+                    <label for="precio">Precio</label>
+                    <div class="input">
                         <span class="uneditable-input">{{selectedCopy.salePrice}}</span>
-					</div>
-				</div>
+                    </div>
+                </div>
                 {% else %}
                 {% endifequal %}
-				<div id="idfecha" class="clearfix">
-					<label for="fechaLimite">Fecha límite</label>
-					<div class="input">
+                <div id="idfecha" class="clearfix">
+                    <label for="fechaLimite">Fecha límite</label>
+                    <div class="input">
                         <span class="uneditable-input">{{selectedCopy.limitOfferDate}}</span>
-					</div>
-				</div>
-				<div class="actions">
-				  <a href="/profile/copies" class="btn">Volver</a>
-				</div>
-			</fieldset>
-		</form>
-	</div>
+                    </div>
+                </div>
+                <div class="actions">
+                  <a href="/profile/copies" class="btn">Volver</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

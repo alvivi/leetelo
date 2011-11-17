@@ -43,3 +43,13 @@ thead th {
     padding-top: 9px;
 }
 
+.avatar {
+    width: 90px;
+    height: 90px;
+}
+
+.book-cover {
+    width: 90px;
+    height: 110px;
+}
+

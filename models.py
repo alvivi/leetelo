@@ -8,9 +8,10 @@ from google.appengine.ext import db
 
 # Ficha del libro, la obra en sí
 class Book(db.Model):
-    title  = db.StringProperty(required=True)
     author = db.StringProperty()
     genre  = db.StringProperty(choices=set([u'Aventuras', u'Biografía', u'Ciencia Ficción', u'Ensayo', u'Histórico', u'Narrativa', u'Novela', u'Poesía', u'Romántico']))
+    image  = db.LinkProperty()
+    title  = db.StringProperty(required=True)
     year   = db.IntegerProperty()
 
 # El ejemplar del libro
