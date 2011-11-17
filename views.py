@@ -132,7 +132,8 @@ class BookDetailsView(UserView):
             }
             self.response.out.write(template.render('html/bookDetails.html', values))
 
-
+# /profile/newcopy
+# Vista que se encarga de crear una nuevo ejemplar de un libro
 class ProfileNewCopyView(UserView):
     def get_as_user(self, user, logoutUri):
         title = self.request.get('selectedCopyTitle')
@@ -157,19 +158,14 @@ class ProfileNewCopyView(UserView):
         self.response.out.write(template.render('html/profileNewCopy.html', values))
 
     def post_as_user(self, user, logoutUri):
-
         try:
-
-            title = self.request.get('titleBook')
-
-            book = Book.all().filter('title =', title).get()
+            title      = self.request.get('titleBook')
+            book       = Book.all().filter('title =', title).get()
+            edit       = int(self.request.get('edicion'))
+            formato    = self.request.get('Formato')
+            lang       = self.request.get('Idioma')
+            pagina     = int(self.request.get('paginas'))
             tipoOferta = self.request.get('TipoOferta')
-            Paginas=self.request.get('paginas')
-            edicion=self.request.get('edicion')
-            formato=self.request.get('Formato')
-            lang=self.request.get('Idioma')
-            pagina=int(Paginas)
-            edit=int(edicion)
 
             if tipoOferta == "Venta":
                precio = self.request.get('precio')
@@ -185,25 +181,21 @@ class ProfileNewCopyView(UserView):
                fechaParseada=fechaParseada.date()
                Copy(book=book, user=user, limitOfferDate=fechaParseada, language=lang, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()
 
-
             if tipoOferta == "Ninguna":
                 Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put()
-
 
             self.redirect('/profile/copies')
 
         except:
-            title = self.request.get('selectedCopyTitle')
+            title = self.request.get('titleBook')
             book = Book.all().filter('title =', title).get()
             values = {
-                'book' : book,
+                'book'      : book,
                 'books'     : Book.all(),
-                'user'       : user,
-                'logoutUri'  : users.create_logout_url('/'),
-                'error'      : True,
-
+                'user'      : user,
+                'logoutUri' : users.create_logout_url('/'),
+                'error'     : True,
             }
-
             self.response.out.write(template.render('html/profileNewCopy.html', values))
 
 class ProfileEditCopyView(UserView):

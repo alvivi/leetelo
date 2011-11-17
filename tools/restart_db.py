@@ -10,7 +10,7 @@ userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
 
 db.delete(Book.all().fetch(512))
-justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber y María José Espinoza Saavedra',genre=u'Biografía', year=2011, image=db.Link('http://img9.planetadelibros.com/usuaris/libros/fotos/49/tam_1/48669_1_JUSTINBIEBER.jpg')).put()
+justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber',genre=u'Biografía', year=2011, image=db.Link('http://img9.planetadelibros.com/usuaris/libros/fotos/49/tam_1/48669_1_JUSTINBIEBER.jpg')).put()
 mistBook   = Book(title=u'The Mist', author=u'Stephen King',genre=u'Novela', year=1983, image=db.Link('http://ecx.images-amazon.com/images/I/41ZOgg%2BT6gL._SL500_AA240_.jpg')).put()
 kafkaBook  = Book(title=u'Kafka en la orilla', author=u'Haruki Murakami',genre=u'Novela', year=2008, image=db.Link('http://ecx.images-amazon.com/images/I/31oVN6Jg8RL._SL500_AA240_.jpg')).put()
 cienBook   = Book(title=u'Cien años de soledad', author=u'Gabriel García Márquez',genre=u'Novela', year=2003, image=db.Link('http://ecx.images-amazon.com/images/I/51W4LYaTU%2BL._SL500_AA240_.jpg')).put()
