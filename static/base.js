@@ -7,6 +7,11 @@ var localScripts = {
         if(/.*error=true.*/.test(location.href)) {
             $("#error-message").show();
         }
+        if(/.*errorrepeat=true.*/.test(location.href)) {
+            $('#title').parent().parent().addClass('error');
+            $('#title').twipsy({trigger: 'manual'});
+            $('#title').twipsy('show')
+        }
     },
 
     "/book/details" : function () {

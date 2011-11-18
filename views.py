@@ -107,8 +107,11 @@ class BookNewView(UserView):
             genre  = self.request.get('genre')
             year   = int(self.request.get('year'))
             image  = db.Link(self.request.get('image'))
-            Book(title=title, author=author, genre=genre, year=year, image=image).put()
-            self.redirect('/profile/newcopy')
+            if Book.all().filter('title =', title).count() > 0:
+                self.redirect('/book/new?errorrepeat=true')
+            else:
+                Book(title=title, author=author, genre=genre, year=year, image=image).put()
+                self.redirect('/profile/newcopy?selectedCopyTitle=' + title)
         except:
             self.redirect('/book/new?error=true')
 
