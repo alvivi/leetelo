@@ -8,15 +8,29 @@
 
 <script type="text/javascript">
 
-/*
-	$('#TipoOferta').change(function()
-		{
-			alert("molee");
-		   //alert('Value change to ' + $(this).attr('value'));
-		});
-*/
 
-
+jQuery(function($){
+	$.datepicker.regional['es'] = {
+		closeText: 'Cerrar',
+		prevText: '&#x3c;Ant',
+		nextText: 'Sig&#x3e;',
+		currentText: 'Hoy',
+		monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+		'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+		monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+		'Jul','Ago','Sep','Oct','Nov','Dic'],
+		dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
+		dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
+		dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
+		weekHeader: 'Sm',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
+	$.datepicker.setDefaults($.datepicker.regional['es']);
+});
+ 
 
 function JSTipoOferta()
 {
@@ -45,10 +59,11 @@ $(document).ready(function() {
 
 	/*Ocultar/Mostra los campos segun valores de select*/
 	JSTipoOferta();
+     $("#fechaLimite").datepicker();
 
     });
 
-		</script>
+</script>
 
 {% if error %}
 <div class="row">
@@ -221,7 +236,7 @@ $(document).ready(function() {
 				<div id="idfecha" class="clearfix">
 					<label for="fechaLimite">Fecha límite</label>
 					<div class="input">
-						<input type="date" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" />
+						<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" readonly="readonly" size="12" />
 					</div>
 				</div>
 				<div class="actions">

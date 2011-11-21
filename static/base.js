@@ -7,6 +7,11 @@ var localScripts = {
         if(/.*error=true.*/.test(location.href)) {
             $("#error-message").show();
         }
+        if(/.*errorrepeat=true.*/.test(location.href)) {
+            $('#title').parent().parent().addClass('error');
+            $('#title').twipsy({trigger: 'manual'});
+            $('#title').twipsy('show')
+        }
     },
 
     "/book/details" : function () {
@@ -150,8 +155,54 @@ var localScripts = {
                 e.stopPropagation();
             }
         });
+    },
+
+    "/profile/newcopy" : function () {
+        var JSTipoOferta = function() {
+            var opc_sel=$('#TipoOferta').attr('value');
+             $("#idprecio").toggle(opc_sel == 'Venta');
+             $("#idfecha").toggle(opc_sel != 'Ninguna');
+        }
+
+        var getParameter = function (parameter) {
+            // Obtiene la cadena completa de URL
+            var url = location.href;
+            /* Obtiene la posicion donde se encuentra el signo ?,
+               ahi es donde empiezan los parametros */
+            var index = url.indexOf("?");
+            /* Obtiene la posicion donde termina el nombre del parametro
+               e inicia el signo = */
+            index = url.indexOf(parameter,index) + parameter.length;
+            /* Verifica que efectivamente el valor en la posicion actual
+               es el signo = */
+            if (url.charAt(index) == "=") {
+                // Obtiene el valor del parametro
+                var result = url.indexOf("&",index);
+                if (result == -1){result=url.length;};
+                // Despliega el valor del parametro
+                return (url.substring(index + 1,result));
+            }
+            return "";
+        }
+
+        var ShowSelected = function ()
+        {
+            var combo = document.getElementById("titleBook");
+            var selected = combo.options[combo.selectedIndex].text;
+            window.location="/profile/newcopy?selectedCopyTitle=" + selected;
+        }
+
+        $('#titleBook').live('change', ShowSelected);
+        $('#TipoOferta').live('change', JSTipoOferta);
+
+        // if(getParameter('selectedCopyTitle') != "" || $('#autorBook').text() == "") {
+        //     ShowSelected();
+        // }
+
+        /*Ocultar/Mostra los campos segun valores de select*/
+        JSTipoOferta();
     }
-};
+}
 
 
 $(document).ready(function() {

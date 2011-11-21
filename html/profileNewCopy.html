@@ -1,287 +1,168 @@
-<label for="mislibros"></label>
  {% extends "profile.html" %}
 
 {% block nav_profile_copies %} class="active" {% endblock %}
 
 {% block profileContent %}
 
- 
+<h6>Añadir un nuevo ejemplar de...</h6>
+
+
 <script type="text/javascript">
-
-
-function validar() {  
-    var RegExPattern = /[0-9]+$/; 
-	var RegExFecha = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/; 
-	var re=/^[0-9][0-9]\/[0-9][0-9]\/[0-9][0-9][0-9][0-9]$/
-    var errorMessage=''; 
-    if ($('#TipoOferta').attr('value')=="Venta") {
-		if($("#precio").get(0).value.match(RegExPattern)){}
-		else{
-			errorMessage +='El valor del precio es obligatorio y debe ser un número \n';
-			}
-    }
-	
-	if($('#TipoOferta').attr('value') != "Ninguna")
-	{
-		if($("#fechaLimite").get(0).value.match(RegExFecha)){}
-		else{
-			errorMessage +='El valor de la fecha es obligatorio y el formato debe ser dd/mm/aaaa';      
-			}
-	}
-		
-	if(errorMessage=='')
-	{	
-		return true;
-	}else{ 
-		alert(errorMessage);
-		return false;
-		}
-}
-
-/*
-	$('#TipoOferta').change(function()
-		{
-			alert("molee");
-		   //alert('Value change to ' + $(this).attr('value'));
-		});
-*/
-function JSTipoOferta()
-{
-	var opc_sel=$('#TipoOferta').attr('value');
-    if(opc_sel == 'Venta')
-    {
-    	$("#idprecio").css("display", "block");
-        /*$("#idprecio").toggle(200);*/
-    }
-    else
-    {
-    	$("#idprecio").css("display", "none");
- 		/*$("#idprecio").toggle(200);*/
-    }
-
-    if(opc_sel != 'Ninguna')
-    {
-    	$("#idfecha").css("display", "block");
-
-    }else{$("#idfecha").css("display", "none");}
-}
-
-
-$(document).ready(function() {
-      if(!getParameter('selectedCopyTitle') && $('#autorBook').text()==""){
-  		ShowSelected();
-      }
-
-	/*Ocultar/Mostra los campos segun valores de select*/
-	JSTipoOferta();
-	
-	
-	/*Validacion de campos*/
-	$("#formCopia").validate({
-  	rules: 
-  	{
-    edicion: {
-	digits: true
-	},
-    paginas: {
-	digits: true, 
-	required: true
-	}	
-	},
-	messages: 
-	{
-	edicion: 
-	{
-	digits: "El campo edición es numérico"
-	},
-	paginas: 
-	{
-	digits: "El campo páginas es numérico", 
-	required: "Campo obligatorio"
-	}
-	}
-  });
+jQuery(function($){
+	$.datepicker.regional['es'] = {
+		closeText: 'Cerrar',
+		prevText: '&#x3c;Ant',
+		nextText: 'Sig&#x3e;',
+		currentText: 'Hoy',
+		monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+		'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+		monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+		'Jul','Ago','Sep','Oct','Nov','Dic'],
+		dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
+		dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
+		dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
+		weekHeader: 'Sm',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
+	$.datepicker.setDefaults($.datepicker.regional['es']);
 });
+ 
+$(document).ready(function() {
+   $("#fechaLimite").datepicker();
+ });
+</script>
 
 
-function getParameter(parameter){
-	// Obtiene la cadena completa de URL
-	var url = location.href;
-	/* Obtiene la posicion donde se encuentra el signo ?,
-	ahi es donde empiezan los parametros */
-	var index = url.indexOf("?");
-	/* Obtiene la posicion donde termina el nombre del parametro
-	e inicia el signo = */
-	index = url.indexOf(parameter,index) + parameter.length;
-	/* Verifica que efectivamente el valor en la posicion actual
-	es el signo = */
-	if (url.charAt(index) == "="){
-		// Obtiene el valor del parametro
-		var result = url.indexOf("&",index);
-		if (result == -1){result=url.length;};
-		// Despliega el valor del parametro
-	return (url.substring(index + 1,result));
-	}
-	}
 
-
-		function ShowSelected()
-		{
-			var combo = document.getElementById("titleBook");
-			var selected = combo.options[combo.selectedIndex].text;
-			window.location="/profile/newcopy?selectedCopyTitle="+selected;
-		}
-
-		</script>
-		
-		
-		<style>
-			label.error {
-			float:right;
-			color:#FF0000;
-			}
-		</style>
-
-<h6>A�adir un nuevo ejemplar de...</h6>
 
 <div class="alert-message block-message info fade in">
-	<a href="#" class="close">x</a>
-	<p>¿No encuentras el libro que buscabas? <strog><a href="/book/new">Añade tu libro</a></strog> en nuestra biblioteca.</p>
+    <a href="#" class="close">x</a>
+    <p>¿No encuentras el libro que buscabas? <strog><a href="/book/new">Añade tu libro</a></strog> en nuestra biblioteca.</p>
 </div>
 
-<div class="row">
-
-<form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post" id="formCopia" onSubmit="return validar();">
-	<fieldset>
-		<legend></legend>
-<div class="row">
-    <div class="span7">
-        <div class="clearfix">
-		<label for="titleBook">Libro</label>
-			<div class="input">
-				<select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
-
-				{% for b in books %}
-					{% ifequal book.title b.title %}
-					<option SELECTED>{{b.title}}</option>
-					{% endifequal %}
-					{% ifnotequal b.title book.title %}
-        			<option>{{b.title}}</option>
-    				{% endifnotequal %}
-				{% endfor %}
-
-			      </select>
-          		</div>
-	</div>
-	<div class="clearfix">
-		<label for="Autor">Autor:</label>
-		<div id="autorBook" class="input">
-		{{book.author}}
-		</div>
-	</div>
-	<div class="clearfix">
-		<label for="Genero">Genero: </label>
-		<div class="input">
-		{{book.genre}}
-		</div>
-	</div>
+{% if error %}
+    <div id="error-message" class="alert-message block-message error">
+        <p><strong>Error al introducir lo datos.</strong> Por favor comprueba que son correctos</p>
     </div>
-    <div class="span8">
-        <img class="thumbnail book-cover" src="{{book.image}}" alt="{{book.title}}">
-    </div>
-</div>
-		<hr></hr>
+{% endif %}
 
-
-
-
-	  <div>
-
-	  <div class="clearfix">
-		<label for="edicion">Edicion</label>
-		<div class="input">
-			<input type="text" name="edicion" id="edicion"/>
-		</div>
-	  </div>
-
-	  <div class="clearfix">
-		<label for="formato">Idioma</label>
-				<div class="input">
-				<p>
-				  <select name="Idioma">
-				    <option>Castellano</option>
-					<option>Valenciano</option>
-					<option>Ingles</option>
-					<option>Frances</option>
-					<option>Aleman</option>
-					<option>Otros</option>
-			      </select>
-          		  </p>
-                  </p>
-				</div>
-	</div>
-
-
-	  <div class="clearfix">
-		<label for="paginas">Numero de Paginas</label>
-		<div class="input">
-			<input type="text" name="paginas" id="paginas"/>
-		</div>
-	  </div>
-
-	  <div class="clearfix">
-		<label for="formato">Formato</label>
-				<div class="input">
-				<p>
-
-				  <select name="Formato">
-				    <option>Bolsillo</option>
-					<option>Tapa dura</option>
-                                        <option>Tapa blanda</option>
-					<option>Coleccionista</option>
-
-			      </select>
-          		  </p>
-                  </p>
-				</div>
-	</div>
-
-
-	<div class="clearfix">
-		<label for="TipoOferta">Tipo de oferta</label>
-				<div class="input">
-				  <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
-				  	<option value="Ninguna">Ninguna</option>
-				    <option value="Venta">Venta</option>
-					<option value="Intercambio">Intercambio</option>
-					<option value="Prestamo">Prestamo</option>
-				  </select>
-				</div>
-	</div>
-
-
-
-	  <div id="idprecio" class="clearfix">
-		<label for="precio">Precio</label>
-		<div class="input">
-			<input type="text" name="precio" id="precio" />
-		</div>
-	  </div>
-
-	  <div id="idfecha" class="clearfix">
-		<label for="fechaLimite">Fecha l�mite(dd/mm/aaaa)</label>
-		<div class="input">
-			<input type="text" name="fechaLimite" id="fechaLimite" />
-		</div>
-	  </div>
-
-	  </div>
-		<div class="actions">
-		  <input type="submit" class="btn primary" value="A�adir ejemplar" />
-		  <a href="/profile/copies" class="btn">Cancelar</a>
-		</div>
-	</fieldset>
-</form>
+<div class="row">
+    <form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post" id="formCopia">
+        <fieldset>
+            <div class="span7">
+                <legend>Detalles del libro</legend>
+                <br>
+                <div class="clearfix media-grid centerrow">
+                    <img class="thumbnail book-cover" src="{{book.image}}" alt="{{book.title}}">
+                </div>
+                <div class="clearfix">
+                    <label for="titleBook">Título</label>
+                    <div class="input">
+                        <select class="xlarge" id="titleBook" name="titleBook">
+                            {% for b in books %}
+                                {% ifequal book.title b.title %}
+                                    <option selected>{{b.title}}</option>
+                                {% endifequal %}
+                                {% ifnotequal b.title book.title %}
+                                    <option>{{b.title}}</option>
+                                {% endifnotequal %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Autor</label>
+                    <div class="input">
+                        <span id="autorBook" class="uneditable-input">{{book.author}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Género</label>
+                    <div class="input">
+                        <span id="genreBook" class="uneditable-input">{{book.genre}}</span>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Año</label>
+                    <div class="input">
+                        <span id="yearBook" class="uneditable-input">{{book.year}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="span9">
+                <legend>Detalles del ejemplar</legend>
+                <br>
+                <div class="clearfix">
+                    <label for="edicion">Edición</label>
+                    <div class="input">
+                        <input class="xlarge" type="number" min="1" max="5000" value="1" name="edicion" id="edicion" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="formato">Idioma</label>
+                    <div class="input">
+                        <select class="xlarge" name="Idioma">
+                            <option>Castellano</option>
+                            <option>Valenciano</option>
+                            <option>Ingles</option>
+                            <option>Frances</option>
+                            <option>Aleman</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="paginas">Páginas</label>
+                    <div class="input">
+                        <input class="xlarge" value="100" type="number" min="1" max="9000" name="paginas" id="paginas"/>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="formato">Formato</label>
+                    <div class="input">
+                        <select class="xlarge" name="Formato">
+                            <option>Bolsillo</option>
+                            <option>Tapa dura</option>
+                            <option>Tapa blanda</option>
+                            <option>Coleccionista</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="TipoOferta">Tipo de oferta</label>
+                    <div class="input">
+                        <select class="xlarge" id="TipoOferta" name="TipoOferta">
+                            <option value="Ninguna">Ninguna</option>
+                            <option value="Venta">Venta</option>
+                            <option value="Intercambio">Intercambio</option>
+                            <option value="Prestamo">Prestamo</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="idprecio" class="clearfix">
+                    <label for="precio">Precio</label>
+                    <div class="input">
+                        <input class="xlarge" type="number" min="1" max="5000" value="10" name="precio" id="precio" />
+                    </div>
+                </div>
+                <div id="idfecha" class="clearfix">
+                    <label for="fechaLimite">Fecha límite</label>
+                    <div class="input">
+                        <input class="xlarge" type="text" name="fechaLimite" id="fechaLimite"  readonly="readonly" size="12"/>
+                    </div>
+                </div>
+            </div>
+            <div class="span16">
+                <div class="actions">
+                    <input type="submit" class="btn primary" value="Añadir ejemplar" />
+                    <a href="/profile/copies" class="btn">Cancelar</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
 
 {% endblock %}
