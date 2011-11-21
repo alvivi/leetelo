@@ -20,18 +20,19 @@
 	<tbody>
 	{% for copy in copies %}
 		<tr>
-			<td class="nopadding centerrow"> <input type="checkbox"></td>
+			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
 			<td>
+				<img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}">
 				<a href="/profile/editcopy?selected={{copy.key}}">
 					{{copy.book.title}}
 				</a>
 				<span class="hide key">{{copy.key}}</span>
 			</td>
-			<td>{{copy.book.author}}</td>
+			<td style="vertical-align:middle">{{copy.book.author}}</td>
 			{% ifequal copy.offerState "No disponible" %}
-				<td>Disponible</td>
+				<td style="vertical-align:middle">Disponible</td>
 			{% else %}
-				<td>{{copy.offerState}}</td>
+				<td style="vertical-align:middle">{{copy.offerState}}</td>
 			{% endifequal %}
 		</tr>
 	{% endfor %}

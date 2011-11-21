@@ -5,6 +5,9 @@
 
 from google.appengine.ext import db
 
+class UserAvatar(db.Model):
+    user = db.UserProperty()
+    avatar = db.BlobProperty()
 
 # Ficha del libro, la obra en sí
 class Book(db.Model):

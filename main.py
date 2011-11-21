@@ -33,7 +33,9 @@ def main():
         ('/profile/sale', SaleView),
         ('/profile/loan', LoanView),
         ('/profile/exchange', ExchangeView),
-        ('/profile/applicationcontent', ApplicationContentView)
+        ('/profile/applicationcontent', ApplicationContentView),
+        ('/profile/account',ProfileAccountView),
+        ('/img',Image)
         ], debug=True)
     util.run_wsgi_app(application)
 

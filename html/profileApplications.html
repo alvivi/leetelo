@@ -22,14 +22,14 @@
 		<tbody>
 		 {% for request in requests %}
          	   <tr>
-            	    <th><input type="radio" name="RequestRadios" value="{{request.state}}" 
-			       onclick="window.location.href='/profile/applicationcontent?selectedCopyTitle={{request.copy.book.title}}&owner={{request.copy.user}}'"></th>
-                	<th class="request-copy-column">{{request.copy.book.title}}</th>
-                	<th>{{request.copy.book.author}}</th>
-                	<th class="request-owner-column">{{request.copy.user}}</th>
-                	<th>{{request.state}}</th>
-			<th>{{request.copy.offerType}}</th>
-                	<th><a href="#" class="btn">Enviar Mensaje</a> </th>
+            	    <td><input type="radio" name="RequestRadios" value="{{request.state}}" 
+			       onclick="window.location.href='/profile/applicationcontent?selectedCopyTitle={{request.copy.book.title}}&owner={{request.copy.user}}'"></td>
+                	<td class="request-copy-column">{{request.copy.book.title}}</td>
+                	<td>{{request.copy.book.author}}</td>
+                	<td class="request-owner-column">{{request.copy.user}}</td>
+                	<td>{{request.state}}</td>
+			<td>{{request.copy.offerType}}</td>
+                	<td><a href="#" class="btn">Enviar Mensaje</a> </td>
             	</tr>
             	{% endfor %}
 		</tbody>

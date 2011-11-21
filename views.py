@@ -8,10 +8,13 @@
 from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import images
 from google.appengine.ext.webapp import template
 from models import *
 import logging
 import time
+import urllib
+import hashlib
 from datetime import datetime
 
 # Clase que ayuda a la hora de crear vistas que requieran un usuario. Las
@@ -24,11 +27,16 @@ class UserView(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             logout = users.create_logout_url('/')
-            return self.get_as_user(user, logout)
+            userAvatar = UserAvatar.all().filter('user =', user).get()
+            if userAvatar:
+                avatarImg = userAvatar
+            else:
+                avatarImg = ""
+            return self.get_as_user(user, logout, avatarImg)
         else:
             return self.get_as_anom()
 
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         self.redirect('/')
 
     def get_as_anom(self):
@@ -38,7 +46,12 @@ class UserView(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             logout = users.create_logout_url('/')
-            return self.post_as_user(user, logout)
+            userAvatar = UserAvatar.all().filter('user =', user).get()
+            if userAvatar:
+                avatarImg = userAvatar
+            else:
+                avatarImg = ""
+            return self.post_as_user(user, logout, avatarImg)
         else :
             return selt.post_as_anom()
 
@@ -49,32 +62,60 @@ class UserView(webapp.RequestHandler):
         self.redirect('/')
 
 
+
 # Pérfil de usuario. Vista compartida entre todas las subsecciones del perfil
 # de usuario.
 class ProfileView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         self.redirect('/profile/alerts')
 
-
-class ProfileAlertsView(UserView):
-    def get_as_user(self, user, logoutUri):
+class Image (webapp.RequestHandler):
+    def get(self):
+        greeting = db.get(self.request.get("img_id"))
+        if greeting.avatar:
+            self.response.headers['Content-Type'] = "image/png"
+            self.response.out.write(greeting.avatar)
+        else:
+            self.response.out.write("No image")
+            
+class ProfileAccountView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
+        }
+        self.response.out.write(template.render('html/profileAccount.html', values))
+
+    def post_as_user(self, user, logoutUri, avatarImg):
+        previousAvatar = UserAvatar.all().filter('user = ',user).get()
+        if previousAvatar:
+            previousAvatar.delete()
+        avatar = self.request.get("imagen")
+        UserAvatar(user = user, avatar = db.Blob(avatar)).put()
+        self.redirect('/profile/alerts')
+        
+class ProfileAlertsView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
         }
         self.response.out.write(template.render('html/profileAlerts.html', values))
 
 class ProfileCopiesView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'copies'     : Copy.allCopiesOf(user),
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
         }
         self.response.out.write(template.render('html/profileCopies.html', values))
 
 class ProfileDeleteCopiesView(UserView):
-    def post_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         try:
             copies = self.request.get('selected').split(",")
             for c in Copy.get(copies):
@@ -86,21 +127,23 @@ class ProfileDeleteCopiesView(UserView):
             values = {
                 'copies'     : Copy.allCopiesOf(user),
                 'user'       : user,
-                'logoutUri'  : users.create_logout_url('/')
+                'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
             }
             self.response.out.write(template.render('html/profileCopies.html', values))
 
 # /book/new
 # Vista utilizada a la hora de crear un nuevo libro
 class BookNewView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
+            'avatar'     : avatarImg
         }
         self.response.out.write(template.render('html/bookNew.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         try:
             title  = self.request.get('title')
             author = self.request.get('author')
@@ -116,13 +159,14 @@ class BookNewView(UserView):
             self.redirect('/book/new?error=true')
 
 class BookDetailsView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         try:
             book   = Book.get(self.request.get('book'))
             copies = Copy.all().filter('book =', book).filter('offerState =', 'Con solicitud').fetch(128) + Copy.all().filter('book =', book).filter('offerState =', 'En oferta').fetch(128)
             values = {
                 'user'        : user,
                 'logoutUri'   : users.create_logout_url('/'),
+                'avatar'     : avatarImg,
                 'copies'      : copies,
                 'book'        : Book.get(self.request.get('book'))
             }
@@ -131,6 +175,7 @@ class BookDetailsView(UserView):
             values = {
                 'user'        : user,
                 'logoutUri'   : users.create_logout_url('/'),
+                'avatar'     : avatarImg,
                 'error'       : True,
             }
             self.response.out.write(template.render('html/bookDetails.html', values))
@@ -138,7 +183,7 @@ class BookDetailsView(UserView):
 # /profile/newcopy
 # Vista que se encarga de crear una nuevo ejemplar de un libro
 class ProfileNewCopyView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =', title).get()
         values = {}
@@ -148,6 +193,7 @@ class ProfileNewCopyView(UserView):
                 'books'     : Book.all(),
                 'user'       : user,
                 'logoutUri'  : users.create_logout_url('/'),
+                'avatar'     : avatarImg,
                 'error'      : False
             }
         else:
@@ -156,11 +202,12 @@ class ProfileNewCopyView(UserView):
                 'books'     : Book.all(),
                 'user'       : user,
                 'logoutUri'  : users.create_logout_url('/'),
+                'avatar'     : avatarImg,
                 'error'      : False
             }
         self.response.out.write(template.render('html/profileNewCopy.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         try:
             title      = self.request.get('titleBook')
             book       = Book.all().filter('title =', title).get()
@@ -195,15 +242,16 @@ class ProfileNewCopyView(UserView):
             values = {
                 'book'      : book,
                 'books'     : Book.all(),
-                'user'      : user,
-                'logoutUri' : users.create_logout_url('/'),
-                'error'     : True,
+                'user'       : user,
+                'logoutUri'  : users.create_logout_url('/'),
+                'error'      : True,
+                'avatar'     : avatarImg
             }
             self.response.out.write(template.render('html/profileNewCopy.html', values))
 
 class ProfileEditCopyView(UserView):
 
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         key= self.request.get('selected')
         selectedCopy = Copy.get(key)
         #selectedCopy = Copy.all().filter('user =', user).filter('book =',book).get()
@@ -211,6 +259,7 @@ class ProfileEditCopyView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'selectedCopy': selectedCopy
         }
         if selectedCopy.offerState == "No disponible" or selectedCopy.offerState == "En oferta":self.response.out.write(template.render('html/profileEditCopy.html', values))
@@ -218,7 +267,7 @@ class ProfileEditCopyView(UserView):
 
 
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         key = self.request.get('selected')
         selectedCopy = Copy.get(key)
         book=selectedCopy.book
@@ -226,6 +275,7 @@ class ProfileEditCopyView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'error'      : False,
             'selectedCopy': selectedCopy
 
@@ -277,6 +327,7 @@ class ProfileEditCopyView(UserView):
 
                     'user'       : user,
                     'logoutUri'  : users.create_logout_url('/'),
+                    'avatar'     : avatarImg,
                     'error'      : True,
                     'selectedCopy': selectedCopy
 
@@ -286,7 +337,7 @@ class ProfileEditCopyView(UserView):
 
 
 class ProfileDataCopyView(UserView):
-     def get_as_user(self, user, logoutUri):
+     def get_as_user(self, user, logoutUri, avatarImg):
         key= self.request.get('selected')
         #book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.get(key)
@@ -294,6 +345,7 @@ class ProfileDataCopyView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'selectedCopy': selectedCopy
         }
         self.response.out.write(template.render('html/profileDataCopy.html', values))
@@ -301,25 +353,27 @@ class ProfileDataCopyView(UserView):
 
 
 class ProfileOffersView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user)
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
 class ProfileApplicationsView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
-            'logoutUri'  : logoutUri
+            'logoutUri'  : logoutUri,
+            'avatar'     : avatarImg
         }
         self.response.out.write(template.render('html/profileApplications.html', values))
 
 class ProfileApplicationsNewView(UserView):
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         try:
             copy = Copy.get(self.request.get('copy'))
             if copy.user == user:
@@ -336,20 +390,21 @@ class ProfileApplicationsNewView(UserView):
 
 
 class CopyOffersView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'copyOffers'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         action = self.request.get('processOffer')
         appliantUser = users.User(self.request.get('offersRadios'))
         title = self.request.get('selectedCopyTitle')
@@ -372,6 +427,7 @@ class CopyOffersView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'copyOffers'  : Request.allRequestsFor(selectedCopy)
@@ -381,7 +437,7 @@ class CopyOffersView(UserView):
 
 
 class ApplicationContentView(UserView):
-    def get_as_user(self,user,logoutUri):
+    def get_as_user(self,user,logoutUri,avatarImg):
         title = self.request.get('selectedCopyTitle')
         ownerUser = users.User(self.request.get('owner'))
         book = Book.all().filter('title =', title).get()
@@ -393,12 +449,13 @@ class ApplicationContentView(UserView):
             'selectedCopy' : selectedCopy,
             'request'    : request,
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
 
         }
         self.response.out.write(template.render('html/applicationcontent.html',values))
 
-    def post_as_user(self,user,logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         action = self.request.get('processConfirm')
         title = self.request.get('selectedCopyTitle')
         ownerUser = users.User(self.request.get('owner'))
@@ -416,9 +473,9 @@ class ApplicationContentView(UserView):
             if selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto":
                 selectedCopy.offerState = 'No disponible'
                 selectedCopy.offerType = 'Ninguna'
-                selectedCopy.user = users.get_current_user()
+                selectedCopy.user = user
                 selectedCopy.put()
-                Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=users.get_current_user(), exchangeType='Indirecto').put()
+                Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=user, exchangeType='Indirecto').put()
                 request.delete()
 
             elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
@@ -426,14 +483,14 @@ class ApplicationContentView(UserView):
                 #getDirectExchange(selectedcopy, ownerUser, request.exchangeCopy, users.get_current_user())
 
                 if exchange==None:
-                    Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=users.get_current_user(), exchangeType='Directo').put()
+                    Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=user, exchangeType='Directo').put()
                     request.llegaCopia1 = True
                     selectedCopy.put()
                     request.put()
                 else:
                     selectedCopy.offerState = 'No disponible'
                     selectedCopy.offerType = 'Ninguna'
-                    selectedCopy.user = users.get_current_user()
+                    selectedCopy.user = user
                     selectedCopy.put()
                     request.exchangeCopy.offerState = 'No disponible'
                     request.exchangeCopy.offerType = 'Ninguna'
@@ -444,22 +501,23 @@ class ApplicationContentView(UserView):
             elif selectedCopy.offerType=="Venta":
                 selectedCopy.offerState = 'No disponible'
                 selectedCopy.offerType = 'Ninguna'
-                selectedCopy.user = users.get_current_user()
+                selectedCopy.user = user
                 selectedCopy.put()
 
                 request.delete()
 
-                Sale(copy=selectedCopy, vendor=ownerUser, buyer=users.get_current_user()).put()
+                Sale(copy=selectedCopy, vendor=ownerUser, buyer=user).put()
 
             elif selectedCopy.offerType=="Prestamo":
                 selectedCopy.offerState = 'Prestado'
                 selectedCopy.put()
-                Loan(copy=selectedCopy, owner=ownerUser, lendingTo=users.get_current_user(), arrivalDate=datetime.now().date()).put()
+                Loan(copy=selectedCopy, owner=ownerUser, lendingTo=user, arrivalDate=datetime.now().date()).put()
 
 
         values = {
             'requests'     : Request.allRequestsOf(user),
             'user'       : user,
+            'avatar'     : avatarImg,
             'logoutUri'  : users.create_logout_url('/')
         }
         self.response.out.write(template.render('html/profileApplications.html', values))
@@ -467,7 +525,7 @@ class ApplicationContentView(UserView):
 
 
 class SaleView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -475,6 +533,7 @@ class SaleView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'request'  : request
@@ -483,7 +542,7 @@ class SaleView(UserView):
 
 
 class LoanView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -491,13 +550,14 @@ class LoanView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'request'  : request
         }
         self.response.out.write(template.render('html/loan.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -507,19 +567,20 @@ class LoanView(UserView):
         selectedCopy.offerType = "Ninguna"
         selectedCopy.put()
 
-        Loan(copy=selectedCopy, owner=users.get_current_user(), lendingTo=request.user, returningDate=datetime.now().date()).put()
+        Loan(copy=selectedCopy, owner=user, lendingTo=request.user, returningDate=datetime.now().date()).put()
 
         request.delete()
 
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
+            'avatar'      : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user)
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
 class ExchangeView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -527,13 +588,14 @@ class ExchangeView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'request'  : request
         }
         self.response.out.write(template.render('html/exchange.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -542,7 +604,7 @@ class ExchangeView(UserView):
         exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', user).filter('owner2 =', request.user).filter('exchangeType =','Directo').get()
         #getDirectExchange(selectedcopy, users.get_current_user(), request.exchangeCopy, request.user)
         if exchange==None:
-            Exchange(copy1=selectedCopy, owner1=users.get_current_user(), copy2=request.exchangeCopy, owner2=request.user, exchangeType='Directo').put()
+            Exchange(copy1=selectedCopy, owner1=user, copy2=request.exchangeCopy, owner2=request.user, exchangeType='Directo').put()
             request.llegaCopia2 = True
             selectedCopy.put()
             request.put()
@@ -553,20 +615,21 @@ class ExchangeView(UserView):
             selectedCopy.put()
             request.exchangeCopy.offerState = 'No disponible'
             request.exchangeCopy.offerType = 'Ninguna'
-            request.exchangeCopy.user = users.get_current_user()
+            request.exchangeCopy.user = user
             request.exchangeCopy.put()
             request.delete()
 
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user)
+            'copies'      : Copy.allCopiesWithRequests(user),
+            'avatar'      : avatarImg
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
 
 class AppliantCopiesView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
         selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
@@ -576,6 +639,7 @@ class AppliantCopiesView(UserView):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
             'copyOffers'  : Request.allRequestsFor(selectedCopy),
@@ -585,7 +649,7 @@ class AppliantCopiesView(UserView):
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
 
-    def post_as_user(self, user, logoutUri):
+    def post_as_user(self, user, logoutUri, avatarImg):
         action = self.request.get('processOffer')
         title = self.request.get('selectedCopyTitle')
         book = Book.all().filter('title =',title).get()
@@ -616,21 +680,23 @@ class AppliantCopiesView(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy)
+            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'avatar'      : avatarImg
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
 
 class ProfileHistorialView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'user'       : user,
-            'logoutUri'  : users.create_logout_url('/')
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
         }
         self.response.out.write(template.render('html/profileHistorial.html', values))
 
 # Página del buscador.
 class SearchView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         title = self.request.get("title")
         author = self.request.get("author")
         publisher = self.request.get("publisher")
@@ -675,7 +741,7 @@ class SearchView(UserView):
 
 # Página principal.
 class IndexView(UserView):
-    def get_as_user(self, user, logoutUri):
+    def get_as_user(self, user, logoutUri, avatarImg):
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/')
@@ -688,4 +754,3 @@ class IndexView(UserView):
             'newUserUri' : 'http://accounts.google.com'
         }
         self.response.out.write(template.render('html/index.html', values))
-
