@@ -35,6 +35,8 @@ def main():
         ('/profile/exchange', ExchangeView),
         ('/profile/applicationcontent', ApplicationContentView),
         ('/profile/account',ProfileAccountView),
+        ('/profile/newclub', ProfileNewClubView),
+        ('/profile/editclub', ProfileEditClubView),
         ('/img',Image)
         ], debug=True)
     util.run_wsgi_app(application)

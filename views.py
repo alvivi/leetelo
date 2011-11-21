@@ -347,7 +347,6 @@ class ProfileEditCopyView(UserView):
                self.response.out.write(template.render('html/profileEditCopy.html', values))
 
 
-
 class ProfileDataCopyView(UserView):
      def get_as_user(self, user, logoutUri, avatarImg):
         key= self.request.get('selected')
@@ -748,6 +747,31 @@ class SearchView(UserView):
 		'results' : res
         }
         self.response.out.write(template.render('html/search.html', values))
+
+
+# /profile/newclub
+# Vista que se encarga de crear una nuevo club
+class ProfileNewClubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        values={
+                'user': user,
+                'logoutUri': users.create_logout_url('/'),
+                'error': False,
+                'avatar': avatarImg
+                }
+        self.response.out.write(template.render('html/profileNewClub.html', values))
+
+# /profile/editclub
+# Vista que se encarga de crear una nuevo club
+class ProfileEditClubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        values={
+                'user'  : user,
+                'logoutUri': users.create_logout_url('/'),
+                'error': False,
+                'avatar': avatarImg
+                }
+        self.response.out.write(template.render('html/profileEditClub.html', values))
 
 
 
