@@ -154,6 +154,13 @@ var localScripts = {
             else
                 $(buttons).children().removeClass("disabled");
         });
+        
+        buttons.live('click', function(e) {
+            if ($(this).children().hasClass('disabled')){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
     },
 
     "/profile/newcopy" : function () {
