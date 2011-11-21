@@ -71,11 +71,39 @@ var localScripts = {
     },
 
     "/profile/copies" : function () {
+        var offset = 0; var doing = false; var doing = false;
+        $(window).scroll(function () {
+            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
+                doing = true;
+                offset += 10;
+                $.ajax({
+                    url  : '/profile/copies',
+                    data : {offset : offset},
+                    type : 'GET',
+                    success : function (data) {
+                        var rows = $(data).find('tbody').children();
+                        var count = rows.length;
+                        if (count > 0) {
+                            rows.addClass('new-rows');
+                            $('tbody').append(rows);
+                            $('.new-rows').hide().fadeIn(function () {
+                                $('.new-rows').removeClass('new-rows');
+                                doing = false;
+                            });
+                        }
+                        else {
+                            $('.loading').fadeOut();
+                        }
+                    }
+                });
+            }
+        });
+
         var button = $('#remove-copies-button');
         var alertbox = $('#modal-remove');
         var count = 0;
 
-        alertbox.modal({backdrop: true, modal: true});
+         $('#modal-remove').modal({backdrop: true, modal: true});
 
         button.live('click', function (e) {
             e.preventDefault();
@@ -154,7 +182,7 @@ var localScripts = {
             else
                 $(buttons).children().removeClass("disabled");
         });
-        
+
         buttons.live('click', function(e) {
             if ($(this).children().hasClass('disabled')){
                 e.preventDefault();
