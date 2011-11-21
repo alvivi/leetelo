@@ -10,6 +10,12 @@
             <div><label>Sube tu foto de perfil:</label></div>
             <div><input type="file" name="imagen"/></div>
             <div><input type="submit" class="btn primary" value="Guardar"></div>
+            <p></p>
+            {% if error %}
+                <div class="row">
+                    <div class="alert-message block-message error"><p>El tamanyo de la imagen no puede ser mayor de 10 KB.</p></div>
+                </div>
+            {% endif %}
 </form>
 {% endblock %}
 

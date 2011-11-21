@@ -80,10 +80,12 @@ class Image (webapp.RequestHandler):
             
 class ProfileAccountView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
+        error = self.request.get('error')
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg
+            'avatar'     : avatarImg,
+            'error'      : error
         }
         self.response.out.write(template.render('html/profileAccount.html', values))
 
@@ -91,9 +93,17 @@ class ProfileAccountView(UserView):
         previousAvatar = UserAvatar.all().filter('user = ',user).get()
         if previousAvatar:
             previousAvatar.delete()
+            
         avatar = self.request.get("imagen")
         UserAvatar(user = user, avatar = db.Blob(avatar)).put()
-        self.redirect('/profile/alerts')
+        userAvatar = UserAvatar.all().filter('user = ',user).get()
+        if len(userAvatar.avatar) > 10000:
+            userAvatar.delete()
+            if previousAvatar:
+                previousAvatar.put()
+            self.redirect('/profile/account?error=true')
+        else:            
+            self.redirect('/profile/alerts')
         
 class ProfileAlertsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
