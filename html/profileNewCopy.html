@@ -154,11 +154,12 @@ function getParameter(parameter){
 <form action="/profile/newcopy?selectedCopyTitle={{selectedCopy.book.title}}" method="post" id="formCopia" onSubmit="return validar();">
 	<fieldset>
 		<legend></legend>
-
-         <div class="clearfix">
+<div class="row">
+    <div class="span7">
+        <div class="clearfix">
 		<label for="titleBook">Libro</label>
-				<div class="input">
-				  <select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
+			<div class="input">
+				<select id="titleBook" name="titleBook" onchange="javascript:ShowSelected();">
 
 				{% for b in books %}
 					{% ifequal book.title b.title %}
@@ -170,23 +171,25 @@ function getParameter(parameter){
 				{% endfor %}
 
 			      </select>
-          		  </div>
-	  	</div>
-
-
-		<div class="clearfix">
-			<label for="Autor">Autor:</label>
-			<div id="autorBook" class="input">
-			{{book.author}}
-			</div>
+          		</div>
+	</div>
+	<div class="clearfix">
+		<label for="Autor">Autor:</label>
+		<div id="autorBook" class="input">
+		{{book.author}}
 		</div>
-		<div class="clearfix">
-			<label for="Genero">Genero: </label>
-	    	<div class="input">
-			{{book.genre}}
-			</div>
-	    </div>
-
+	</div>
+	<div class="clearfix">
+		<label for="Genero">Genero: </label>
+		<div class="input">
+		{{book.genre}}
+		</div>
+	</div>
+    </div>
+    <div class="span8">
+        <img class="thumbnail book-cover" src="{{book.image}}" alt="{{book.title}}">
+    </div>
+</div>
 		<hr></hr>
 
 

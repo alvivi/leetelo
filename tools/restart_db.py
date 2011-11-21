@@ -8,6 +8,7 @@ nilsenUser = users.User(email='nilsen@example.com')
 billyUser  = users.User(email='billy@gates.com')
 userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
+patryUser = users.User(email='patriciapons89@gmail.com')
 
 db.delete(Book.all().fetch(512))
 justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber y María José Espinoza Saavedra',genre=u'Biografía', year=2011, image=db.Link('http://img9.planetadelibros.com/usuaris/libros/fotos/49/tam_1/48669_1_JUSTINBIEBER.jpg')).put()

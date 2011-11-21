@@ -4,11 +4,18 @@
 
 {% block content %}
 
-<address>
-    <strong>{{user.nickname}}</strong>
-    <br>
-    <a mailto>{{user.email}}</a>
-</address>
+<div class="row">
+    <div class="span">
+    <img class="avatar" src='/img?img_id={{avatar.key}}' alt="Avatar del usuario">
+    </div>
+    <div class="span5">
+    <address>
+        <strong>{{user.nickname}}</strong>
+        <br>
+        <a mailto>{{user.email}}</a>
+    </address>
+    </div>
+</div>
 
 <ul class="tabs">
     <li {% block nav_profile_alerts    %} {% endblock %}><a href="/profile/alerts">Notificaciones</a></li>
@@ -16,6 +23,7 @@
     <li {% block nav_profile_offers    %} {% endblock %}><a href="/profile/offers">Ofertas</a></li>
     <li {% block nav_profile_historial %} {% endblock %}><a href="/profile/historial">Histórico</a></li>
     <li {% block nav_profile_applications %} {% endblock %}><a href="/profile/applications">Solicitudes</a></li>
+    <li {% block nav_profile_account %} {% endblock %}><a href="/profile/account">Mi cuenta</a></li>
 </ul>
 
 {% block profileContent %} {% endblock %}

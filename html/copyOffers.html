@@ -37,10 +37,10 @@
     </table>
     <div style="text-align: center" id="exchange-buttons">
         {% ifequal selectedCopy.offerType "Intercambio" %}
-            <input type="submit" class="btn primary disabled" name="processOffer" value="Proponer intercambio indirecto">
+            <input  id="boton-indirecto" type="submit" class="btn primary disabled" name="processOffer" value="Proponer intercambio indirecto">
         {% endifequal %}
-        {% ifequal selectedCopy.offerType "Venta" %} <input type="submit" class="btn primary disabled" name="processOffer" value="Vender">{% endifequal %}
-        {% ifequal selectedCopy.offerType "Prestamo" %} <input type="submit" class="btn primary disabled" name="processOffer" value="Prestar">{% endifequal %}
+        {% ifequal selectedCopy.offerType "Venta" %} <input id="boton-vender" type="submit" class="btn primary disabled" name="processOffer" value="Vender">{% endifequal %}
+        {% ifequal selectedCopy.offerType "Prestamo" %} <input id="boton-prestar" type="submit" class="btn primary disabled" name="processOffer" value="Prestar">{% endifequal %}
     
         <input type="submit" class="btn primary disabled" name="processOffer" value="Rechazar oferta">    
     </div>

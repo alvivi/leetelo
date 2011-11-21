@@ -1,0 +1,15 @@
+
+{% extends "profile.html" %}
+
+{% block nav_profile_account %} class="active" {% endblock %}
+
+{% block profileContent %}
+<h6> Mi cuenta </h6>
+
+<form action="/profile/account" enctype="multipart/form-data" method="post">
+            <div><label>Sube tu foto de perfil:</label></div>
+            <div><input type="file" name="imagen"/></div>
+            <div><input type="submit" class="btn primary" value="Guardar"></div>
+</form>
+{% endblock %}
+
