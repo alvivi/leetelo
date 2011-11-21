@@ -77,7 +77,7 @@ class Image (webapp.RequestHandler):
             self.response.out.write(greeting.avatar)
         else:
             self.response.out.write("No image")
-            
+
 class ProfileAccountView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         error = self.request.get('error')
@@ -93,7 +93,7 @@ class ProfileAccountView(UserView):
         previousAvatar = UserAvatar.all().filter('user = ',user).get()
         if previousAvatar:
             previousAvatar.delete()
-            
+
         avatar = self.request.get("imagen")
         UserAvatar(user = user, avatar = db.Blob(avatar)).put()
         userAvatar = UserAvatar.all().filter('user = ',user).get()
@@ -102,9 +102,9 @@ class ProfileAccountView(UserView):
             if previousAvatar:
                 previousAvatar.put()
             self.redirect('/profile/account?error=true')
-        else:            
+        else:
             self.redirect('/profile/alerts')
-        
+
 class ProfileAlertsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values = {
@@ -116,8 +116,10 @@ class ProfileAlertsView(UserView):
 
 class ProfileCopiesView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
+        offset = self.request.get('offset')
+        offset = int(offset) if offset else 0
         values = {
-            'copies'     : Copy.allCopiesOf(user),
+            'copies'     : Copy.all().filter('user =', user).fetch(limit=10, offset=offset),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg

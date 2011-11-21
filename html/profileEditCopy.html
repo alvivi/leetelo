@@ -1,69 +1,10 @@
 
- {% extends "profile.html" %}
+{% extends "profile.html" %}
 
 {% block nav_profile_copies %} class="active" {% endblock %}
 
 {% block profileContent %}
 
-
-<script type="text/javascript">
-
-
-jQuery(function($){
-	$.datepicker.regional['es'] = {
-		closeText: 'Cerrar',
-		prevText: '&#x3c;Ant',
-		nextText: 'Sig&#x3e;',
-		currentText: 'Hoy',
-		monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
-		'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-		monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
-		'Jul','Ago','Sep','Oct','Nov','Dic'],
-		dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
-		dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
-		dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
-		weekHeader: 'Sm',
-		dateFormat: 'dd/mm/yy',
-		firstDay: 1,
-		isRTL: false,
-		showMonthAfterYear: false,
-		yearSuffix: ''};
-	$.datepicker.setDefaults($.datepicker.regional['es']);
-});
- 
-
-function JSTipoOferta()
-{
-
-	var opc_sel=$('#TipoOferta').attr('value');
-    if(opc_sel == 'Venta')
-    {
-    	$("#idprecio").css("display", "block");
-        /*$("#idprecio").toggle(200);*/
-    }
-    else
-    {
-    	$("#idprecio").css("display", "none");
- 		/*$("#idprecio").toggle(200);*/
-    }
-
-    if(opc_sel != 'Ninguna')
-    {
-    	$("#idfecha").css("display", "block");
-
-    }else{$("#idfecha").css("display", "none");}
-}
-
-$(document).ready(function() {
-
-
-	/*Ocultar/Mostra los campos segun valores de select*/
-	JSTipoOferta();
-     $("#fechaLimite").datepicker();
-
-    });
-
-</script>
 
 {% if error %}
 <div class="row">
@@ -122,7 +63,7 @@ $(document).ready(function() {
 				<div class="clearfix">
 					<label for="idioma">Idioma</label>
 					<div class="input">
-						<select name="Idioma" >
+						<select name="Idioma" class="xlarge">
 						{% ifequal selectedCopy.language 'Valenciano' %}
 							<option SELECTED>Valenciano</option>
 						 {% else %}
@@ -165,7 +106,7 @@ $(document).ready(function() {
 				<div class="clearfix">
 					<label for="formato">Formato</label>
 					<div class="input">
-					    <select name="Formato">
+					    <select name="Formato" class="xlarge">
 						 {% ifequal selectedCopy.format 'Bolsillo' %}
 							<option SELECTED>Bolsillo</option>
 						 {% else %}
@@ -196,7 +137,7 @@ $(document).ready(function() {
 				<div class="clearfix">
 					<label for="TipoOferta">Tipo de oferta</label>
 					<div class="input">
-					    <select id="TipoOferta" name="TipoOferta" onchange="javascript:JSTipoOferta();">
+					    <select class="xlarge" id="TipoOferta" name="TipoOferta">
 
 						 {% ifequal selectedCopy.offerType 'Ninguna' %}
 							<option value="Ninguna" SELECTED>Ninguna</option>
@@ -230,13 +171,13 @@ $(document).ready(function() {
 				<div id="idprecio" class="clearfix">
 					<label for="precio">Precio</label>
 					<div class="input">
-						<input type="number" min="1" step="1" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
+						<input class="xlarge" type="number" min="1" step="1" value="{{selectedCopy.salePrice}}" name="precio" id="precio" />
 					</div>
 				</div>
 				<div id="idfecha" class="clearfix">
 					<label for="fechaLimite">Fecha límite</label>
 					<div class="input">
-						<input type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" readonly="readonly" size="12" />
+						<input class="xlarge" type="text" name="fechaLimite" value="{{selectedCopy.limitOfferDate}}" id="fechaLimite" readonly="readonly" size="12" />
 					</div>
 				</div>
 				<div class="actions">

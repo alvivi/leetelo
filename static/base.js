@@ -1,5 +1,11 @@
 
 
+var JSTipoOferta = function() {
+    var opc_sel=$('#TipoOferta').attr('value');
+     $("#idprecio").toggle(opc_sel == 'Venta');
+     $("#idfecha").toggle(opc_sel != 'Ninguna');
+}
+
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
@@ -65,11 +71,39 @@ var localScripts = {
     },
 
     "/profile/copies" : function () {
+        var offset = 0; var doing = false; var doing = false;
+        $(window).scroll(function () {
+            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
+                doing = true;
+                offset += 10;
+                $.ajax({
+                    url  : '/profile/copies',
+                    data : {offset : offset},
+                    type : 'GET',
+                    success : function (data) {
+                        var rows = $(data).find('tbody').children();
+                        var count = rows.length;
+                        if (count > 0) {
+                            rows.addClass('new-rows');
+                            $('tbody').append(rows);
+                            $('.new-rows').hide().fadeIn(function () {
+                                $('.new-rows').removeClass('new-rows');
+                                doing = false;
+                            });
+                        }
+                        else {
+                            $('.loading').fadeOut();
+                        }
+                    }
+                });
+            }
+        });
+
         var button = $('#remove-copies-button');
         var alertbox = $('#modal-remove');
         var count = 0;
 
-        alertbox.modal({backdrop: true, modal: true});
+         $('#modal-remove').modal({backdrop: true, modal: true});
 
         button.live('click', function (e) {
             e.preventDefault();
@@ -148,7 +182,7 @@ var localScripts = {
             else
                 $(buttons).children().removeClass("disabled");
         });
-        
+
         buttons.live('click', function(e) {
             if ($(this).children().hasClass('disabled')){
                 e.preventDefault();
@@ -158,11 +192,7 @@ var localScripts = {
     },
 
     "/profile/newcopy" : function () {
-        var JSTipoOferta = function() {
-            var opc_sel=$('#TipoOferta').attr('value');
-             $("#idprecio").toggle(opc_sel == 'Venta');
-             $("#idfecha").toggle(opc_sel != 'Ninguna');
-        }
+        $("#fechaLimite").datepicker();
 
         var getParameter = function (parameter) {
             // Obtiene la cadena completa de URL
@@ -195,15 +225,41 @@ var localScripts = {
         $('#titleBook').live('change', ShowSelected);
         $('#TipoOferta').live('change', JSTipoOferta);
 
-        // if(getParameter('selectedCopyTitle') != "" || $('#autorBook').text() == "") {
-        //     ShowSelected();
-        // }
-
         /*Ocultar/Mostra los campos segun valores de select*/
         JSTipoOferta();
+    },
+
+    "/profile/editcopy" : function () {
+        $('#TipoOferta').live('change', JSTipoOferta);
+        var opc_sel=$('#TipoOferta').attr('value');
+        $("#idprecio").toggle(opc_sel == 'Venta');
+        $("#idfecha").toggle(opc_sel != 'Ninguna');
+        $("#fechaLimite").datepicker();
     }
 }
 
+jQuery(function($){
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '&#x3c;Ant',
+        nextText: 'Sig&#x3e;',
+        minDate: 0,
+        currentText: 'Hoy',
+        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+        'Jul','Ago','Sep','Oct','Nov','Dic'],
+        dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
+        dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''};
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+});
 
 $(document).ready(function() {
     $(".sortable").tablesorter();
