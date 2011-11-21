@@ -1,5 +1,11 @@
 
 
+var JSTipoOferta = function() {
+    var opc_sel=$('#TipoOferta').attr('value');
+     $("#idprecio").toggle(opc_sel == 'Venta');
+     $("#idfecha").toggle(opc_sel != 'Ninguna');
+}
+
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
@@ -151,11 +157,7 @@ var localScripts = {
     },
 
     "/profile/newcopy" : function () {
-        var JSTipoOferta = function() {
-            var opc_sel=$('#TipoOferta').attr('value');
-             $("#idprecio").toggle(opc_sel == 'Venta');
-             $("#idfecha").toggle(opc_sel != 'Ninguna');
-        }
+        $("#fechaLimite").datepicker();
 
         var getParameter = function (parameter) {
             // Obtiene la cadena completa de URL
@@ -188,15 +190,41 @@ var localScripts = {
         $('#titleBook').live('change', ShowSelected);
         $('#TipoOferta').live('change', JSTipoOferta);
 
-        // if(getParameter('selectedCopyTitle') != "" || $('#autorBook').text() == "") {
-        //     ShowSelected();
-        // }
-
         /*Ocultar/Mostra los campos segun valores de select*/
         JSTipoOferta();
+    },
+
+    "/profile/editcopy" : function () {
+        $('#TipoOferta').live('change', JSTipoOferta);
+        var opc_sel=$('#TipoOferta').attr('value');
+        $("#idprecio").toggle(opc_sel == 'Venta');
+        $("#idfecha").toggle(opc_sel != 'Ninguna');
+        $("#fechaLimite").datepicker();
     }
 }
 
+jQuery(function($){
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '&#x3c;Ant',
+        nextText: 'Sig&#x3e;',
+        minDate: 0,
+        currentText: 'Hoy',
+        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun',
+        'Jul','Ago','Sep','Oct','Nov','Dic'],
+        dayNames: ['Domingo','Lunes','Martes','Mi&eacute;rcoles','Jueves','Viernes','S&aacute;bado'],
+        dayNamesShort: ['Dom','Lun','Mar','Mi&eacute;','Juv','Vie','S&aacute;b'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S&aacute;'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''};
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+});
 
 $(document).ready(function() {
     $(".sortable").tablesorter();
