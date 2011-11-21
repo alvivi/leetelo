@@ -4,7 +4,7 @@
 # modelos son persistentes.
 
 from google.appengine.ext import db
-
+    
 class UserAvatar(db.Model):
     user = db.UserProperty()
     avatar = db.BlobProperty()
@@ -46,6 +46,22 @@ class Copy(db.Model):
         return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').fetch(128) + cls.all().filter('user !=', user).filter('offerState =', 'No disponible').fetch(128)
 
 
+# Ficha del Club
+class Club(db.Model):
+    image  = db.LinkProperty()
+    name  = db.StringProperty(required=True)
+    description = db.StringProperty()
+    author = db.StringProperty()
+    genre  = db.StringProperty(choices=set([u'Aventuras', u'Biografía', u'Ciencia Ficción', u'Ensayo', u'Histórico', u'Narrativa', u'Novela', u'Poesía', u'Romántico']))
+    book = db.ReferenceProperty(Book)
+    owner = db.UserProperty()
+    state = db.StringProperty(choices=set(['Habilitado','Deshabilitado']))
+    
+#relacion usuarios - clubs
+class Club_User(db.Model):
+    user = db.UserProperty()
+    club = db.ReferenceProperty(Club)
+    state = db.StringProperty(choices=set(['Solicitado', 'Aceptado Solicitacion', 'Rechazada Solicitacion', 'Invitado', 'Aceptada Invitacion', 'Rechazada Invitacion']))
 
 # Solicitud sobre un libro
 class Request(db.Model):
