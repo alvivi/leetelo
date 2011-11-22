@@ -749,6 +749,26 @@ class SearchView(UserView):
         self.response.out.write(template.render('html/search.html', values))
 
 
+
+
+#Vista general del mis clubs
+
+class ProfileClubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        offset = self.request.get('offset')
+        offset = int(offset) if offset else 0
+        values = {
+            'user': user,
+            'logoutUri': users.create_logout_url('/'),
+            'error': False,
+            'avatar': avatarImg
+        }
+
+        self.response.out.write(template.render('html/profileClub.html', values))
+
+
+
+
 # /profile/newclub
 # Vista que se encarga de crear una nuevo club
 class ProfileNewClubView(UserView):

@@ -35,6 +35,7 @@ def main():
         ('/profile/exchange', ExchangeView),
         ('/profile/applicationcontent', ApplicationContentView),
         ('/profile/account',ProfileAccountView),
+        ('/profile/club', ProfileClubView),  
         ('/profile/newclub', ProfileNewClubView),
         ('/profile/editclub', ProfileEditClubView),
         ('/img',Image)

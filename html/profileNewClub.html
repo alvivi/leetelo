@@ -1,11 +1,102 @@
  {% extends "profile.html" %}
 
-{% block nav_profile_copies %} class="active" {% endblock %}
+{% block nav_profile_club %} class="active" {% endblock %}
 <!-- Activar el nav_profile_clubs  cuando este hecho -->
 
 {% block profileContent %}
 
-<h6>Nuevo Club</h6>
+<h6>En construccion Nuevo Club</h6>
 
+
+{% if error %}
+    <div id="error-message" class="alert-message block-message error">
+        <p><strong>Error al introducir lo datos.</strong> Por favor comprueba que son correctos</p>
+    </div>
+{% endif %}
+
+<div class="row">
+    <form action="/profile/newclub?selected={{selectedClub.club.nombre}}" method="post" id="formClub">
+        <fieldset>
+            <div class="span7">
+                <legend>Detalles del Club</legend>
+                <br>
+                <!--<div class="clearfix media-grid centerrow">
+                    <img class="thumbnail book-cover" src="{{book.image}}" alt="{{book.title}}">
+                </div>-->
+                <div class="clearfix">
+                    <label for="nameClub">Nombre</label>
+                    <div class="input">
+                      <input class="xlarge" type="text"  name="nombreClub" id="nombreClub" />
+                    </div>
+                    <br>
+                    <br>
+                    <div class="clearfix">
+                       <label for="description">Descripcion</label>
+                       <div class="input">
+                       <textarea class="xlarge" id="description" name="description" rows="3"></textarea>
+                       <span class="help-block">
+                        Descripcion del Club que desea Crear.
+                       </span>
+                       </div>
+                   </div>
+
+                    <div class="clearfix">
+                       <label id="optionsGener">Generos</label>
+                        <div class="input">
+                          <ul class="inputs-list">
+                            <li>
+                              <label>
+                              <input name="optionsGener" value="option1" type="checkbox">
+                              <span>Poesía</span>
+                              </label>
+                            </li>
+                            <li>
+                              <label>
+                              <input name="optionsGener" value="option2" type="checkbox">
+                              <span>Narrativa</span>
+                              </label>
+                            </li>
+
+                          <li>
+                           <label>
+                           <input name="optionsGener" value="option3" type="checkbox">
+                           <span>Ciencia Ficción</span>
+                           </label>
+                         </li>
+                                     
+                       </ul>
+                    </div>
+                   </div>
+                    
+            
+                <div class="clearfix">
+                    <label>Autores</label>
+                     <div class="input">
+                      <input class="xlarge" type="text"  name="autores" id="autores" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Libros</label>
+                     <div class="input">
+                      <input class="xlarge" type="text"  name="libros" id="libros" />
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label>Invitaciones</label>
+                     <div class="input">
+                      <input class="xlarge" type="text"  name="invitaciones" id="invitaciones" />
+                    </div>
+                </div>
+             </div>
+          </div>
+      <div class="span16">
+                <div class="actions">
+                    <input type="submit" class="btn primary" value="Crear Club" />
+                    <a href="/profile/club" class="btn">Cancelar</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
 
 {% endblock %}
