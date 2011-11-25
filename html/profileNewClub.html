@@ -15,7 +15,7 @@
 {% endif %}
 
 <div class="row">
-    <form action="/profile/newclub?selected={{selectedClub.club.nombre}}" method="post" id="formClub">
+    <form action="/profile/newclub" method="post" id="formClub">
         <fieldset>
             <div class="span7">
                 <legend>Detalles del Club</legend>
@@ -28,8 +28,7 @@
                     <div class="input">
                       <input class="xlarge" type="text"  name="nombreClub" id="nombreClub" />
                     </div>
-                    <br>
-                    <br>
+                    <div>
                     <div class="clearfix">
                        <label for="description">Descripcion</label>
                        <div class="input">
@@ -37,29 +36,29 @@
                        <span class="help-block">
                         Descripcion del Club que desea Crear.
                        </span>
-                       </div>
+                    </div>
                    </div>
-
+                  
                     <div class="clearfix">
                        <label id="optionsGener">Generos</label>
-                        <div class="input">
-                          <ul class="inputs-list">
+                        <div class="input" id="optiones_genero">
+                          <ul class="inputs-list" >
                             <li>
                               <label>
-                              <input name="optionsGener" value="option1" type="checkbox">
+                              <input name="optionsGener" id="poes" value="poesia" type="checkbox">
                               <span>Poesía</span>
                               </label>
                             </li>
                             <li>
                               <label>
-                              <input name="optionsGener" value="option2" type="checkbox">
+                              <input name="optionsGener" id="narr" value="narrativa" type="checkbox">
                               <span>Narrativa</span>
                               </label>
                             </li>
 
                           <li>
                            <label>
-                           <input name="optionsGener" value="option3" type="checkbox">
+                           <input name="optionsGener" id ="cien" value="cienciaF" type="checkbox">
                            <span>Ciencia Ficción</span>
                            </label>
                          </li>
@@ -83,9 +82,19 @@
                 </div>
                 <div class="clearfix">
                     <label>Invitaciones</label>
-                     <div class="input">
-                      <input class="xlarge" type="text"  name="invitaciones" id="invitaciones" />
-                    </div>
+                      <div class="invitados input hide">
+                        <span class=" uneditable-input medium">Nombre</span>
+                      </div>
+                       <div class="input">
+                          <div class="input-prepend">
+                            <span class="add-on"><a id="nuevo-invitado" href="#">Añadir</a></span>
+                            <input class="medium" type="text"  name="invitacion" size="16" id="invitacion">
+                          </div>
+                        </div>   
+                       <div class="input hide">
+                            <input class="medium" type="text"  name="invitaciones" id="invitaciones">
+                        </div>          
+
                 </div>
              </div>
           </div>

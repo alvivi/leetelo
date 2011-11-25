@@ -73,7 +73,7 @@ class Image (webapp.RequestHandler):
     def get(self):
         greeting = db.get(self.request.get("img_id"))
         if greeting.avatar:
-            self.response.headers['Content-Type'] = "image/png"
+            self.response.headers['Content-Type'] = "img/png"
             self.response.out.write(greeting.avatar)
         else:
             self.response.out.write("No image")
@@ -758,12 +758,12 @@ class ProfileClubView(UserView):
         offset = self.request.get('offset')
         offset = int(offset) if offset else 0
         values = {
-            'user': user,
-            'logoutUri': users.create_logout_url('/'),
-            'error': False,
-            'avatar': avatarImg
+            'clubs'     : Club.all().filter('user =', user).fetch(limit=10, offset=offset),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
         }
-
+        
         self.response.out.write(template.render('html/profileClub.html', values))
 
 
@@ -780,6 +780,34 @@ class ProfileNewClubView(UserView):
                 'avatar': avatarImg
                 }
         self.response.out.write(template.render('html/profileNewClub.html', values))
+
+
+    def post_as_user(self, user, logoutUri, avatarImg):
+       try:
+            nameClub= self.request.get('nombreClub')
+            description= self.request.get('description')
+            generos= self.request.get('selected').split(',')
+            autor= self.request.get('autores')
+            libro= self.request.get('libros')      
+            book = Book.all().filter('title =', libro).get()
+            invitaciones= self.request.get('invitaciones').split(',')
+            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
+
+            self.redirect('/profile/club')
+            logging.debug(invitaciones)
+
+       except:
+              libro = self.request.get('libros')
+              book = Book.all().filter('title =', libro).get()
+              values = {
+                 'book'      : book,
+                 'books'     : Book.all(),
+                 'user'       : user,
+                 'logoutUri'  : users.create_logout_url('/'),
+                 'error'      : True,
+                 'avatar'     : avatarImg
+              }
+              self.response.out.write(template.render('html/profileNewClub.html', values))
 
 # /profile/editclub
 # Vista que se encarga de crear una nuevo club

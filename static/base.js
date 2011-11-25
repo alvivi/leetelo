@@ -152,6 +152,29 @@ var localScripts = {
         });
     },
 
+    "/profile/newclub" : function () {
+        $('#nuevo-invitado').live('click', function (e) {
+            e.preventDefault();
+            var nuevo = $($('.invitados')[0]).clone();
+            var nombre = $('#invitacion').val();
+            nuevo.find('span').text(nombre);
+            $('.invitados').after(nuevo);
+            nuevo.fadeIn('slow');
+            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+        });
+
+        $('#optiones_genero').live('click', function (e) {
+            var keys = '';
+            $('input[type=checkbox]').each(function (i, c) {
+                if ($(c).attr('checked')) {
+                    keys = (keys == '') ? keys : keys + ',';
+                    //keys += $(c).parent().parent().find('span').text();
+                }
+           });
+        });
+
+    },
+
     "/profile/applicationcontent" : function () {
         var owner = (RegExp("owner=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
         var copy = decodeURI((RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1]);

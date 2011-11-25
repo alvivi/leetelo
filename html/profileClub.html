@@ -20,22 +20,18 @@
 		</tr>
 	</thead>
 	<tbody>
-	{% for copy in copies %}
+	{% for club in clubs %}
 		<tr>
 			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
-			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}"></td>
+			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></td>
 			<td style="vertical-align:middle">				
-				<a href="/profile/editcopy?selected={{copy.key}}">
-					{{copy.book.title}}
+				<a href="/profile/editclub?selectedClub={{club.key}}">
+					{{club.name}}
 				</a>
-				<span class="hide key">{{copy.key}}</span>
+				<span class="hide key">{{club.key}}</span>
 			</td>
-			<td style="vertical-align:middle">{{copy.book.author}}</td>
-			{% ifequal copy.offerState "No disponible" %}
-				<td style="vertical-align:middle">Disponible</td>
-			{% else %}
-				<td style="vertical-align:middle">{{copy.offerState}}</td>
-			{% endifequal %}
+			<td style="vertical-align:middle">{{club.state}}</td>
+			<td style="vertical-align:middle">{{club.book.title}}</td>	
 		</tr>
 	{% endfor %}
 	</tbody>

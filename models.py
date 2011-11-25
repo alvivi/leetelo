@@ -52,11 +52,11 @@ class Club(db.Model):
     name  = db.StringProperty(required=True)
     description = db.StringProperty()
     author = db.StringProperty()
-    genre  = db.StringProperty(choices=set([u'Aventuras', u'Biografía', u'Ciencia Ficción', u'Ensayo', u'Histórico', u'Narrativa', u'Novela', u'Poesía', u'Romántico']))
+    genre  = db.StringListProperty()
     book = db.ReferenceProperty(Book)
     owner = db.UserProperty()
     state = db.StringProperty(choices=set(['Habilitado','Deshabilitado']))
-    
+    invitaciones= db.StringListProperty()
 #relacion usuarios - clubs
 class Club_User(db.Model):
     user = db.UserProperty()
