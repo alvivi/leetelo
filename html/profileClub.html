@@ -17,7 +17,7 @@
 			<th class="header blue">Nombre</th>
 			<th class="header blue">Descripcion</th>
 			<th class="header blue">Estado</th>
-		</tr>
+          </tr>
 	</thead>
 	<tbody>
 	{% for club in clubs %}
@@ -30,8 +30,9 @@
 				</a>
 				<span class="hide key">{{club.key}}</span>
 			</td>
-			<td style="vertical-align:middle">{{club.state}}</td>
-			<td style="vertical-align:middle">{{club.book.title}}</td>	
+			<td style="vertical-align:middle">{{club.description}}</td>
+			<td style="vertical-align:middle">{{club.state}}</td>	
+           
 		</tr>
 	{% endfor %}
 	</tbody>

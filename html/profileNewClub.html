@@ -14,6 +14,8 @@
     </div>
 {% endif %}
 
+
+
 <div class="row">
     <form action="/profile/newclub" method="post" id="formClub">
         <fieldset>
@@ -41,28 +43,34 @@
                   
                     <div class="clearfix">
                        <label id="optionsGener">Generos</label>
-                        <div class="input" id="optiones_genero">
-                          <ul class="inputs-list" >
+                        <div class="input" >
+                      
+                          <ul class="inputs-list" id="opciones-genero"  >
                             <li>
                               <label>
-                              <input name="optionsGener" id="poes" value="poesia" type="checkbox">
+                              <input name="optionsGener" id="optionsGener" value="poesia" type="checkbox">
                               <span>Poesía</span>
                               </label>
                             </li>
                             <li>
                               <label>
-                              <input name="optionsGener" id="narr" value="narrativa" type="checkbox">
+                              <input name="optionsGener" id="optionsGener" value="narrativa" type="checkbox">
                               <span>Narrativa</span>
                               </label>
                             </li>
 
                           <li>
                            <label>
-                           <input name="optionsGener" id ="cien" value="cienciaF" type="checkbox">
+                           <input name="optionsGener" id ="optionsGener" value="cienciaF" type="checkbox">
                            <span>Ciencia Ficción</span>
                            </label>
                          </li>
-                                     
+
+                            <li>
+                            <div class="input hide">
+                            <input class="medium" type="text"  name="selectedGener" id="selectedGener">
+                            </div>
+                        </li>                   
                        </ul>
                     </div>
                    </div>

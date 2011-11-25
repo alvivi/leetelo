@@ -152,6 +152,27 @@ var localScripts = {
         });
     },
 
+    "/profile/editclub" : function () {
+        $('#nuevo-invitado').live('click', function (e) {
+            e.preventDefault();
+            var nuevo = $($('.invitados')[0]).clone();
+            var nombre = $('#invitacion').val();
+            nuevo.find('span').text(nombre);
+            $('.invitados').after(nuevo);
+            nuevo.fadeIn('slow');
+            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+        });
+
+        $('#optionsGener').live('click', function (e){
+         var arr = $("input:checked").getCheckboxValues();
+           $('#selectedGener').val(arr);
+           
+       }); 
+          
+
+    },
+
+
     "/profile/newclub" : function () {
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
@@ -163,15 +184,12 @@ var localScripts = {
             $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
         });
 
-        $('#optiones_genero').live('click', function (e) {
-            var keys = '';
-            $('input[type=checkbox]').each(function (i, c) {
-                if ($(c).attr('checked')) {
-                    keys = (keys == '') ? keys : keys + ',';
-                    //keys += $(c).parent().parent().find('span').text();
-                }
-           });
-        });
+        $('#optionsGener').live('click', function (e){
+         var arr = $("input:checked").getCheckboxValues();
+           $('#selectedGener').val(arr);
+           
+       }); 
+          
 
     },
 
@@ -260,6 +278,19 @@ var localScripts = {
         $("#fechaLimite").datepicker();
     }
 }
+
+
+
+jQuery.fn.getCheckboxValues = function(){
+    var values = [];
+    var i = 0;
+    this.each(function(){
+        // guarda los valores en un array
+        values[i++] = $(this).val();
+    });
+    // devuelve un array con los checkboxes seleccionados
+    return values;
+} 
 
 jQuery(function($){
     $.datepicker.regional['es'] = {

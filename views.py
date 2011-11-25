@@ -758,7 +758,7 @@ class ProfileClubView(UserView):
         offset = self.request.get('offset')
         offset = int(offset) if offset else 0
         values = {
-            'clubs'     : Club.all().filter('user =', user).fetch(limit=10, offset=offset),
+            'clubs'     : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg
@@ -786,7 +786,7 @@ class ProfileNewClubView(UserView):
        try:
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
-            generos= self.request.get('selected').split(',')
+            generos= self.request.get('selectedGener').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
@@ -812,18 +812,78 @@ class ProfileNewClubView(UserView):
 # /profile/editclub
 # Vista que se encarga de crear una nuevo club
 class ProfileEditClubView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
-        values={
-                'user'  : user,
-                'logoutUri': users.create_logout_url('/'),
-                'error': False,
-                'avatar': avatarImg
-                }
-        self.response.out.write(template.render('html/profileEditClub.html', values))
+   def get_as_user(self, user, logoutUri, avatarImg):
+        key= self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+       
+
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub
+        }
+        if selectedClub.state == "Habilitado" :self.response.out.write(template.render('html/profileEditClub.html', values))
+        else:self.response.out.write(template.render('html/profileDataClub.html', values))
+
+
+   
+   def post_as_user(self, user, logoutUri, avatarImg):
+        key = self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+       
+
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'error'      : False,
+            'selectedClub': selectedClub
+
+        }  
+        try:
+            invitados_existentes=selectedClub.invitaciones
+            nameClub= self.request.get('nombreClub')
+            description= self.request.get('description')
+            generos= self.request.get('selectedGener').split(',')
+            autor= self.request.get('autores')
+            libro= self.request.get('libros')      
+            book = Book.all().filter('title =', libro).get()
+            nuevos_invitados= self.request.get('invitaciones').split(',')
+            invitaciones=invitados_existentes+nuevos_invitados
+            db.delete(selectedClub)
+            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
+
+            self.redirect('/profile/club')
+           
 
 
 
-# Página principal.
+        except:
+               key = self.request.get('selectedClub')
+               selectedClub = Club.get(key)
+               values = {
+
+                    'user'       : user,
+                    'logoutUri'  : users.create_logout_url('/'),
+                    'avatar'     : avatarImg,
+                    'error'      : True,
+                    'selectedClub': selectedClub
+
+               }
+               self.response.out.write(template.render('html/profileEditClub.html', values))
+
+       
+class ProfileDataClubView(UserView):   
+   def get_as_user(self, user, logoutUri, avatarImg):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub
+        }
+
+#Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values = {
