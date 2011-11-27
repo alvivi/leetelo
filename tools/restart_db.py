@@ -83,3 +83,11 @@ Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
 db.delete(Loan.all().fetch(512))
 db.delete(Exchange.all().fetch(512))
 db.delete(Sale.all().fetch(512))
+
+db.delete(Club.all().fetch(512))
+club1 = Club(name=u'aficionados de Justin',description=u'Este club es una prueba', author=u'Justin Bieber'
+, genre= [u'Poesia',u'Ciencia Ficcion'],invitaciones = [u'user@example.com',u'lol@example.com'],state=u'Habilitado', book=justinBook,owner = testUser).put()
+club2 = Club(name=u'Tres metros sobre el cielo',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Poesia',u'Novela'],invitaciones = [u'nilsen@example.com',u'billy@gates.com'],state=u'Deshabilitado', book=cieloBook, owner = testUser).put()
+club3 = Club(name=u'fans de Haruki Murakami',description=u'Este club va dirigido a los fans de...', author=u'Haruki Murakami', genre= [u'Poesia',u'Novela'],invitaciones = [u'patriciapons89@gmail.com',u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner= testUser).put()
+
+

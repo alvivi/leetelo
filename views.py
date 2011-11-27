@@ -73,7 +73,7 @@ class Image (webapp.RequestHandler):
     def get(self):
         greeting = db.get(self.request.get("img_id"))
         if greeting.avatar:
-            self.response.headers['Content-Type'] = "image/png"
+            self.response.headers['Content-Type'] = "img/png"
             self.response.out.write(greeting.avatar)
         else:
             self.response.out.write("No image")
@@ -347,7 +347,6 @@ class ProfileEditCopyView(UserView):
 
                }
                self.response.out.write(template.render('html/profileEditCopy.html', values))
-
 
 
 class ProfileDataCopyView(UserView):
@@ -753,7 +752,140 @@ class SearchView(UserView):
 
 
 
-# Página principal.
+
+#Vista general del mis clubs
+
+class ProfileClubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        offset = self.request.get('offset')
+        offset = int(offset) if offset else 0
+        values = {
+            'clubs'     : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg
+        }
+        
+        self.response.out.write(template.render('html/profileClub.html', values))
+
+
+
+
+# /profile/newclub
+# Vista que se encarga de crear una nuevo club
+class ProfileNewClubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        values={
+                'user': user,
+                'logoutUri': users.create_logout_url('/'),
+                'error': False,
+                'avatar': avatarImg
+                }
+        self.response.out.write(template.render('html/profileNewClub.html', values))
+
+
+    def post_as_user(self, user, logoutUri, avatarImg):
+       try:
+            nameClub= self.request.get('nombreClub')
+            description= self.request.get('description')
+            generos= self.request.get('selectedGener').split(',')
+            autor= self.request.get('autores')
+            libro= self.request.get('libros')      
+            book = Book.all().filter('title =', libro).get()
+            invitaciones= self.request.get('invitaciones').split(',')
+            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
+
+            self.redirect('/profile/club')
+            logging.debug(invitaciones)
+
+       except:
+              libro = self.request.get('libros')
+              book = Book.all().filter('title =', libro).get()
+              values = {
+                 'book'      : book,
+                 'books'     : Book.all(),
+                 'user'       : user,
+                 'logoutUri'  : users.create_logout_url('/'),
+                 'error'      : True,
+                 'avatar'     : avatarImg
+              }
+              self.response.out.write(template.render('html/profileNewClub.html', values))
+
+# /profile/editclub
+# Vista que se encarga de crear una nuevo club
+class ProfileEditClubView(UserView):
+   def get_as_user(self, user, logoutUri, avatarImg):
+        key= self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+       
+
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub
+        }
+        if selectedClub.state == "Habilitado" :self.response.out.write(template.render('html/profileEditClub.html', values))
+        else:self.response.out.write(template.render('html/profileDataClub.html', values))
+
+
+   
+   def post_as_user(self, user, logoutUri, avatarImg):
+        key = self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+       
+
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'error'      : False,
+            'selectedClub': selectedClub
+
+        }  
+        try:
+            invitados_existentes=selectedClub.invitaciones
+            nameClub= self.request.get('nombreClub')
+            description= self.request.get('description')
+            generos= self.request.get('selectedGener').split(',')
+            autor= self.request.get('autores')
+            libro= self.request.get('libros')      
+            book = Book.all().filter('title =', libro).get()
+            nuevos_invitados= self.request.get('invitaciones').split(',')
+            invitaciones=invitados_existentes+nuevos_invitados
+            db.delete(selectedClub)
+            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
+
+            self.redirect('/profile/club')
+           
+
+
+
+        except:
+               key = self.request.get('selectedClub')
+               selectedClub = Club.get(key)
+               values = {
+
+                    'user'       : user,
+                    'logoutUri'  : users.create_logout_url('/'),
+                    'avatar'     : avatarImg,
+                    'error'      : True,
+                    'selectedClub': selectedClub
+
+               }
+               self.response.out.write(template.render('html/profileEditClub.html', values))
+
+       
+class ProfileDataClubView(UserView):   
+   def get_as_user(self, user, logoutUri, avatarImg):
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub
+        }
+
+#Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values = {

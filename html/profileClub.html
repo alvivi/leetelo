@@ -1,0 +1,56 @@
+
+{% extends "profile.html" %}
+
+{% block nav_profile_club %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<a href="/profile/newclub" class="btn">Crear un Nuevo Club</a>
+<a href="#" id="desactivar-clubs-button" class="btn disabled">Desactivar Clubs</a>
+
+
+<table id="clubsTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue littlepadding"></th>
+			<th class="header blue">Portada</th>
+			<th class="header blue">Nombre</th>
+			<th class="header blue">Descripcion</th>
+			<th class="header blue">Estado</th>
+          </tr>
+	</thead>
+	<tbody>
+	{% for club in clubs %}
+		<tr>
+			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
+			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></td>
+			<td style="vertical-align:middle">				
+				<a href="/profile/editclub?selectedClub={{club.key}}">
+					{{club.name}}
+				</a>
+				<span class="hide key">{{club.key}}</span>
+			</td>
+			<td style="vertical-align:middle">{{club.description}}</td>
+			<td style="vertical-align:middle">{{club.state}}</td>	
+           
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+<div class="alert-message block-message info loading">
+	<p><img src="/static/img/loading.gif"/></p>
+</div>
+
+<div id="modal-remove" class="modal hide fade">
+	<div class="modal-header">
+		<a href="#" class="close">x</a>
+		<h3>Título</h3>
+	</div>
+	<div class="modal-body">
+		<p>¿Estás seguro de eliminar los elementos seleccionados?</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn primary">Aceptar</a>
+	</div>
+</div>
+{% endblock %}
