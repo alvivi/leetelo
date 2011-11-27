@@ -76,6 +76,7 @@ var localScripts = {
             if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
                 doing = true;
                 offset += 10;
+                setTimeout( function () {
                 $.ajax({
                     url  : '/profile/copies',
                     data : {offset : offset},
@@ -96,6 +97,7 @@ var localScripts = {
                         }
                     }
                 });
+                }, 1000);
             }
         });
 

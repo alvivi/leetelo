@@ -114,6 +114,8 @@ class ProfileAlertsView(UserView):
         }
         self.response.out.write(template.render('html/profileAlerts.html', values))
 
+
+            
 class ProfileCopiesView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         offset = self.request.get('offset')
