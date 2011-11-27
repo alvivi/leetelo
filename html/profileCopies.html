@@ -12,6 +12,7 @@
 	<thead>
 		<tr>
 			<th class="header blue littlepadding"></th>
+			<th class="header blue">Portada</th>
 			<th class="header blue">Título</th>
 			<th class="header blue">Autor</th>
 			<th class="header blue">Estado</th>
@@ -21,8 +22,8 @@
 	{% for copy in copies %}
 		<tr>
 			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
-			<td>
-				<img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}">
+			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}"></td>
+			<td style="vertical-align:middle">				
 				<a href="/profile/editcopy?selected={{copy.key}}">
 					{{copy.book.title}}
 				</a>
@@ -38,6 +39,9 @@
 	{% endfor %}
 	</tbody>
 </table>
+<div class="alert-message block-message info loading">
+	<p><img src="/static/img/loading.gif"/></p>
+</div>
 
 <div id="modal-remove" class="modal hide fade">
 	<div class="modal-header">
