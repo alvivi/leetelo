@@ -829,10 +829,15 @@ class ProfileNewClubView(UserView):
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
             invitaciones= self.request.get('invitaciones').split(',')
-            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
-
+            club_actual=Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+            logging.debug(club_actual)
+            for inv in invitaciones:
+                Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
+              
             self.redirect('/profile/club')
             logging.debug(invitaciones)
+ 
+        
 
        except:
               libro = self.request.get('libros')
