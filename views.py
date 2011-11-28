@@ -71,7 +71,13 @@ class ProfileView(UserView):
 
 class Image (webapp.RequestHandler):
     def get(self):
-        greeting = db.get(self.request.get("img_id"))
+        if self.request.get("img_id"):
+            greeting = db.get(self.request.get("img_id"))
+        elif self.request.get("user"):
+            avatarUser = users.User(self.request.get('user'))
+            avatar = UserAvatar.all().filter('user =', avatarUser).get()
+            greeting = db.get(avatar.key())
+            
         if greeting.avatar:
             self.response.headers['Content-Type'] = "img/png"
             self.response.out.write(greeting.avatar)
@@ -769,8 +775,38 @@ class ProfileClubView(UserView):
         self.response.out.write(template.render('html/profileClub.html', values))
 
 
+class ProfileDisableClubsView(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            c = Club.get(self.request.get('selected'))
+            if c.state == 'Habilitado':
+                c.state = 'Deshabilitado'
+                c.put()
+            elif c.state == 'Deshabilitado':
+                c.state = 'Habilitado'
+                c.put()
+            
+        except:
+            pass
+        finally:
+            offset = self.request.get('offset')
+            offset = int(offset) if offset else 0
+            values = {
+                'clubs'      : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+                'user'       : user,
+                'logoutUri'  : users.create_logout_url('/'),
+                'avatar'     : avatarImg
+            }
+            self.response.out.write(template.render('html/profileClub.html', values))
 
-
+class ProfileDeleteParticipationView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        clubKey = self.request.get('key')
+        selectedClub = Club.get(clubKey)
+        participation = Club_User.all().filter('user =', user).filter('club =', club).get()
+        participation.delete()
+        self.redirect('/profile/club')
+        
 # /profile/newclub
 # Vista que se encarga de crear una nuevo club
 class ProfileNewClubView(UserView):
@@ -878,6 +914,8 @@ class ProfileEditClubView(UserView):
        
 class ProfileDataClubView(UserView):   
    def get_as_user(self, user, logoutUri, avatarImg):
+        key= self.request.get('selectedClub')
+        selectedClub = Club.get(key)
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -885,6 +923,21 @@ class ProfileDataClubView(UserView):
             'selectedClub': selectedClub
         }
 
+
+class ProfileClubContentView(UserView):   
+   def get_as_user(self, user, logoutUri, avatarImg):
+        key = self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+        logging.debug('hola')
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub,
+            'participations' : Club_User.allParticipantsOf(selectedClub)
+        }
+        self.response.out.write(template.render('html/profileClubContent.html', values))
+        
 #Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):

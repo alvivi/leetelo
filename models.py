@@ -63,6 +63,10 @@ class Club_User(db.Model):
     club = db.ReferenceProperty(Club)
     state = db.StringProperty(choices=set(['Solicitado', 'Aceptado Solicitacion', 'Rechazada Solicitacion', 'Invitado', 'Aceptada Invitacion', 'Rechazada Invitacion']))
 
+    @classmethod
+    def allParticipantsOf(cls, club):
+        return cls.all().filter('club =', club).fetch(128)
+    
 # Solicitud sobre un libro
 class Request(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='owner_copy')

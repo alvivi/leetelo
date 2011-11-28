@@ -154,6 +154,187 @@ var localScripts = {
         });
     },
 
+"/profile/copies" : function () {
+        var offset = 0; var doing = false; var doing = false;
+        $(window).scroll(function () {
+            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
+                doing = true;
+                offset += 10;
+                setTimeout( function () {
+                $.ajax({
+                    url  : '/profile/copies',
+                    data : {offset : offset},
+                    type : 'GET',
+                    success : function (data) {
+                        var rows = $(data).find('tbody').children();
+                        var count = rows.length;
+                        if (count > 0) {
+                            rows.addClass('new-rows');
+                            $('tbody').append(rows);
+                            $('.new-rows').hide().fadeIn(function () {
+                                $('.new-rows').removeClass('new-rows');
+                                doing = false;
+                            });
+                        }
+                        else {
+                            $('.loading').fadeOut();
+                        }
+                    }
+                });
+                }, 1000);
+            }
+        });
+
+        var button = $('#remove-copies-button');
+        var alertbox = $('#modal-remove');
+        var count = 0;
+
+         $('#modal-remove').modal({backdrop: true, modal: true});
+
+        button.live('click', function (e) {
+            e.preventDefault();
+            if (!$(this).hasClass('disabled')) {
+                alertbox.modal('show');
+            }
+        });
+
+        $("input[type=checkbox]").live('click', function (e) {
+            if ($(this).attr('checked')) {
+                button.removeClass('disabled');
+                count++;
+            }
+            else {
+                count--;
+                if (count <= 0) {
+                    button.addClass('disabled');
+                }
+            }
+        });
+
+        $('#modal-remove .close').live('click', function (e) {
+            $('#modal-remove').modal('hide');
+        });
+
+        $('#modal-remove .primary').live('click', function (e) {
+            var keys = '';
+            $('input[type=checkbox]').each(function (i, c) {
+                if ($(c).attr('checked')) {
+                    keys = (keys == '') ? keys : keys + ',';
+                    keys += $(c).parent().parent().find('span').text();
+                }
+            });
+            $.ajax({
+                url  : '/profile/copies/delete',
+                data : {selected : keys},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    $('#modal-remove').modal('hide');
+                    button.addClass('disabled');
+                }
+            });
+        });
+    },
+    
+    
+    "/profile/club" : function () {
+        var offset = 0; var doing = false; var doing = false;
+        $(window).scroll(function () {
+            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
+                doing = true;
+                offset += 10;
+                setTimeout( function () {
+                $.ajax({
+                    url  : '/profile/club',
+                    data : {offset : offset},
+                    type : 'GET',
+                    success : function (data) {
+                        var rows = $(data).find('tbody').children();
+                        var count = rows.length;
+                        if (count > 0) {
+                            rows.addClass('new-rows');
+                            $('tbody').append(rows);
+                            $('.new-rows').hide().fadeIn(function () {
+                                $('.new-rows').removeClass('new-rows');
+                                doing = false;
+                            });
+                        }
+                        else {
+                            $('.loading').fadeOut();
+                        }
+                    }
+                });
+                }, 1000);
+            }
+        });
+
+        var disable_button = $('#disable-club-link');
+        var selected_club = null;
+        var enable_button = $('#enable-club-link');
+        var button = $('#desactivar-clubs-button');
+        var disable_modal = $('#modal-disable-club');
+        var enable_modal = $('#modal-enable-club');
+        var count = 0;
+        
+        $('#modal-disable-club').modal({backdrop: true, modal: true});
+
+        disable_button.live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            disable_modal.modal('show');
+        });
+
+        $('#modal-disable-club .close').live('click', function (e) {
+            $('#modal-disable-club').modal('hide');
+        });
+
+        $('#modal-disable-club .primary').live('click', function (e) {
+            $.ajax({
+                url  : '/profile/club/disable',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    debugger;
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    $('#modal-disable-club').modal('hide');
+                }
+            });
+        });
+        
+        
+        $('#modal-enable-club').modal({backdrop: true, modal: true});
+
+        enable_button.live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            enable_modal.modal('show');
+        });
+
+        $('#modal-enable-club .close').live('click', function (e) {
+            $('#modal-disable-club').modal('hide');
+        });
+
+        $('#modal-enable-club .primary').live('click', function (e) {
+            $.ajax({
+                url  : '/profile/club/disable',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    debugger;
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    $('#modal-enable-club').modal('hide');
+                }
+            });
+        });
+    },
+    
+    
     "/profile/editclub" : function () {
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();

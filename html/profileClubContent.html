@@ -1,0 +1,58 @@
+{% extends "profile.html" %}
+
+{% block nav_profile_club %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<h4 style="text-align:center">Club {{selectedClub.name}}</h4>
+
+<div class="row" style="text-align:center;margin-left:-200px;margin-right:-200"">
+<div class="sidebar span7">
+    <div class="well span7">
+        <h6> Participantes </h6>
+        <table id="participantsTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue">Avatar</th>
+                        
+			<th class="header blue">Nombre</th>
+			<th class="header blue">Estado</th>
+                        {% ifequal selectedClub.owner user %}
+                            <th class="header blue">Acciones</th>
+                        {% endifequal %}
+                </tr>
+	</thead>
+	<tbody>
+	{% for participation in participations %}
+		<tr>
+                    <td style="vertical-align:middle"><img class="avatar" src='/img?user={{participation.user}}' alt="Avatar del usuario"></td>
+		    <td style="vertical-align:middle">{{participation.user.nickname}}</td>
+		    <td style="vertical-align:middle">{{participation.state}}</td>
+                        
+                    {% ifequal selectedClub.owner user %}
+                        <td style="vertical-align:middle">
+				{% ifequal participation.state 'Invitado' %}
+                                    <input type="submit" class="btn primary small" name="Aceptar" value="Aceptar">
+                                    <input type="submit" class="btn small" name="Rechazar" value="Rechazar">
+                                {% endifequal %}
+				
+			</td>
+                    {% endifequal %}
+           
+		</tr>
+	{% endfor %}
+	</tbody>
+        </table>
+    </div>
+    <div class="well span7">
+        <h6> Eventos </h6>
+    </div>
+</div>
+<div class="well span13" style="margin-left:100px; margin-right:-200px" >
+    <h6> Comentarios </h6>
+
+</div>
+
+
+</div>
+{% endblock %}
