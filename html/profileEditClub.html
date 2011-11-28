@@ -56,15 +56,15 @@
                     <div class="clearfix">
                        <label id="optionsGener">Generos</label>
                         <div class="input" >
-                         <select multiple="multiple" id= "optionsGeners" name ="optionsGeners">
-                            <option value= "CienciaF">Ciencia Ficción</option> 
-                            <option value= "Novela">Novela</option> 
-                            <option value="Poesia">Poesía</option> 
-                            <option value="Narrativa">Narrativa</option> 
-                            <option value= "Biografia">Biografía</option>  
-                            <option value= "Aventuras">Aventuras</option> 
-                            <option value= "Ensayo">Ensayo</option> 
-                            <option value= "Historico">Histórico</option> 
+                         <select multiple="multiple" id= "optionsGeners" name ="optionsGeners">                            
+                            <option value= "CienciaF" {% for g in selectedClub.genre %}{% ifequal g 'CienciaF' %}selected{% endifequal %}{% endfor %}>Ciencia Ficción</option> 
+                            <option value= "Novela" {% for g in selectedClub.genre %}{% ifequal g 'Novela' %}selected{% endifequal %}{% endfor %}>Novela</option> 
+                            <option value="Poesia" {% for g in selectedClub.genre %}{% ifequal g 'Poesia' %}selected{% endifequal %}{% endfor %}>Poesía</option> 
+                            <option value="Narrativa" {% for g in selectedClub.genre %}{% ifequal g 'Narrativa' %}selected{% endifequal %}{% endfor %}>Narrativa</option> 
+                            <option value= "Biografia" {% for g in selectedClub.genre %}{% ifequal g 'Biografia' %}selected{% endifequal %}{% endfor %}>Biografía</option>  
+                            <option value= "Aventuras" {% for g in selectedClub.genre %}{% ifequal g 'Aventuras' %}selected{% endifequal %}{% endfor %}>Aventuras</option> 
+                            <option value= "Ensayo" {% for g in selectedClub.genre %}{% ifequal g 'Ensayo' %}selected{% endifequal %}{% endfor %}>Ensayo</option> 
+                            <option value= "Historico" {% for g in selectedClub.genre %}{% ifequal g 'Historico' %}selected{% endifequal %}{% endfor %}>Histórico</option> 
                          </select>
                         </div>
                        </label>
