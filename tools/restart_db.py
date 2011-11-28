@@ -90,11 +90,12 @@ club1 = Club(name=u'aficionados de Justin',description=u'Este club es una prueba
 , genre= [u'Poesia',u'Ciencia Ficcion'],invitaciones = [u'user@example.com',u'lol@example.com'],state=u'Habilitado', book=justinBook,owner = testUser).put()
 club2 = Club(name=u'Tres metros sobre el cielo',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Poesia',u'Novela'],invitaciones = [u'nilsen@example.com',u'billy@gates.com'],state=u'Deshabilitado', book=cieloBook, owner = testUser).put()
 club3 = Club(name=u'fans de Haruki Murakami',description=u'Este club va dirigido a los fans de...', author=u'Haruki Murakami', genre= [u'Poesia',u'Novela'],invitaciones = [u'patriciapons89@gmail.com',u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner= testUser).put()
+club4 = Club(name=u'El club de la comedia',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Narrativa',u'Biografía'],invitaciones = [u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner = nilsenUser).put()
 
 db.delete(Club_User.all().fetch(512))
 Club_User(user=userUser,club=club1,state=u'Invitado').put()
 Club_User(user=lolUser,club=club1,state=u'Invitado').put()
-Club_User(user=nilsenUser,club=club2,state=u'Invitado').put()
+Club_User(user=nilsenUser,club=club2,state=u'Aceptada Invitacion').put()
 Club_User(user=billyUser,club=club2,state=u'Invitado').put()
 Club_User(user=patryUser,club=club3,state=u'Invitado').put()
 Club_User(user=billyUser,club=club3,state=u'Invitado').put()

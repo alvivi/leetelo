@@ -831,6 +831,7 @@ class ProfileNewClubView(UserView):
             invitaciones= self.request.get('invitaciones').split(',')
             club_actual=Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
             logging.debug(club_actual)
+            Club_User(user=user, club=club_actual,state="Propietario").put()
             for inv in invitaciones:
                 Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
               
@@ -866,7 +867,7 @@ class ProfileEditClubView(UserView):
             'avatar'     : avatarImg,
             'selectedClub': selectedClub
         }
-        if selectedClub.state == "Habilitado" :self.response.out.write(template.render('html/profileEditClub.html', values))
+        if selectedClub.state == "Habilitado" and selectedClub.owner == user :self.response.out.write(template.render('html/profileEditClub.html', values))
         else:self.response.out.write(template.render('html/profileDataClub.html', values))
 
 
