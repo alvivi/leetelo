@@ -6,6 +6,48 @@ var JSTipoOferta = function() {
      $("#idfecha").toggle(opc_sel != 'Ninguna');
 }
 
+function pagination(url, size) {
+    function loadingPosition() { return $('.loading').offset().top; }
+    function pagePosition() { return $(window).height() + window.pageYOffset; }
+
+    var offset = 0; var doing = false; var doing = false;
+
+    if (loadingPosition() < pagePosition()) {
+        $('.loading').hide();
+    }
+    else {
+        $(window).scroll(function () {
+            if (loadingPosition() <= pagePosition() && !doing) {
+                doing = true;
+                offset += size;
+                setTimeout( function () {
+                    $.ajax({
+                        url  : url,
+                        data : {offset : offset},
+                        type : 'GET',
+                        success : function (data) {
+                            var rows = $(data).find('tbody').children();
+                            var count = rows.length;
+                            if (count > 0) {
+                                rows.addClass('new-rows');
+                                $('tbody').append(rows);
+                                $('.new-rows').hide().fadeIn(function () {
+                                    $('.new-rows').removeClass('new-rows');
+                                    doing = false;
+                                });
+                            }
+                            else {
+                                $('.loading').fadeOut();
+                            }
+                        }
+                    });
+                }, 1000);
+            }
+        });
+    }
+}
+
+
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
@@ -71,35 +113,7 @@ var localScripts = {
     },
 
     "/profile/copies" : function () {
-        var offset = 0; var doing = false; var doing = false;
-        $(window).scroll(function () {
-            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
-                doing = true;
-                offset += 10;
-                setTimeout( function () {
-                $.ajax({
-                    url  : '/profile/copies',
-                    data : {offset : offset},
-                    type : 'GET',
-                    success : function (data) {
-                        var rows = $(data).find('tbody').children();
-                        var count = rows.length;
-                        if (count > 0) {
-                            rows.addClass('new-rows');
-                            $('tbody').append(rows);
-                            $('.new-rows').hide().fadeIn(function () {
-                                $('.new-rows').removeClass('new-rows');
-                                doing = false;
-                            });
-                        }
-                        else {
-                            $('.loading').fadeOut();
-                        }
-                    }
-                });
-                }, 1000);
-            }
-        });
+        pagination('/profile/copies', 10);
 
         var button = $('#remove-copies-button');
         var alertbox = $('#modal-remove');
@@ -168,9 +182,9 @@ var localScripts = {
         $('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
-           
-       }); 
-          
+
+       });
+
 
     },
 
@@ -189,9 +203,9 @@ var localScripts = {
         $('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
-           
-       }); 
-          
+
+       });
+
 
     },
 
@@ -292,7 +306,7 @@ jQuery.fn.getCheckboxValues = function(){
     });
     // devuelve un array con los checkboxes seleccionados
     return values;
-} 
+}
 
 jQuery(function($){
     $.datepicker.regional['es'] = {
