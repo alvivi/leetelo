@@ -824,12 +824,13 @@ class ProfileNewClubView(UserView):
        try:
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
+            imagen  = db.Link(self.request.get('image'))
             generos= self.request.get('resultado').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
             invitaciones= self.request.get('invitaciones').split(',')
-            club_actual=Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+            club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
             logging.debug(club_actual)
             for inv in invitaciones:
                 Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
