@@ -254,35 +254,7 @@ var localScripts = {
     
     
     "/profile/club" : function () {
-        var offset = 0; var doing = false; var doing = false;
-        $(window).scroll(function () {
-            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
-                doing = true;
-                offset += 10;
-                setTimeout( function () {
-                $.ajax({
-                    url  : '/profile/club',
-                    data : {offset : offset},
-                    type : 'GET',
-                    success : function (data) {
-                        var rows = $(data).find('tbody').children();
-                        var count = rows.length;
-                        if (count > 0) {
-                            rows.addClass('new-rows');
-                            $('tbody').append(rows);
-                            $('.new-rows').hide().fadeIn(function () {
-                                $('.new-rows').removeClass('new-rows');
-                                doing = false;
-                            });
-                        }
-                        else {
-                            $('.loading').fadeOut();
-                        }
-                    }
-                });
-                }, 1000);
-            }
-        });
+        pagination('/profile/club',10);
 
         var disable_button = $('#disable-club-link');
         var selected_club = null;
