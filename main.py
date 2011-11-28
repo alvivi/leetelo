@@ -35,13 +35,13 @@ def main():
         ('/profile/exchange', ExchangeView),
         ('/profile/applicationcontent', ApplicationContentView),
         ('/profile/account',ProfileAccountView),
-        ('/profile/club', ProfileClubView),
-        ('/profile/clubcontent', ProfileClubContentView),
+        ('/profile/club', ProfileClubListView),
+        ('/profile/club/content', ProfileClubContentView),
         ('/profile/club/disable', ProfileDisableClubsView),
         ('/profile/club/deleteparticipation', ProfileDeleteParticipationView),
-        ('/profile/newclub', ProfileNewClubView),
-        ('/profile/editclub', ProfileEditClubView),
-        ('/profile/dataclub', ProfileDataClubView),
+        ('/profile/club/new', ProfileNewClubView),
+        ('/profile/club/edit', ProfileEditClubView),
+        ('/profile/club/view', ProfileDataClubView),
         ('/img',Image)
         ], debug=True)
     util.run_wsgi_app(application)

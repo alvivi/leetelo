@@ -761,7 +761,7 @@ class SearchView(UserView):
 
 #Vista general del mis clubs
 
-class ProfileClubView(UserView):
+class ProfileClubListView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         offset = self.request.get('offset')
         offset = int(offset) if offset else 0

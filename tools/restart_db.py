@@ -10,6 +10,7 @@ userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
 patryUser = users.User(email='patriciapons89@gmail.com')
 
+
 db.delete(Book.all().fetch(512))
 justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber',genre=u'Biografía', year=2011, image=db.Link('http://img9.planetadelibros.com/usuaris/libros/fotos/49/tam_1/48669_1_JUSTINBIEBER.jpg')).put()
 mistBook   = Book(title=u'The Mist', author=u'Stephen King',genre=u'Novela', year=1983, image=db.Link('http://ecx.images-amazon.com/images/I/41ZOgg%2BT6gL._SL500_AA240_.jpg')).put()
