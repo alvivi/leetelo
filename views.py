@@ -824,7 +824,7 @@ class ProfileNewClubView(UserView):
        try:
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
-            generos= self.request.get('selectedGener').split(',')
+            generos= self.request.get('resultado').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
@@ -883,7 +883,7 @@ class ProfileEditClubView(UserView):
             invitados_existentes=selectedClub.invitaciones
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
-            generos= self.request.get('selectedGener').split(',')
+            generos= self.request.get('resultado').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()

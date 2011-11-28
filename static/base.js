@@ -321,7 +321,7 @@ var localScripts = {
     },
     
     
-    "/profile/editclub" : function () {
+    "/profile/club/edit" : function () {
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
@@ -332,17 +332,20 @@ var localScripts = {
             $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
         });
 
-        $('#optionsGener').live('click', function (e){
+        /*$('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
 
-       });
-
+       });*/
+        $('#optionsGeners').live('click', function (e){
+           $("#resultado").val($('#optionsGeners').val());
+             });
+ 
 
     },
 
 
-    "/profile/newclub" : function () {
+    "/profile/club/new" : function () {
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
@@ -353,13 +356,16 @@ var localScripts = {
             $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
         });
 
-        $('#optionsGener').live('click', function (e){
+        /*$('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
 
-       });
+       });*/
 
-
+         $('#optionsGeners').live('click', function (e){
+           $("#resultado").val($('#optionsGeners').val());
+             });
+       
     },
 
     "/profile/applicationcontent" : function () {
