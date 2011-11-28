@@ -766,7 +766,7 @@ class ProfileClubListView(UserView):
         offset = self.request.get('offset')
         offset = int(offset) if offset else 0
         values = {
-            'clubs'     : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+            'participations'     : Club_User.all().filter('user =', user).fetch(limit=10, offset=offset),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg
@@ -792,7 +792,7 @@ class ProfileDisableClubsView(UserView):
             offset = self.request.get('offset')
             offset = int(offset) if offset else 0
             values = {
-                'clubs'      : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+                'participations'      : Club_User.all().filter('user =', user).fetch(limit=10, offset=offset),
                 'user'       : user,
                 'logoutUri'  : users.create_logout_url('/'),
                 'avatar'     : avatarImg
@@ -824,12 +824,13 @@ class ProfileNewClubView(UserView):
        try:
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
+            imagen  = db.Link(self.request.get('image'))
             generos= self.request.get('resultado').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
             invitaciones= self.request.get('invitaciones').split(',')
-            club_actual=Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+            club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
             logging.debug(club_actual)
             Club_User(user=user, club=club_actual,state="Propietario").put()
             for inv in invitaciones:

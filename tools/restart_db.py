@@ -93,9 +93,11 @@ club3 = Club(name=u'fans de Haruki Murakami',description=u'Este club va dirigido
 club4 = Club(name=u'El club de la comedia',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Narrativa',u'Biografía'],invitaciones = [u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner = nilsenUser).put()
 
 db.delete(Club_User.all().fetch(512))
+Club_User(user=testUser,club=club1,state=u'Propietario').put()
 Club_User(user=userUser,club=club1,state=u'Invitado').put()
 Club_User(user=lolUser,club=club1,state=u'Invitado').put()
 Club_User(user=nilsenUser,club=club2,state=u'Aceptada Invitacion').put()
 Club_User(user=billyUser,club=club2,state=u'Invitado').put()
+Club_User(user=testUser,club=club3,state=u'Propietario').put()
 Club_User(user=patryUser,club=club3,state=u'Invitado').put()
 Club_User(user=billyUser,club=club3,state=u'Invitado').put()
