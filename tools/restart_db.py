@@ -92,9 +92,12 @@ club2 = Club(name=u'Tres metros sobre el cielo',description=u'Este club va dirig
 club3 = Club(name=u'fans de Haruki Murakami',description=u'Este club va dirigido a los fans de...', author=u'Haruki Murakami', genre= [u'Poesia',u'Novela'],invitaciones = [u'patriciapons89@gmail.com',u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner= testUser).put()
 
 db.delete(Club_User.all().fetch(512))
+Club_User(user=testUser,club=club1,state=u'Propietario').put()
 Club_User(user=userUser,club=club1,state=u'Invitado').put()
 Club_User(user=lolUser,club=club1,state=u'Invitado').put()
+Club_User(user=testUser,club=club2,state=u'Propietario').put()
 Club_User(user=nilsenUser,club=club2,state=u'Invitado').put()
 Club_User(user=billyUser,club=club2,state=u'Invitado').put()
+Club_User(user=testUser,club=club3,state=u'Propietario').put()
 Club_User(user=patryUser,club=club3,state=u'Invitado').put()
 Club_User(user=billyUser,club=club3,state=u'Invitado').put()

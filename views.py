@@ -766,7 +766,7 @@ class ProfileClubListView(UserView):
         offset = self.request.get('offset')
         offset = int(offset) if offset else 0
         values = {
-            'clubs'     : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+            'participations'     : Club_User.all().filter('user =', user).fetch(limit=10, offset=offset),
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg
@@ -792,7 +792,7 @@ class ProfileDisableClubsView(UserView):
             offset = self.request.get('offset')
             offset = int(offset) if offset else 0
             values = {
-                'clubs'      : Club.all().filter('owner =', user).fetch(limit=10, offset=offset),
+                'participations'      : Club_User.all().filter('user =', user).fetch(limit=10, offset=offset),
                 'user'       : user,
                 'logoutUri'  : users.create_logout_url('/'),
                 'avatar'     : avatarImg
