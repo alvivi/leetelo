@@ -30,6 +30,7 @@
                     <li {% block nav_search %} {% endblock %}><a href="/search">Buscador</a></li>
                     {%if user %}
                     <li {% block nav_profile %} {% endblock %}><a href="/profile">Perfil</a></li>
+                    <li {% block nav_club %} {% endblock %}><a href="/club">Clubes</a></li>
                     <li><a href="{{logoutUri}}">Cerrar sesión</a></li>
                     {% endif %}
                 </ul>

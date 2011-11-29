@@ -11,6 +11,7 @@ from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.ext.webapp import template
 from models import *
+from functions import *
 import logging
 import time
 import urllib
@@ -960,3 +961,32 @@ class IndexView(UserView):
             'newUserUri' : 'http://accounts.google.com'
         }
         self.response.out.write(template.render('html/index.html', values))
+
+
+class clubView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        
+        nombre = self.request.get("club_name")
+        creador = self.request.get("club_maker")
+        genero = self.request.get("club_genre")
+        libro = self.request.get("book_name")
+    
+        res = ClubResult.searchAll(nombre,creador,genero,libro)
+        
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'misclubs'  : Club_User.clubsForUser(user),
+            'results' : res
+        }
+       
+        
+        self.response.out.write(template.render('html/club.html', values))
+
+
+    def get_as_anom(self):
+        values = {
+            'loginUri'   : users.create_login_url(self.request.uri),
+            'newUserUri' : 'http://accounts.google.com'
+        }
+        self.response.out.write(template.render('html/club.html', values))

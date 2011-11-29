@@ -88,16 +88,18 @@
 <table id="resTable" class="zebra-striped sortable">
 	<thead>
 		<tr>
+			<th class="header blue" style="width: 75px;">Portada</th>
 			<th class="header blue" style="width: 195px;">Titulo</th>
 			<th class="header blue" style="width: 170px;">Autor</th>
 			<th class="header blue" style="width: 50px;">Anyo</th>
-			<th class="header blue" style="width: 85px;">Genero</th>
+			<th class="header blue" style="width: 75px;">Genero</th>
 			<th class="header blue" style="width: 110px;"></th>
 		</tr>
 	</thead>
 	<tbody>
 	{% for res in results %}
 		<tr>
+			<td><img src="{{res.image}}" width='74'></img></td>
 			<td>{{res.title}}</td>
 			<td>{{res.author}}</td>
 			<td>{{res.date}}</td>
