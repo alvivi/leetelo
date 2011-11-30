@@ -11,7 +11,7 @@ from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.ext.webapp import template
 from models import *
-from functions import *
+#from functions import *
 import logging
 import time
 import urllib
@@ -856,7 +856,7 @@ class ProfileNewClubView(UserView):
               self.response.out.write(template.render('html/profileNewClub.html', values))
 
 # /profile/editclub
-# Vista que se encarga de crear una nuevo club
+# Vista que se encarga de editar un club ya creado
 class ProfileEditClubView(UserView):
    def get_as_user(self, user, logoutUri, avatarImg):
         key= self.request.get('selectedClub')
@@ -891,20 +891,27 @@ class ProfileEditClubView(UserView):
             invitados_existentes=selectedClub.invitaciones
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
+            imagen  = db.Link(self.request.get('image'))
             generos= self.request.get('resultado').split(',')
             autor= self.request.get('autores')
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
             nuevos_invitados= self.request.get('invitaciones').split(',')
             invitaciones=invitados_existentes+nuevos_invitados
-            db.delete(selectedClub)
-            Club(book=book, owner=user, name=nameClub, description=description, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()
-
+            selectedClub.name=nameClub
+            selectedClub.description=description
+            selectedClub.genre=generos
+            selectedClub.author=autor;
+            selectedClub.book=book
+            selectedClub.invitaciones=invitaciones
+            selectedClub.image=imagen
+            selectedClub.state="Habilitado"
+            selectedClub.put()
+            for inv in nuevos_invitados:
+              Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
+            
             self.redirect('/profile/club')
            
-
-
-
         except:
                key = self.request.get('selectedClub')
                selectedClub = Club.get(key)
