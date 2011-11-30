@@ -322,6 +322,7 @@ var localScripts = {
     
     
     "/profile/club/edit" : function () {
+        
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
@@ -346,6 +347,11 @@ var localScripts = {
 
 
     "/profile/club/new" : function () {
+        if(/.*errorrepeat=true.*/.test(location.href)) {
+            
+            $('#nombreClub').twipsy({trigger: 'manual'});
+            $('#nombreClub').twipsy('show')
+        }
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
