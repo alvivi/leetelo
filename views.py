@@ -831,14 +831,17 @@ class ProfileNewClubView(UserView):
             libro= self.request.get('libros')      
             book = Book.all().filter('title =', libro).get()
             invitaciones= self.request.get('invitaciones').split(',')
-            club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
-            logging.debug(club_actual)
-            Club_User(user=user, club=club_actual,state="Propietario").put()
-            for inv in invitaciones:
-                Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
+            if Club.all().filter('name =', nameClub).count() > 0:
+                  self.redirect('/profile/club/new?errorrepeat=true')
+            else:
+                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+                 logging.debug(club_actual)
+                 Club_User(user=user, club=club_actual,state="Propietario").put()
+                 for inv in invitaciones:
+                    Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
               
-            self.redirect('/profile/club')
-            logging.debug(invitaciones)
+                 self.redirect('/profile/club')
+                 logging.debug(invitaciones)
  
         
 
