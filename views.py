@@ -11,7 +11,7 @@ from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.ext.webapp import template
 from models import *
-#from functions import *
+from functions import *
 import logging
 import time
 import urllib
