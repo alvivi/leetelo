@@ -887,6 +887,7 @@ class ProfileEditClubView(UserView):
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'error'      : False,
+            'errorrepeat': False,
             'selectedClub': selectedClub
 
         }  
@@ -901,19 +902,45 @@ class ProfileEditClubView(UserView):
             book = Book.all().filter('title =', libro).get()
             nuevos_invitados= self.request.get('invitaciones').split(',')
             invitaciones=invitados_existentes+nuevos_invitados
-            selectedClub.name=nameClub
-            selectedClub.description=description
-            selectedClub.genre=generos
-            selectedClub.author=autor;
-            selectedClub.book=book
-            selectedClub.invitaciones=invitaciones
-            selectedClub.image=imagen
-            selectedClub.state="Habilitado"
-            selectedClub.put()
-            for inv in nuevos_invitados:
-              Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
-            
-            self.redirect('/profile/club')
+            if selectedClub.name == nameClub:
+               selectedClub.description=description
+               selectedClub.genre=generos 
+               selectedClub.author=autor
+               selectedClub.book=book
+               selectedClub.invitaciones=invitaciones
+               selectedClub.image=imagen
+               selectedClub.state="Habilitado"
+               selectedClub.put()
+               for inv in nuevos_invitados:
+                  Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
+               self.redirect('/profile/club')
+            else: 
+                 if Club.all().filter('name =', nameClub).count()>0:
+                    values = {
+
+                         'user'       : user,
+                         'logoutUri'  : users.create_logout_url('/'),
+                         'avatar'     : avatarImg,
+                         'error'      : False,
+                         'errorrepeat': True,
+                         'selectedClub': selectedClub
+
+                   }
+                    self.response.out.write(template.render('html/profileEditClub.html', values))
+                    #self.redirect('/profile/club/edit?errorrepeat=true')
+                 else: 
+                      selectedClub.name=nameClub
+                      selectedClub.description=description
+                      selectedClub.genre=generos
+                      selectedClub.author=autor
+                      selectedClub.book=book
+                      selectedClub.invitaciones=invitaciones
+                      selectedClub.image=imagen
+                      selectedClub.state="Habilitado"
+                      selectedClub.put()
+                      for inv in nuevos_invitados:
+                        Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
+                      self.redirect('/profile/club') 
            
         except:
                key = self.request.get('selectedClub')
@@ -924,6 +951,7 @@ class ProfileEditClubView(UserView):
                     'logoutUri'  : users.create_logout_url('/'),
                     'avatar'     : avatarImg,
                     'error'      : True,
+                    'errorrepeat': False,
                     'selectedClub': selectedClub
 
                }

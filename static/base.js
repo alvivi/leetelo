@@ -322,8 +322,8 @@ var localScripts = {
     
     
     "/profile/club/edit" : function () {
-        
-        $('#nuevo-invitado').live('click', function (e) {
+      
+         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
@@ -340,7 +340,7 @@ var localScripts = {
        });*/
         $('#optionsGeners').live('click', function (e){
            $("#resultado").val($('#optionsGeners').val());
-             });
+        });
  
 
     },

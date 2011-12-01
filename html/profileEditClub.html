@@ -15,6 +15,15 @@
     </div>
 </div>
 {% else %}
+ {% if errorrepeat %}
+<div class="row">
+    <div class="alert-message block-message error span16">
+	    <p>El nombre de Club ya existe.
+	       </p>
+    </div>
+</div>
+ {% else %} 
+ {% endif %}
 {% endif %}
 <div class="row">
     <form action="/profile/club/edit?selectedClub={{selectedClub.key}}" method="post">
@@ -29,6 +38,7 @@
                 <div class="clearfix">
                     <label for="nameClub">Nombre</label>
                     <div class="input">
+                      <!--<input data-placement="right" rel='twipsy' title="Este Club ya existe" class="xlarge" id="nombreClub" name="nombreClub" value ="{{selectedClub.name}}" size="90" type="text">-->
                       <input class="xlarge" type="text"  name="nombreClub" id="nombreClub" value= "{{selectedClub.name}}" />
                     </div>
                     <div>
