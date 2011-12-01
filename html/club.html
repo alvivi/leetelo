@@ -1,0 +1,111 @@
+
+{% extends "base.html" %}
+
+{% block nav_club %} class="active" {% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+		<div class="span9">
+
+<form action="/club" method="get" align="left">			
+			<h6>Busqueda de Club</h6>
+					
+			<div class = row>
+					Nombre:
+			</div>
+			<div class = row>
+					<input type="text" name="club_name" placeholder="Introduce un nombre de club"</input>
+			</div>
+
+			<div class = row>
+					Creador:
+			</div>
+			<div class = row>
+					<input type="text" name="club_maker" placeholder="Introduce el nombre del creador"</input>
+			</div>
+
+
+			<div class = row>
+			                 Genero:
+			</div>
+			<div class = row>
+			              <select name="club_genre" id="club_genre">
+						<option>------</option>
+						<option>Novela</option>
+						<option>Aventuras</option>
+						<option>Poesia</option>
+						<option>Historico</option>
+						<option>Ciencia Ficcion</option>
+						<option>Romantico</option>
+						<option>Ensayo</option>
+			               </select>
+			</div>
+			
+			
+			<div class = row>
+					Libro:
+			</div>
+			<div class = row>
+					<input type="text" name="book_name" placeholder="Introduce el nombre de un libro"</input>
+			</div>
+			.
+			<div class = row>
+			</div>			
+			<div class = row>
+			<input type="submit" class="span4 btn primary" value="Buscar">
+			</div>
+			</form>
+
+<table id="resTable" class="zebra-striped sortable">
+	<thead>
+		<tr>
+			<th class="header blue" style="width: 50px;">Foto</th>
+			<th class="header blue" style="width: 195px;">Nombre Club</th>
+			<th class="header blue" style="width: 170px;">Descripcion</th>
+			<th class="header blue" style="width: 85px;">Genero</th>
+			<th class="header blue" style="width: 110px;"></th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for res in results %}
+		<tr>
+			<td><img src="{{res.image}}" width='74'></img></td>
+			<td>{{res.name}}</td>
+			<td>{{res.author}}</td>
+			<td>{{res.genre}}</td>
+			<td><a class="btn primary">Solicitar</a></td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+			
+		</div>
+		<div class="span7">
+			<h6>Mis Clubes</h6>
+			<table id="copiesTable" class="zebra-striped sortable">
+				<thead>
+					<tr>
+						<th class="header blue">Club</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					{% for club in misclubs %}
+						<tr>
+							<td>{{club.club}}</td>
+		
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+</div>
+
+
+
+
+
+
+{% endblock %}
