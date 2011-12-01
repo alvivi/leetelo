@@ -62,7 +62,7 @@ class Club(db.Model):
 class Club_User(db.Model):
     user = db.UserProperty()
     club = db.ReferenceProperty(Club)
-    state = db.StringProperty(choices=set(['Propietario', 'Solicitado', 'Aceptado Solicitacion', 'Rechazada Solicitacion', 'Invitado', 'Aceptada Invitacion', 'Rechazada Invitacion']))
+    state = db.StringProperty(choices=set(['Propietario', 'Solicitado', 'Solicitud Aceptada', 'Solicitud Rechazada', 'Invitado', 'Invitacion Aceptada', 'Invitacion Rechazada']))
 
     @classmethod
     def allParticipantsOf(cls, club):

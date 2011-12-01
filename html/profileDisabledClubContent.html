@@ -6,6 +6,11 @@
 
 <div class="row">
     <div class="span16">
+        {% ifequal selectedClub.state 'Deshabilitado' %}
+            <p class="alert-message block-message error"><b>Atenci&oacuten!!</b> Este club est&aacute deshabilitado. No podr&aacute escribir comentarios ni crear eventos.</p>
+        {% else %}
+            <p class="alert-message block-message error"><b>Atenci&oacuten!!</b> Todav&iacutea no es participante de este club. No podr&aacute escribir comentarios ni crear eventos.</p>
+        {% endifequal %}
         <h5 class="alert-message info">Club {{selectedClub.name}}</h5>
         <div class="row">
             <div class="span2"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></div>
@@ -48,9 +53,6 @@
                     <th class="header blue" style="width:50px" >Avatar</th>
                     <th class="header blue" >Nombre</th>
                     <th class="header blue" >Estado</th>
-                    {% ifequal selectedClub.owner user %}
-                        <th class="header blue" style="width:200px">Acciones</th>
-                    {% endifequal %}
                 </tr>
             </thead>
             <tbody>
@@ -59,14 +61,6 @@
                         <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user}}' alt="Avatar del usuario"></td>
                         <td style="vertical-align:middle">{{participation.user.nickname}}</td>
                         <td style="vertical-align:middle">{{participation.state}}</td>
-                        {% ifequal selectedClub.owner user %}
-                            <td style="vertical-align:middle">
-                            {% ifequal participation.state 'Solicitado' %}
-                                <p><a id="accept-request-link" href="#"><span class="hide">{{participation.key}}</span>Aceptar</a></p>
-				<p><a id="reject-request-link" href="#"><span class="hide">{{participation.key}}</span>Rechazar</a></p>
-                            {% endifequal %}
-                            </td>
-                        {% endifequal %}
                     </tr>
                 {% endfor %}
             </tbody>

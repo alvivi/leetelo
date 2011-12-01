@@ -71,12 +71,9 @@ class ProfileView(UserView):
 
 class Image (webapp.RequestHandler):
     def get(self):
-        if self.request.get("img_id"):
-            greeting = db.get(self.request.get("img_id"))
-        elif self.request.get("user"):
-            avatarUser = users.User(self.request.get('user'))
-            avatar = UserAvatar.all().filter('user =', avatarUser).get()
-            greeting = db.get(avatar.key())
+        avatarUser = users.User(self.request.get('user'))
+        avatar = UserAvatar.all().filter('user =', avatarUser).get()
+        greeting = db.get(avatar.key())
             
         if greeting.avatar:
             self.response.headers['Content-Type'] = "img/png"
@@ -135,7 +132,7 @@ class ProfileCopiesView(UserView):
         self.response.out.write(template.render('html/profileCopies.html', values))
 
 class ProfileDeleteCopiesView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
+    def post_as_user(self, user, logoutUri, avatarImg):
         try:
             copies = self.request.get('selected').split(",")
             for c in Copy.get(copies):
@@ -799,13 +796,43 @@ class ProfileDisableClubsView(UserView):
             }
             self.response.out.write(template.render('html/profileClub.html', values))
 
+#Vista para darse de baja en un club
 class ProfileDeleteParticipationView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
-        clubKey = self.request.get('key')
-        selectedClub = Club.get(clubKey)
-        participation = Club_User.all().filter('user =', user).filter('club =', club).get()
+    def post_as_user(self, user, logoutUri, avatarImg):
+        selectedClub = Club.get(self.request.get('selected'))
+        participation = Club_User.all().filter('user =', user).filter('club =', selectedClub).get()
         participation.delete()
         self.redirect('/profile/club')
+        
+#Vista para aceptar o rechazar invitaciones a clubs
+class ProfileAnswerInvitationView(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        selectedClub = Club.get(self.request.get('selected'))
+        option = self.request.get('option')
+        if option == 'Aceptar':
+            participation = Club_User.all().filter('user =', user).filter('club =', selectedClub).get()
+            participation.state = 'Invitacion Aceptada'
+            participation.put()
+        elif option == 'Rechazar':
+            participation = Club_User.all().filter('user =', user).filter('club =', selectedClub).get()
+            participation.state = 'Invitacion Rechazada'
+            participation.put()
+        self.redirect('/profile/club')
+        
+    
+
+class ProfileAnswerRequestView(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        participation = Club_User.get(self.request.get('selected'))
+        option = self.request.get('option')
+        if option == 'Aceptar':
+            participation.state = 'Solicitud Aceptada'
+            logging.debug(participation.state)
+            participation.put()
+        elif option == 'Rechazar':
+            participation.state = 'Solicitud Rechazada'
+            participation.put()
+        self.redirect('/profile/club/content?selectedClub=' + str(participation.club.key()) )
         
 # /profile/newclub
 # Vista que se encarga de crear una nuevo club
@@ -934,7 +961,6 @@ class ProfileClubContentView(UserView):
    def get_as_user(self, user, logoutUri, avatarImg):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
-        logging.debug('hola')
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -943,6 +969,19 @@ class ProfileClubContentView(UserView):
             'participations' : Club_User.allParticipantsOf(selectedClub)
         }
         self.response.out.write(template.render('html/profileClubContent.html', values))
+        
+class ProfileDisabledClubContentView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        key = self.request.get('selectedClub')
+        selectedClub = Club.get(key)
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'selectedClub': selectedClub,
+            'participations' : Club_User.allParticipantsOf(selectedClub)
+        }
+        self.response.out.write(template.render('html/profileDisabledClubContent.html', values))
         
 #Página principal.
 class IndexView(UserView):
