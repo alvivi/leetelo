@@ -9,6 +9,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.api import images
+from google.appengine.api import logservice
 from google.appengine.ext.webapp import template
 from models import *
 from functions import *
@@ -849,33 +850,56 @@ class ProfileNewClubView(UserView):
 
 
     def post_as_user(self, user, logoutUri, avatarImg):
-       try:
+        try:
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
-            imagen  = db.Link(self.request.get('image'))
-            generos= self.request.get('resultado').split(',')
-            autor= self.request.get('autores')
-            libro= self.request.get('libros')      
-            book = Book.all().filter('title =', libro).get()
-            invitaciones= self.request.get('invitaciones').split(',')
-            if Club.all().filter('name =', nameClub).count() > 0:
-                  self.redirect('/profile/club/new?errorrepeat=true')
+            imagen_txt = self.request.get('image')
+            generos = self.request.get('resultado').split(',')
+            autor = self.request.get('autores')
+            libro = self.request.get('libros')
+            book=None
+            invitaciones = self.request.get('invitaciones').split(',')
+            
+            logging.debug(nameClub)
+            logging.debug(description)
+            logging.debug(imagen_txt)
+            logging.debug(generos)
+            logging.debug(autor)
+            logging.debug(libro)
+                       
+            if imagen_txt == '' or imagen_txt == 'http://':
+                imagen=None
             else:
-                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
-                 logging.debug(club_actual)
-                 Club_User(user=user, club=club_actual,state="Propietario").put()
-                 for inv in invitaciones:
-                    Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
-              
-                 self.redirect('/profile/club')
-                 logging.debug(invitaciones)
+                imagen = db.Link(imagen_txt)
+            
+            if len(generos[0])<2 and libro == '' and autor == '':
+                raise ValueError("No se cumple la condición")
+            
+            if not(libro is ''):
+                book = Book.all().filter('title =', libro).get()
+            
+            if len(invitaciones)<2 and len(invitaciones[0])<2:
+                invitaciones = [];
+            
+            
+            if Club.all().filter('name =', nameClub).count() > 0:
+                self.redirect('/profile/club/new?errorrepeat=true')
+            else:
+                club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+                logging.debug(club_actual)
+                Club_User(user=user, club=club_actual,state="Propietario").put()
+                
+                for inv in invitaciones:
+                    if not(inv == ''):
+                        Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
+                         
+                self.redirect('/profile/club')
+                logging.debug(invitaciones)
  
-        
-
-       except:
-              libro = self.request.get('libros')
-              book = Book.all().filter('title =', libro).get()
-              values = {
+        except:
+            libro = self.request.get('libros')
+            book = Book.all().filter('title =', libro).get()
+            values = {
                  'book'      : book,
                  'books'     : Book.all(),
                  'user'       : user,
@@ -883,7 +907,7 @@ class ProfileNewClubView(UserView):
                  'error'      : True,
                  'avatar'     : avatarImg
               }
-              self.response.out.write(template.render('html/profileNewClub.html', values))
+            self.response.out.write(template.render('html/profileNewClub.html', values))
 
 # /profile/editclub
 # Vista que se encarga de editar un club ya creado
