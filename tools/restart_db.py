@@ -10,6 +10,7 @@ userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
 patryUser = users.User(email='patriciapons89@gmail.com')
 
+
 db.delete(Book.all().fetch(512))
 justinBook = Book(title=u'Justin Bieber: mi historia', author=u'Justin Bieber',genre=u'Biografía', year=2011, image=db.Link('http://img9.planetadelibros.com/usuaris/libros/fotos/49/tam_1/48669_1_JUSTINBIEBER.jpg')).put()
 mistBook   = Book(title=u'The Mist', author=u'Stephen King',genre=u'Novela', year=1983, image=db.Link('http://ecx.images-amazon.com/images/I/41ZOgg%2BT6gL._SL500_AA240_.jpg')).put()
@@ -89,5 +90,18 @@ club1 = Club(name=u'aficionados de Justin',description=u'Este club es una prueba
 , genre= [u'Poesia',u'Ciencia Ficcion'],invitaciones = [u'user@example.com',u'lol@example.com'],state=u'Habilitado', book=justinBook,owner = testUser).put()
 club2 = Club(name=u'Tres metros sobre el cielo',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Poesia',u'Novela'],invitaciones = [u'nilsen@example.com',u'billy@gates.com'],state=u'Deshabilitado', book=cieloBook, owner = testUser).put()
 club3 = Club(name=u'fans de Haruki Murakami',description=u'Este club va dirigido a los fans de...', author=u'Haruki Murakami', genre= [u'Poesia',u'Novela'],invitaciones = [u'patriciapons89@gmail.com',u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner= testUser).put()
+club4 = Club(name=u'El club de la comedia',description=u'Este club va dirigido a los fans de...', author=u'Federico Moccia', genre= [u'Narrativa',u'Biografía'],invitaciones = [u'billy@gates.com'],state=u'Habilitado', book=cieloBook, owner = nilsenUser).put()
 
-
+db.delete(Club_User.all().fetch(512))
+Club_User(user=testUser,club=club1,state=u'Propietario').put()
+Club_User(user=userUser,club=club1,state=u'Invitado').put()
+Club_User(user=lolUser,club=club1,state=u'Invitado').put()
+Club_User(user=testUser, club= club2, state =u'Propietario').put()
+Club_User(user=nilsenUser,club=club2,state=u'Invitacion Aceptada').put()
+Club_User(user=billyUser,club=club2,state=u'Invitado').put()
+Club_User(user=testUser,club=club3,state=u'Propietario').put()
+Club_User(user=patryUser,club=club3,state=u'Invitado').put()
+Club_User(user=billyUser,club=club3,state=u'Invitado').put()
+Club_User(user=testUser,club=club4,state=u'Invitacion Aceptada').put()
+Club_User(user=nilsenUser,club=club4,state='Propietario').put()
+Club_User(user=billyUser,club=club4,state=u'Invitado').put()

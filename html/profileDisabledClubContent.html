@@ -1,0 +1,71 @@
+{% extends "profile.html" %}
+
+{% block nav_profile_club %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<div class="row">
+    <div class="span16">
+        {% ifequal selectedClub.state 'Deshabilitado' %}
+            <p class="alert-message block-message error"><b>Atenci&oacuten!!</b> Este club est&aacute deshabilitado. No podr&aacute escribir comentarios ni crear eventos.</p>
+        {% else %}
+            <p class="alert-message block-message error"><b>Atenci&oacuten!!</b> Todav&iacutea no es participante de este club. No podr&aacute escribir comentarios ni crear eventos.</p>
+        {% endifequal %}
+        <h5 class="alert-message info">Club {{selectedClub.name}}</h5>
+        <div class="row">
+            <div class="span2"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></div>
+            <div class="span14">
+                <p><b>Descripci&oacuten: </b>{{selectedClub.description}} </p>
+                {% if selectedClub.genre %}
+                    <p><b>G&eacutenero :</b>{% for genre in selectedClub.genre %}
+                                        {{genre}};
+                                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if selectedClub.book %}
+                    <p><b>Libro: </b>{{selectedClub.book}}</p>
+                {% endif %}
+                {% if selectedClub.author %}
+                    <p><b>Autor: </b>{{selectedClub.author}}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+<p></p>
+<div class="row">
+    <div class="span6">
+        <h5 class="alert-message info">Eventos</h5>
+    </div>
+    <div class="span10">
+        <h5 class="alert-message info">Comentarios</h5>
+    </div>
+</div>
+<div class="row centerrow">
+    <div class="span10 offset3">
+        <h5 class="alert-message info">Participantes</h6>
+        <table id="participantsTable" class="zebra-striped sortable">
+            <thead>
+                <tr>
+                    <th class="header blue" style="width:50px" >Avatar</th>
+                    <th class="header blue" >Nombre</th>
+                    <th class="header blue" >Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for participation in participations %}
+                    <tr>
+                        <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user}}' alt="Avatar del usuario"></td>
+                        <td style="vertical-align:middle">{{participation.user.nickname}}</td>
+                        <td style="vertical-align:middle">{{participation.state}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

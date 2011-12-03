@@ -6,6 +6,48 @@ var JSTipoOferta = function() {
      $("#idfecha").toggle(opc_sel != 'Ninguna');
 }
 
+function pagination(url, size) {
+    function loadingPosition() { return $('.loading').offset().top; }
+    function pagePosition() { return $(window).height() + window.pageYOffset; }
+
+    var offset = 0; var doing = false; var doing = false;
+
+    if (loadingPosition() < pagePosition()) {
+        $('.loading').hide();
+    }
+    else {
+        $(window).scroll(function () {
+            if (loadingPosition() <= pagePosition() && !doing) {
+                doing = true;
+                offset += size;
+                setTimeout( function () {
+                    $.ajax({
+                        url  : url,
+                        data : {offset : offset},
+                        type : 'GET',
+                        success : function (data) {
+                            var rows = $(data).find('tbody').children();
+                            var count = rows.length;
+                            if (count > 0) {
+                                rows.addClass('new-rows');
+                                $('tbody').append(rows);
+                                $('.new-rows').hide().fadeIn(function () {
+                                    $('.new-rows').removeClass('new-rows');
+                                    doing = false;
+                                });
+                            }
+                            else {
+                                $('.loading').fadeOut();
+                            }
+                        }
+                    });
+                }, 1000);
+            }
+        });
+    }
+}
+
+
 /* Objeto que contiene las acciones a ejecutar en cada vista, de forma local. */
 var localScripts = {
 
@@ -71,35 +113,7 @@ var localScripts = {
     },
 
     "/profile/copies" : function () {
-        var offset = 0; var doing = false; var doing = false;
-        $(window).scroll(function () {
-            if ($('.loading').offset().top <= $(window).height() + window.pageYOffset && !doing) {
-                doing = true;
-                offset += 10;
-                setTimeout( function () {
-                $.ajax({
-                    url  : '/profile/copies',
-                    data : {offset : offset},
-                    type : 'GET',
-                    success : function (data) {
-                        var rows = $(data).find('tbody').children();
-                        var count = rows.length;
-                        if (count > 0) {
-                            rows.addClass('new-rows');
-                            $('tbody').append(rows);
-                            $('.new-rows').hide().fadeIn(function () {
-                                $('.new-rows').removeClass('new-rows');
-                                doing = false;
-                            });
-                        }
-                        else {
-                            $('.loading').fadeOut();
-                        }
-                    }
-                });
-                }, 1000);
-            }
-        });
+        pagination('/profile/copies', 10);
 
         var button = $('#remove-copies-button');
         var alertbox = $('#modal-remove');
@@ -139,6 +153,7 @@ var localScripts = {
                     keys += $(c).parent().parent().find('span').text();
                 }
             });
+            debugger;
             $.ajax({
                 url  : '/profile/copies/delete',
                 data : {selected : keys},
@@ -153,9 +168,133 @@ var localScripts = {
             });
         });
     },
+    
+    "/profile/club" : function () {
+        pagination('/profile/club',10);
+        var disable_modal = $('#modal-disable-club');
+        var enable_modal = $('#modal-enable-club');
+        var participation_modal = $('#modal-cancel-participation');
+        var selected_club = null;
+        var count = 0;
+        
+        disable_modal.modal({backdrop: true, modal: true});
+        enable_modal.modal({backdrop: true, modal: true});
+        participation_modal.modal({backdrop: true, modal: true});
+        $('#accept-invitation-link').live('click',function(e) {
+            selected_club = $(this).children().text();
+            $.ajax({
+                url  : '/profile/club/answerinvitation',
+                data : {selected : selected_club, option : 'Aceptar'},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                }
+            }); 
+            
+        });
+        
+        $('#reject-invitation-link').live('click',function(e) {
+            selected_club = $(this).children().text();
+            $.ajax({
+                url  : '/profile/club/answerinvitation',
+                data : {selected : selected_club, option : 'Rechazar'},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                }
+            }); 
+            
+        });
+        
+        $('#disable-club-link').live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            disable_modal.modal('show');
+        });
+        $('#enable-club-link').live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            enable_modal.modal('show');
+        });
+        $('#cancel-participation-link').live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            participation_modal.modal('show');
+        });
+        $('#delete-participation-link').live('click', function (e) {
+            e.preventDefault();
+            selected_club = $(this).children().text();
+            $.ajax({
+                url  : '/profile/club/deleteparticipation',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                }
+            });
+        });
 
-    "/profile/editclub" : function () {
-        $('#nuevo-invitado').live('click', function (e) {
+        $('#modal-disable-club .close').live('click', function (e) {
+            disable_modal.modal('hide');
+        });
+        $('#modal-enable-club .close').live('click', function (e) {
+            enable_modal.modal('hide');
+        });
+        $('#modal-cancel-participation .close').live('click', function (e) {
+            participation_modal.modal('hide');
+        });
+
+        $('#modal-disable-club .primary').live('click', function (e) {
+            $.ajax({
+                url  : '/profile/club/disable',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    disable_modal.modal('hide');
+                }
+            });
+        });
+        $('#modal-enable-club .primary').live('click', function (e) {
+            $.ajax({
+                url  : '/profile/club/disable',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    enable_modal.modal('hide');
+                }
+            });
+        });
+        $('#modal-cancel-participation .primary').live('click', function (e) {
+            $.ajax({
+                url  : '/profile/club/deleteparticipation',
+                data : {selected : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                    participation_modal.modal('hide');
+                }
+            });
+        });
+    },
+    
+    
+    "/profile/club/edit" : function () {
+      
+         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
@@ -165,17 +304,67 @@ var localScripts = {
             $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
         });
 
-        $('#optionsGener').live('click', function (e){
+        /*$('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
-           
-       }); 
-          
+
+       });*/
+        $('#optionsGeners').live('click', function (e){
+           $("#resultado").val($('#optionsGeners').val());
+        });
+ 
 
     },
 
 
-    "/profile/newclub" : function () {
+
+    "/profile/club/content" : function () {
+        var selected_club = null;
+        var count = 0;
+        
+        $('#accept-request-link').live('click',function(e) {
+            participation = $(this).children().text();
+            debugger;
+            $.ajax({
+                url  : '/profile/club/answerrequest',
+                data : {selected : participation, option : 'Aceptar'},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                }
+            }); 
+            
+        });
+        $('#reject-request-link').live('click',function(e) {
+            participation = $(this).children().text();
+            debugger;
+            $.ajax({
+                url  : '/profile/club/answerrequest',
+                data : {selected : participation, option : 'Rechazar'},
+                type : 'POST',
+                success : function (data) {
+                    var table = $('table');
+                    table.fadeOut(function () {table.remove();});
+                    table.before($(data).find('table')).hide().fadeIn();
+                }
+            }); 
+            
+        });
+    },
+    
+    
+
+
+
+
+    "/profile/club/new" : function () {
+        if(/.*errorrepeat=true.*/.test(location.href)) {
+            
+            $('#nombreClub').twipsy({trigger: 'manual'});
+            $('#nombreClub').twipsy('show')
+        }
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var nuevo = $($('.invitados')[0]).clone();
@@ -186,13 +375,16 @@ var localScripts = {
             $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
         });
 
-        $('#optionsGener').live('click', function (e){
+        /*$('#optionsGener').live('click', function (e){
          var arr = $("input:checked").getCheckboxValues();
            $('#selectedGener').val(arr);
-           
-       }); 
-          
 
+       });*/
+
+         $('#optionsGeners').live('click', function (e){
+           $("#resultado").val($('#optionsGeners').val());
+             });
+       
     },
 
     "/profile/applicationcontent" : function () {
@@ -292,7 +484,7 @@ jQuery.fn.getCheckboxValues = function(){
     });
     // devuelve un array con los checkboxes seleccionados
     return values;
-} 
+}
 
 jQuery(function($){
     $.datepicker.regional['es'] = {

@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="span7">
-       <form action="/profile/dataclub?selected={{selectedClub.key}}" method="post">
+       <form action="/profile/club/view?selected={{selectedClub.key}}" method="post">
             <fieldset>
                 <legend>Detalles del Club</legend>
                 <div class="clearfix media-grid centerrow">
@@ -28,7 +28,12 @@
                 <div class="clearfix">
                     <label>Género</label>
                     <div class="input">
-                        <span class="uneditable-input">{{selectedClub.genre}}</span>
+                    
+                      <select multiple= "multiple" size="2" name="genero" id="genero" disable= "disable">
+                        {% for gen in selectedClub.genre %}
+                       <option> {{gen}} </option>
+                        {% endfor %}
+                       </select>
                     </div>
                 </div>
                 <div class="clearfix">
@@ -46,11 +51,15 @@
                <div class="clearfix">
                     <label>Invitados</label>
                     <div class="input">
-                        <span class="uneditable-input">{{selectedClub.invitaciones}}</span>
+                     <select multiple= "multiple" size="2" name="invitados" id="invitados" disable= "disable">
+                        {% for inv in selectedClub.invitaciones %}
+                       <option> {{inv}} </option>
+                        {% endfor %}
+                       </select>
                     </div>
                 </div>
                <div class="actions">
-                  <a href="/profile/copies" class="btn">Volver</a>
+                  <a href="/profile/club" class="btn">Volver</a>
                 </div>
             </fieldset>
         </form>

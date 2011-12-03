@@ -5,33 +5,92 @@
 
 {% block profileContent %}
 
-<a href="/profile/newclub" class="btn">Crear un Nuevo Club</a>
-<a href="#" id="desactivar-clubs-button" class="btn disabled">Desactivar Clubs</a>
-
+<a href="/profile/club/new" class="btn">Crear un Nuevo Club</a>
+<p></p>
 
 <table id="clubsTable" class="zebra-striped sortable">
 	<thead>
 		<tr>
-			<th class="header blue littlepadding"></th>
 			<th class="header blue">Portada</th>
 			<th class="header blue">Nombre</th>
+			<th class="header blue">Creador</th>
+			<th class="header blue">Estado del Club</th>
 			<th class="header blue">Descripcion</th>
-			<th class="header blue">Estado</th>
+			<th class="header blue">Estado de la solicitud</th>
+			<th class="header blue">Acciones</th>
           </tr>
 	</thead>
 	<tbody>
-	{% for club in clubs %}
+	{% for participation in participations %}
 		<tr>
-			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
-			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></td>
+			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{participation.club.image}}" alt="{{participation.club.name}}"></td>
 			<td style="vertical-align:middle">				
-				<a href="/profile/editclub?selectedClub={{club.key}}">
-					{{club.name}}
-				</a>
-				<span class="hide key">{{club.key}}</span>
+				{% ifequal participation.state 'Invitado' %}
+					<a href="/profile/club/disabledcontent?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+				{% else %}
+				{% ifequal participation.state 'Solicitado' %}
+					<a href="/profile/club/disabledcontent?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+				{% else %}
+				{% ifequal participation.state 'Solicitud Rechazada' %}
+					<a href="/profile/club/disabledcontent?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+				{% else %}
+				{% ifequal participation.state 'Invitacion Rechazada' %}
+					<a href="/profile/club/disabledcontent?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+				{% else %}
+					{% ifequal participation.club.state 'Deshabilitado' %}
+						<a href="/profile/club/disabledcontent?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+					{% else %}
+						<a href="/profile/club/content?selectedClub={{participation.club.key}}">{{participation.club.name}}</a>
+					{% endifequal %}
+					
+				{% endifequal %}
+				{% endifequal %}
+				{% endifequal %}
+				{% endifequal %}
+				<span class="hide key">{{participation.club.key}}</span>
 			</td>
-			<td style="vertical-align:middle">{{club.description}}</td>
-			<td style="vertical-align:middle">{{club.state}}</td>	
+			<td style="vertical-align:middle">
+				{% ifequal participation.state 'Propietario' %}
+					Yo
+				{% else %}
+					{{participation.club.author}}
+				{% endifequal %}
+			</td>
+			<td style="vertical-align:middle">{{participation.club.state}}</td>
+			<td style="vertical-align:middle">{{participation.club.description}}</td>
+			
+			<td style="vertical-align:middle"> {{participation.state}}</td>
+			<td style="vertical-align:middle">
+				{% ifequal participation.state 'Propietario' %}
+					<p><a href="/profile/club/edit?selectedClub={{participation.club.key}}">Editar</a></p>
+					{% ifequal participation.club.state 'Habilitado' %}
+						<p><a id="disable-club-link" href="#"><span class="hide">{{participation.club.key}}</span>Deshabilitar</a></p>
+					{% endifequal %}
+					{% ifequal participation.club.state 'Deshabilitado' %}
+						<p><a id="enable-club-link" href="#"><span class="hide">{{participation.club.key}}</span>Habilitar</a></p>
+					{% endifequal %}
+				{% else %}
+					{% ifequal participation.state 'Invitado' %}
+						<p><a id="accept-invitation-link" href="#"><span class="hide">{{participation.club.key}}</span>Aceptar</a></p>
+						<p><a id="reject-invitation-link" href="#"><span class="hide">{{participation.club.key}}</span>Rechazar</a></p>
+					{% endifequal %}
+					{% ifequal participation.state 'Solicitado' %}
+						<p>Esperando confirmaci&oacuten para ingresar al club...</p>
+					{% endifequal %}
+					{% ifequal participation.state 'Solicitud Aceptada' %}
+						<p><a id="cancel-participation-link" href="#"><span class="hide">{{participation.club.key}}</span>Dar de baja</a></p>
+					{% endifequal %}
+					{% ifequal participation.state 'Invitacion Aceptada' %}
+						<p><a id="cancel-participation-link" href="#"><span class="hide">{{participation.club.key}}</span>Dar de baja</a></p>
+					{% endifequal %}
+					{% ifequal participation.state 'Solicitud Rechazada' %}
+						<p><a id="delete-participation-link" href="#"><span class="hide">{{participation.club.key}}</span>Eliminar de la lista</a></p>
+					{% endifequal %}
+					{% ifequal participation.state 'Invitacion Rechazada' %}
+						<p><a id="delete-participation-link" href="#"><span class="hide">{{participation.club.key}}</span>Eliminar de la lista</a></p>
+					{% endifequal %}
+				{% endifequal %}
+			</td>	
            
 		</tr>
 	{% endfor %}
@@ -41,13 +100,38 @@
 	<p><img src="/static/img/loading.gif"/></p>
 </div>
 
-<div id="modal-remove" class="modal hide fade">
+<div id="modal-disable-club" class="modal hide fade">
 	<div class="modal-header">
 		<a href="#" class="close">x</a>
-		<h3>Título</h3>
+		<h3>Desactivar</h3>
 	</div>
 	<div class="modal-body">
-		<p>¿Estás seguro de eliminar los elementos seleccionados?</p>
+		<p>¿Estás seguro de desactivar este club?</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn primary">Aceptar</a>
+	</div>
+</div>
+<div id="modal-enable-club" class="modal hide fade">
+	<div class="modal-header">
+		<a href="#" class="close">x</a>
+		<h3>Activar</h3>
+	</div>
+	<div class="modal-body">
+		<p>¿Estás seguro de activar este club?</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn primary">Aceptar</a>
+	</div>
+</div>
+<div id="modal-cancel-participation" class="modal hide fade">
+	<div class="modal-header">
+		<a href="#" class="close">x</a>
+		<h3>Baja</h3>
+	</div>
+	<div class="modal-body">
+		<p>¿Est&aacutes seguro de que deseas darte de baja en este club?</p>
+		<p>Si lo haces, ya no podrás participar en &eacutel.</p>
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn primary">Aceptar</a>
