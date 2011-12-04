@@ -296,12 +296,36 @@ var localScripts = {
       
          $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
+            var repetido=0;
             var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
-            nuevo.find('span').text(nombre);
-            $('.invitados').after(nuevo);
-            nuevo.fadeIn('slow');
-            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+
+            /*
+             * Miramos si el email ya existe en los ya invitados
+             */
+            $("#invitados option").each(function(){
+            	var email = $(this).text();
+            	if($.trim(email) == nombre )
+            		repetido=1;
+            });
+            
+            
+            /*
+             * Miramos si el email ya existe en los nuevos
+             */
+            $('.invitados span').each(function(){
+            	if((this).innerHTML==nombre)
+            		repetido=1;
+            });
+            
+            /*Si no existe lo añadimos*/
+            if(!repetido)
+            {
+	            nuevo.find('span').text(nombre);
+	            $('.invitados').after(nuevo);
+	            nuevo.fadeIn('slow');
+	            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+            }
         });
 
         /*$('#optionsGener').live('click', function (e){
@@ -367,12 +391,25 @@ var localScripts = {
         }
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
+            var repetido=0;
             var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
-            nuevo.find('span').text(nombre);
-            $('.invitados').after(nuevo);
-            nuevo.fadeIn('slow');
-            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+            
+            /*
+             * Miramos si el email ya existe
+             */
+            $('.invitados span').each(function(){
+            	if((this).innerHTML==nombre)
+            		repetido=1;
+            });
+            
+            /*Si no existe lo añadimos*/
+            if(!repetido){
+	            nuevo.find('span').text(nombre);
+	            $('.invitados').after(nuevo);
+	            nuevo.fadeIn('slow');
+	            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+            }
         });
 
         /*$('#optionsGener').live('click', function (e){
