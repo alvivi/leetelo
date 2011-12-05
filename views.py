@@ -842,6 +842,7 @@ class ProfileNewClubView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values={
                 'user': user,
+                'books': Book.all(),
                 'logoutUri': users.create_logout_url('/'),
                 'error': False,
                 'avatar': avatarImg
@@ -872,16 +873,17 @@ class ProfileNewClubView(UserView):
             else:
                 imagen = db.Link(imagen_txt)
             
-            if len(generos[0])<2 and libro == '' and autor == '':
-                raise ValueError("No se cumple la condición")
+            #Ya no hace falta, el cliente lo ha cambiado
+            #if len(generos[0])<2 and libro == '' and autor == '':
+            #    raise ValueError("No se cumple la condición")
             
-            if not(libro is ''):
+            
+            if not(libro is'Ninguno'):
                 book = Book.all().filter('title =', libro).get()
             
             if len(invitaciones)<2 and len(invitaciones[0])<2:
                 invitaciones = [];
-            
-            
+                
             if Club.all().filter('name =', nameClub).count() > 0:
                 self.redirect('/profile/club/new?errorrepeat=true')
             else:
@@ -919,6 +921,7 @@ class ProfileEditClubView(UserView):
 
         values = {
             'user'       : user,
+            'books': Book.all(),
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'selectedClub': selectedClub
