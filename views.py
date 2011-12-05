@@ -1091,3 +1091,17 @@ class clubView(UserView):
             'newUserUri' : 'http://accounts.google.com'
         }
         self.response.out.write(template.render('html/club.html', values))
+
+class ClubRequestParticipationView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        selectedClub = Club.get(self.request.get('selected'))
+        participation = Club_User.all().filter('user =',user).filter('club =',selectedClub).get()
+        if participation:
+            self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
+        else:
+            Club_User(user=user,club=selectedClub,state='Solicitado').put()
+            self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
+        
+        
+        
+        

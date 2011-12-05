@@ -69,9 +69,7 @@ class Club_User(db.Model):
         return cls.all().filter('club =', club).fetch(128)
     @classmethod
     def clubsForUser(cls, user):
-	res = Club_User.all().filter('user =', user)
-	res = res.filter('state =','Aceptada Invitacion')
-	return res
+	return cls.all().filter('user =', user).filter('state =','Invitacion Aceptada').fetch(128) + cls.all().filter('user =', user).filter('state =','Solicitud Aceptada').fetch(128) + cls.all().filter('user =', user).filter('state =','Propietario').fetch(128)
     
 # Solicitud sobre un libro
 class Request(db.Model):
