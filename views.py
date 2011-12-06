@@ -10,6 +10,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.api import logservice
+from google.appengine.api import mail
 from google.appengine.ext.webapp import template
 from models import *
 from functions import *
@@ -890,10 +891,20 @@ class ProfileNewClubView(UserView):
                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
                 logging.debug(club_actual)
                 Club_User(user=user, club=club_actual,state="Propietario").put()
-                
                 for inv in invitaciones:
                     if not(inv == ''):
-                        Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
+                        user_ins=users.User(inv)
+                        Club_User(user=user_ins, club=club_actual,state="Invitado").put()
+                        user_model = Usuario.all().filter('user =', user_ins).get()
+                        if not user_model:
+                            logging.debug('enviar correo')
+                            mail.send_mail(sender="Leetelo Web <davidfm55@gmail.com>",
+                            to=inv,
+                            subject="Invitacion a club",
+                            body="""
+                            Has sido invitado a un club, entra ya
+                            http://localhost:8080/                            
+                            """)
                          
                 self.redirect('/profile/club')
                 logging.debug(invitaciones)

@@ -4,7 +4,10 @@
 # modelos son persistentes.
 
 from google.appengine.ext import db
-    
+
+class Usuario(db.Model):
+    user = db.UserProperty()
+
 class UserAvatar(db.Model):
     user = db.UserProperty()
     avatar = db.BlobProperty()
