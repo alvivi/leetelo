@@ -857,7 +857,7 @@ class ProfileNewClubView(UserView):
             description= self.request.get('description')
             imagen_txt = self.request.get('image')
             generos = self.request.get('resultado').split(',')
-            autor = self.request.get('autores')
+            #autor = self.request.get('autores')
             libro = self.request.get('libros')
             book=None
             invitaciones = self.request.get('invitaciones').split(',')
@@ -866,7 +866,6 @@ class ProfileNewClubView(UserView):
             logging.debug(description)
             logging.debug(imagen_txt)
             logging.debug(generos)
-            logging.debug(autor)
             logging.debug(libro)
                        
             if imagen_txt == '' or imagen_txt == 'http://':
@@ -888,7 +887,7 @@ class ProfileNewClubView(UserView):
             if Club.all().filter('name =', nameClub).count() > 0:
                 self.redirect('/profile/club/new?errorrepeat=true')
             else:
-                club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
+                club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, invitaciones=invitaciones, state="Habilitado").put()  
                 logging.debug(club_actual)
                 Club_User(user=user, club=club_actual,state="Propietario").put()
                 for inv in invitaciones:
@@ -898,13 +897,17 @@ class ProfileNewClubView(UserView):
                         user_model = Usuario.all().filter('user =', user_ins).get()
                         if not user_model:
                             logging.debug('enviar correo')
-                            mail.send_mail(sender="Leetelo Web <davidfm55@gmail.com>",
-                            to=inv,
-                            subject="Invitacion a club",
-                            body="""
-                            Has sido invitado a un club, entra ya
-                            http://localhost:8080/                            
-                            """)
+                            try:
+                                mail.send_mail(sender="Leetelo Web",
+                                to=inv,
+                                subject="Invitacion a club",
+                                body="""
+                                Has sido invitado al Club """ + nameClub + """ por el usuario %s, Registrate ya!
+                                Copia esta direccion en tu navegador.
+                                http://localhost:8080/                            
+                                """ % user)
+                            except Exception, e:
+                                logging.debug(e)
                          
                 self.redirect('/profile/club')
                 logging.debug(invitaciones)
@@ -925,28 +928,23 @@ class ProfileNewClubView(UserView):
 # /profile/editclub
 # Vista que se encarga de editar un club ya creado
 class ProfileEditClubView(UserView):
-   def get_as_user(self, user, logoutUri, avatarImg):
+    def get_as_user(self, user, logoutUri, avatarImg):
         key= self.request.get('selectedClub')
         selectedClub = Club.get(key)
-       
-
         values = {
             'user'       : user,
-            'books': Book.all(),
+            'books'      : Book.all(),
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'selectedClub': selectedClub
         }
         if selectedClub.state == "Habilitado" and selectedClub.owner == user :self.response.out.write(template.render('html/profileEditClub.html', values))
         else:self.response.out.write(template.render('html/profileDataClub.html', values))
-
-
-   
-   def post_as_user(self, user, logoutUri, avatarImg):
+        
+    def post_as_user(self, user, logoutUri, avatarImg):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
-       
-
+        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -954,35 +952,71 @@ class ProfileEditClubView(UserView):
             'error'      : False,
             'errorrepeat': False,
             'selectedClub': selectedClub
-
         }  
         try:
             invitados_existentes=selectedClub.invitaciones
             nameClub= self.request.get('nombreClub')
             description= self.request.get('description')
-            imagen  = db.Link(self.request.get('image'))
+            imagen_txt = self.request.get('image')
             generos= self.request.get('resultado').split(',')
-            autor= self.request.get('autores')
-            libro= self.request.get('libros')      
-            book = Book.all().filter('title =', libro).get()
+            #autor= self.request.get('autores')
+            libro= self.request.get('libros')
+            book=None
             nuevos_invitados= self.request.get('invitaciones').split(',')
             invitaciones=invitados_existentes+nuevos_invitados
+            
+            
+            #Comprovaciones
+            if imagen_txt == '' or imagen_txt == 'http://' or imagen_txt == 'None':
+                imagen=None
+            else:
+                imagen = db.Link(imagen_txt)
+            
+            if not(libro is'Ninguno'):
+                book = Book.all().filter('title =', libro).get()
+            
+            
+            #comprovar que no hay email Un poco chungo xo....
+            if len(invitaciones)<2 and len(invitaciones[0])<2:
+                invitaciones = [];
+                
+            if len(nuevos_invitados)<2 and len(nuevos_invitados[0])<2:
+                nuevos_invitados = [];
+            
             if selectedClub.name == nameClub:
-               selectedClub.description=description
-               selectedClub.genre=generos 
-               selectedClub.author=autor
-               selectedClub.book=book
-               selectedClub.invitaciones=invitaciones
-               selectedClub.image=imagen
-               selectedClub.state="Habilitado"
-               selectedClub.put()
-               for inv in nuevos_invitados:
-                  Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
-               self.redirect('/profile/club')
+                
+                selectedClub.description=description
+                selectedClub.genre=generos
+                #selectedClub.author=autor
+                selectedClub.book=book
+                selectedClub.invitaciones=invitaciones
+                selectedClub.image=imagen
+                selectedClub.state="Habilitado"
+                selectedClub.put()
+                
+                for inv in nuevos_invitados:
+                    if not(inv == ''):
+                        user_ins=users.User(inv)
+                        Club_User(user=user_ins, club=selectedClub,state="Invitado").put()
+                        user_model = Usuario.all().filter('user =', user_ins).get()
+                        if not user_model:
+                            logging.debug('enviar correo')
+                            try:
+                                mail.send_mail(sender="Leetelo Web",
+                                to=inv,
+                                subject="Invitacion a club",
+                                body="""
+                                Has sido invitado al Club """ + nameClub + """ por el usuario %s, Registrate ya!
+                                Copia esta direccion en tu navegador.
+                                http://localhost:8080/                            
+                                """ % user)
+                            except Exception, e:
+                                logging.debug(e)    
+                
+                self.redirect('/profile/club')
             else: 
-                 if Club.all().filter('name =', nameClub).count()>0:
+                if Club.all().filter('name =', nameClub).count()>0:
                     values = {
-
                          'user'       : user,
                          'logoutUri'  : users.create_logout_url('/'),
                          'avatar'     : avatarImg,
@@ -990,37 +1024,49 @@ class ProfileEditClubView(UserView):
                          'errorrepeat': True,
                          'selectedClub': selectedClub
 
-                   }
+                    }
                     self.response.out.write(template.render('html/profileEditClub.html', values))
                     #self.redirect('/profile/club/edit?errorrepeat=true')
-                 else: 
-                      selectedClub.name=nameClub
-                      selectedClub.description=description
-                      selectedClub.genre=generos
-                      selectedClub.author=autor
-                      selectedClub.book=book
-                      selectedClub.invitaciones=invitaciones
-                      selectedClub.image=imagen
-                      selectedClub.state="Habilitado"
-                      selectedClub.put()
-                      for inv in nuevos_invitados:
-                        Club_User(user=users.User(inv), club=selectedClub,state="Invitado").put()
-                      self.redirect('/profile/club') 
-           
+                else: 
+                    selectedClub.name=nameClub
+                    selectedClub.description=description
+                    selectedClub.genre=generos
+                    #selectedClub.author=autor
+                    selectedClub.book=book
+                    selectedClub.invitaciones=invitaciones
+                    selectedClub.image=imagen
+                    selectedClub.state="Habilitado"
+                    selectedClub.put()
+                    
+                    for inv in nuevos_invitados:
+                        if not(inv == ''):
+                            user_ins=users.User(inv)
+                            Club_User(user=user_ins, club=selectedClub,state="Invitado").put()
+                            user_model = Usuario.all().filter('user =', user_ins).get()
+                            if not user_model:
+                                logging.debug('enviar correo')
+                                mail.send_mail(sender="Leetelo Web",
+                                to=inv,
+                                subject="Invitacion a club",
+                                body="""
+                                Has sido invitado al Club """ + nameClub + """ por el usuario %s, ¡Registrate ya!
+                                \nCopia esta direccion en tu navegador:\n
+                                http://localhost:8080/                            
+                                """ % user)    
+                    
+                    self.redirect('/profile/club') 
         except:
-               key = self.request.get('selectedClub')
-               selectedClub = Club.get(key)
-               values = {
-
+            key = self.request.get('selectedClub')
+            selectedClub = Club.get(key)
+            values = {
                     'user'       : user,
                     'logoutUri'  : users.create_logout_url('/'),
                     'avatar'     : avatarImg,
                     'error'      : True,
                     'errorrepeat': False,
                     'selectedClub': selectedClub
-
                }
-               self.response.out.write(template.render('html/profileEditClub.html', values))
+            self.response.out.write(template.render('html/profileEditClub.html', values))
 
        
 class ProfileDataClubView(UserView):   
