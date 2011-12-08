@@ -10,6 +10,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.api import logservice
+from google.appengine.api import mail
 from google.appengine.ext.webapp import template
 from models import *
 from functions import *
@@ -842,6 +843,7 @@ class ProfileNewClubView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values={
                 'user': user,
+                'books': Book.all(),
                 'logoutUri': users.create_logout_url('/'),
                 'error': False,
                 'avatar': avatarImg
@@ -872,26 +874,37 @@ class ProfileNewClubView(UserView):
             else:
                 imagen = db.Link(imagen_txt)
             
-            if len(generos[0])<2 and libro == '' and autor == '':
-                raise ValueError("No se cumple la condición")
+            #Ya no hace falta, el cliente lo ha cambiado
+            #if len(generos[0])<2 and libro == '' and autor == '':
+            #    raise ValueError("No se cumple la condición")
             
-            if not(libro is ''):
+            
+            if not(libro is'Ninguno'):
                 book = Book.all().filter('title =', libro).get()
             
             if len(invitaciones)<2 and len(invitaciones[0])<2:
                 invitaciones = [];
-            
-            
+                
             if Club.all().filter('name =', nameClub).count() > 0:
                 self.redirect('/profile/club/new?errorrepeat=true')
             else:
                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, author=autor, invitaciones=invitaciones, state="Habilitado").put()  
                 logging.debug(club_actual)
                 Club_User(user=user, club=club_actual,state="Propietario").put()
-                
                 for inv in invitaciones:
                     if not(inv == ''):
-                        Club_User(user=users.User(inv), club=club_actual,state="Invitado").put()
+                        user_ins=users.User(inv)
+                        Club_User(user=user_ins, club=club_actual,state="Invitado").put()
+                        user_model = Usuario.all().filter('user =', user_ins).get()
+                        if not user_model:
+                            logging.debug('enviar correo')
+                            mail.send_mail(sender="Leetelo Web <davidfm55@gmail.com>",
+                            to=inv,
+                            subject="Invitacion a club",
+                            body="""
+                            Has sido invitado a un club, entra ya
+                            http://localhost:8080/                            
+                            """)
                          
                 self.redirect('/profile/club')
                 logging.debug(invitaciones)
@@ -919,6 +932,7 @@ class ProfileEditClubView(UserView):
 
         values = {
             'user'       : user,
+            'books': Book.all(),
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'selectedClub': selectedClub
@@ -1091,3 +1105,17 @@ class clubView(UserView):
             'newUserUri' : 'http://accounts.google.com'
         }
         self.response.out.write(template.render('html/club.html', values))
+
+class ClubRequestParticipationView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        selectedClub = Club.get(self.request.get('selected'))
+        participation = Club_User.all().filter('user =',user).filter('club =',selectedClub).get()
+        if participation:
+            self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
+        else:
+            Club_User(user=user,club=selectedClub,state='Solicitado').put()
+            self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
+        
+        
+        
+        

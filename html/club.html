@@ -56,8 +56,9 @@
 			<div class = row>
 			<input type="submit" class="span4 btn primary" value="Buscar">
 			</div>
-			</form>
+</form>
 
+<form action="/club" method="get" align="left">	
 <table id="resTable" class="zebra-striped sortable">
 	<thead>
 		<tr>
@@ -71,20 +72,20 @@
 	<tbody>
 	{% for res in results %}
 		<tr>
-			<td><img src="{{res.image}}" width='74'></img></td>
-			<td>{{res.name}}</td>
-			<td>{{res.author}}</td>
-			<td>{{res.genre}}</td>
-			<td><a class="btn primary">Solicitar</a></td>
+			<td style="vertical-align:middle"><img class="thumbnail book-cover" src="{{res.image}}" alt="res.name" width='74'></img></td>
+			<td style="vertical-align:middle">{{res.name}}</td>
+			<td style="vertical-align:middle">{{res.author}}</td>
+			<td style="vertical-align:middle">{{res.genre}}</td>
+			<td style="vertical-align:middle"><a class="btn primary" href="/club/requestparticipation?selected={{res.key}}">Solicitar</a></td>
 		</tr>
 	{% endfor %}
 	</tbody>
 </table>
-			
+</form>		
 		</div>
 		<div class="span7">
 			<h6>Mis Clubes</h6>
-			<table id="copiesTable" class="zebra-striped sortable">
+			<table id="myClubsTable" class="zebra-striped sortable">
 				<thead>
 					<tr>
 						<th class="header blue">Club</th>
@@ -92,9 +93,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for club in misclubs %}
+					{% for participation in misclubs %}
 						<tr>
-							<td>{{club.club}}</td>
+							<td>{{participation.club.name}}</td>
 		
 						</tr>
 					{% endfor %}

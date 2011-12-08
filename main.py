@@ -18,6 +18,7 @@ def main():
         ('/book/details', BookDetailsView),
         ('/search', SearchView),
         ('/club', clubView),
+        ('/club/requestparticipation', ClubRequestParticipationView),
         ('/profile', ProfileView),
         ('/profile/alerts', ProfileAlertsView),
         ('/profile/copies', ProfileCopiesView),
