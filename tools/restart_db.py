@@ -40,6 +40,10 @@ austenBook = Book(title=u'Orgullo y Prejuicio', author=u'Jane Austen',genre=u'Ro
 deseoBook = Book(title=u'Deseo y Engaño', author=u'Nicole Jordan',genre=u'Romántico', year=2008, image=db.Link('http://ecx.images-amazon.com/images/I/51cxReM6ETL._SL500_AA240_.jpg')).put()
 tokyoBook = Book(title=u'Tokyo Blues(Norwegian wood)', author=u'Haruki Murakami',genre=u'Romántico', year=2007, image=db.Link('http://www.labitacoradeltigre.com/edu-images/tokio_blues.jpg')).put()
 quienBook = Book(title=u'¿Quien te lo ha contado?', author=u'Marian Keyes',genre=u'Romántico', year=2003, image=db.Link('http://ecx.images-amazon.com/images/I/411BFxU58pL._SL500_AA240_.jpg')).put()
+prisioneroBook = Book(title=u'El Prisionero del Cielo', author=u'Carlos Ruiz Zafón',genre=u'Novela', year=2010, image=db.Link('http://ecx.images-amazon.com/images/I/51eLBni5-IL._SL500_AA240_.jpg')).put()
+imperioBook = Book(title=u'El Imperio eres tú', author=u'Javier Moro',genre=u'Novela', year=2010, image=db.Link('http://ecx.images-amazon.com/images/I/51I5FIliVKL._SL500_AA240_.jpg')).put()
+arenaBook = Book(title=u'Tiempo de Arena', author=u'Inma Chacón',genre=u'Novela', year=2011, image=db.Link('http://ecx.images-amazon.com/images/I/51yM1aYLaoL._SL500_AA240_.jpg')).put()
+libertadBook = Book(title=u'Libertad', author=u'Jonathan Franzen',genre=u'Novela', year=2011, image=db.Link('http://ecx.images-amazon.com/images/I/41jYTLPzJoL._SL500_AA240_.jpg')).put()
 
 db.delete(Copy.all().fetch(512))
 justinCopy1 = Copy(user=testUser, book=justinBook, offerType="Intercambio", offerState="Con solicitud",language="Frances",pages=250,edition=8).put()
@@ -64,7 +68,15 @@ civCopy1 = Copy(user=testUser, book=civBook, offerType="Intercambio", offerState
 decadenCopy1 = Copy(user=testUser, book=decadenBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=435,edition=8,genre="Novela").put()
 mesopCopy1 = Copy(user=testUser, book=mesopBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=335,edition=8,genre="Novela").put()
 rivertonCopy1 = Copy(user=testUser, book=rivertonBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
-
+austenCopy1 = Copy(user=nilsenUser, book=austenBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+deseoCopy1 = Copy(user=nilsenUser, book=deseoBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+tokyoCopy1 = Copy(user=nilsenUser, book=tokyoBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+quienCopy1 = Copy(user=nilsenUser, book=quienBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+cieloCopy1 = Copy(user=nilsenUser, book=cieloBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+prisioneroCopy1 = Copy(user=nilsenUser, book=prisioneroBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+imperioCopy1 = Copy(user=nilsenUser, book=imperioBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+arenaCopy1 = Copy(user=nilsenUser, book=arenaBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+libertadCopy1 = Copy(user=nilsenUser, book=libertadBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
 
 db.delete(Request.all().fetch(512))
 Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
@@ -78,6 +90,17 @@ Request(user=lolUser,copy=kafkaCopy1, state="Sin contestar").put()
 Request(user=nilsenUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
+
+#requests de testuser
+Request(user=testUser,copy=austenCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=deseoCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=tokyoCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=quienCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=cieloCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=prisioneroCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=imperioCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=arenaCopy1, state="Sin contestar").put()
+Request(user=testUser,copy=libertadCopy1, state="Sin contestar").put()
 
 
 
