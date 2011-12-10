@@ -53,7 +53,7 @@
 				{% ifequal participation.state 'Propietario' %}
 					Yo
 				{% else %}
-					{{participation.club.author}}
+					{{participation.club.owner}}
 				{% endifequal %}
 			</td>
 			<td style="vertical-align:middle">{{participation.club.state}}</td>

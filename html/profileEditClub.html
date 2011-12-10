@@ -85,19 +85,16 @@
                             <input class="medium" type="text"  name="resultado" id="resultado">
                         </div>          
                     </div>
-        
-                    
             
                 <div class="clearfix">
-                    <label>Autores</label>
+                    <label>Libro</label>
                      <div class="input">
-                      <input class="xlarge" type="text"  name="autores" id="autores" value= "{{selectedClub.author}}" />
-                    </div>
-                </div>
-                <div class="clearfix">
-                    <label>Libros</label>
-                     <div class="input">
-                      <input class="xlarge" type="text"  name="libros" id="libros" value= "{{selectedClub.book.title}}"/>
+                    	<select class="xlarge" id="libros" name="libros">
+                            	<option>Ninguno</option>
+                            {% for b in books %}
+                                <option {% ifequal selectedClub.book.title b.title %}selected{% endifequal %}>{{b.title}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
 
