@@ -76,7 +76,7 @@
 			<td style="vertical-align:middle">{{res.name}}</td>
 			<td style="vertical-align:middle">{{res.author}}</td>
 			<td style="vertical-align:middle">{{res.genre}}</td>
-			<td style="vertical-align:middle"><a class="btn primary" href="/club/requestparticipation?selected={{res.key}}">Solicitar</a></td>
+			<td style="vertical-align:middle"><a class="btn primary" href="#"><span class="hide">{{res.key}}</span>Solicitar</a></td>
 		</tr>
 	{% endfor %}
 	</tbody>
@@ -106,7 +106,18 @@
 
 
 
-
+<div id="modal-club-error" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">x</a>
+			<h3>Error al realizar la solicitud</h3>
+		</div>
+		<div class="modal-body">
+			<p>Usted ya pertenece a este club</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Aceptar</a>
+		</div>
+	</div>
 
 
 {% endblock %}

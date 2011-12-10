@@ -23,10 +23,8 @@
                     </p>
                 {% endif %}
                 {% if selectedClub.book %}
-                    <p><b>Libro: </b>{{selectedClub.book}}</p>
-                {% endif %}
-                {% if selectedClub.author %}
-                    <p><b>Autor: </b>{{selectedClub.author}}</p>
+                    <p><b>Libro: </b>{{selectedClub.book.title}}</p>
+                    <p><b>Autor: </b>{{selectedClub.book.author}}</p>
                 {% endif %}
             </div>
         </div>

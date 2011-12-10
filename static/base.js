@@ -91,6 +91,38 @@ var localScripts = {
         });
     },
 
+
+    "/club" : function () {
+        var modalError = $('#modal-club-error');
+        var selectedClub;
+        modalError.modal({backdrop: true, modal: true});
+
+        $('#modal-club-error .close').live('click', function() {
+            modalError.modal('hide');
+        });
+        $('#modal-club-error .btn').live('click', function() {
+            modalError.modal('hide');
+        });
+
+        $('table .btn').live('click', function() {
+            selectedClub = $(this).parent().find('span').text();
+            $.ajax({
+                    url  : '/club/requestparticipation',
+                    data : {selected : selectedClub},
+                    type : 'POST',
+                    success : function (data) {
+                        if (data == 'OK') {
+                            location.href = '/profile/club/disabledcontent?selectedClub=' + selectedClub;
+                        }
+                        else {
+                            modalError.find('p').text(data);
+                            modalError.modal('show');
+                        }
+                    }
+                });
+        });
+    },
+    
     "/profile/appliantcopies" : function () {
         var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(
             window.location.href.indexOf('?') + 1).split('&')[1]))[1];

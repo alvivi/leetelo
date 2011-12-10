@@ -1153,15 +1153,20 @@ class clubView(UserView):
         self.response.out.write(template.render('html/club.html', values))
 
 class ClubRequestParticipationView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
+    def post_as_user(self, user, logoutUri, avatarImg):
         selectedClub = Club.get(self.request.get('selected'))
         participation = Club_User.all().filter('user =',user).filter('club =',selectedClub).get()
         if participation:
-            self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
+            if participation.state == 'Invitado' or participation.state == 'Solicitado':
+                self.response.out.write(u'Usted ya ha solicitado participar en este club')
+            else:
+                self.response.out.write(u'Usted ya participa en este club')
+                #self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
         else:
             Club_User(user=user,club=selectedClub,state='Solicitado').put()
+            self.response.out.write('OK')
             self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
-        
-        
+            
+   
         
         
