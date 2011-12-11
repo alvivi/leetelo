@@ -1113,12 +1113,14 @@ class ProfileDisabledClubContentView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
+        comments = ClubComment.all().filter('club =', selectedClub).fetch(512)
         values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg,
-            'selectedClub' : selectedClub,
-            'participations' : Club_User.allParticipantsOf(selectedClub)
+            'avatar'         : avatarImg,
+            'comments'       : comments,
+            'logoutUri'      : users.create_logout_url('/'),
+            'participations' : Club_User.allParticipantsOf(selectedClub),
+            'selectedClub'   : selectedClub,
+            'user'           : user
         }
         self.response.out.write(template.render('html/profileDisabledClubContent.html', values))
 
