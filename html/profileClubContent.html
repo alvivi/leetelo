@@ -35,6 +35,26 @@
     </div>
     <div class="span10">
         <h5 class="clubtitle2">Comentarios</h5>
+        {% for c in comments %}
+            <blockquote>
+                <p>{{c.comment.text}}</p>
+                <small>{{c.comment.user.nickname}} ({{c.comment.date}})</small>
+            </blockquote>
+        {% endfor %}
+        <a id="newcomment" href="#">Añade un nuevo comentario...</a>
+        <form class="hide" id="commentform" action="/profile/club/comment/new?selectedClub={{selectedClub.key}}" method="post">
+            <fieldset>
+                <div class="clearfix">
+                    <label for="titleBook">Texto</label>
+                    <div class="input">
+                        <textarea class="xlarge" name="comment" id="comment" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="actions">
+                    <input type="submit" class="btn primary" value="Publicar" />
+                </div>
+            </fieldset>
+        </form>
     </div>
 </div>
 <div class="row centerrow">

@@ -30,6 +30,7 @@ def main():
         ('/profile/club', ProfileClubListView),
         ('/profile/club/answerinvitation', ProfileAnswerInvitationView),
         ('/profile/club/answerrequest', ProfileAnswerRequestView),
+        ('/profile/club/comment/new', ProfilenClubCommentNew),
         ('/profile/club/content', ProfileClubContentView),
         ('/profile/club/deleteparticipation', ProfileDeleteParticipationView),
         ('/profile/club/disable', ProfileDisableClubsView),

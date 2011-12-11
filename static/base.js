@@ -378,6 +378,12 @@ var localScripts = {
         var selected_club = null;
         var count = 0;
 
+        $('#newcomment').live('click', function(e) {
+            e.preventDefault();
+            $(this).slideToggle();
+            $('#commentform').slideToggle();
+        });
+
         $('#accept-request-link').live('click',function(e) {
             participation = $(this).children().text();
             debugger;

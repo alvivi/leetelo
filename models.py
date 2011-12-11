@@ -51,7 +51,7 @@ class Copy(db.Model):
 # Comentarios
 class Comment(db.Model):
     text = db.StringProperty(required=True)
-    author = db.UserProperty()
+    user = db.UserProperty()
     date = db.DateProperty(auto_now=True)
 
 # Ficha del Club
@@ -66,7 +66,7 @@ class Club(db.Model):
     state = db.StringProperty(choices=set(['Habilitado','Deshabilitado']))
     invitaciones= db.StringListProperty()
 
-class ClubComments(db.Model):
+class ClubComment(db.Model):
     club = db.ReferenceProperty(Club)
     comment = db.ReferenceProperty(Comment)
 

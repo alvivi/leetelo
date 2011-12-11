@@ -1098,12 +1098,14 @@ class ProfileClubContentView(UserView):
    def get_as_user(self, user, logoutUri, avatarImg):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
+        comments = ClubComment.all().filter('club =', selectedClub).fetch(512)
         values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg,
-            'selectedClub': selectedClub,
-            'participations' : Club_User.allParticipantsOf(selectedClub)
+            'avatar'         : avatarImg,
+            'comments'       : comments,
+            'logoutUri'      : users.create_logout_url('/'),
+            'participations' : Club_User.allParticipantsOf(selectedClub),
+            'selectedClub'   : selectedClub,
+            'user'           : user
         }
         self.response.out.write(template.render('html/profileClubContent.html', values))
 
@@ -1115,12 +1117,26 @@ class ProfileDisabledClubContentView(UserView):
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
-            'selectedClub': selectedClub,
+            'selectedClub' : selectedClub,
             'participations' : Club_User.allParticipantsOf(selectedClub)
         }
         self.response.out.write(template.render('html/profileDisabledClubContent.html', values))
 
-#Página principal.
+# Añade comentarios a un club
+class ProfilenClubCommentNew(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            clubKey = self.request.get('selectedClub')
+            club = Club.get(clubKey)
+            text = self.request.get('comment')
+            comment = Comment(text=text, user=user).put()
+            ClubComment(club=club, comment=comment).put()
+        except:
+            pass
+        finally:
+            self.redirect('/profile/club/content?selectedClub=' + clubKey)
+
+# Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         values = {
@@ -1179,7 +1195,6 @@ class ClubRequestParticipationView(UserView):
             Club_User(user=user,club=selectedClub,state='Solicitado').put()
             self.response.out.write('OK')
             self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
-
 
 
 
