@@ -48,6 +48,11 @@ class Copy(db.Model):
         #return cls.all().filter('user =', user).filter('offerState =', 'Con solicitud').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando confirmacion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando recepcion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Prestado').fetch(128)
         return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').fetch(128) + cls.all().filter('user !=', user).filter('offerState =', 'No disponible').fetch(128)
 
+# Comentarios
+class Comment(db.Model):
+    text = db.StringProperty(required=True)
+    author = db.UserProperty()
+    date = db.DateProperty(auto_now=True)
 
 # Ficha del Club
 class Club(db.Model):
@@ -60,7 +65,11 @@ class Club(db.Model):
     owner = db.UserProperty()
     state = db.StringProperty(choices=set(['Habilitado','Deshabilitado']))
     invitaciones= db.StringListProperty()
-    
+
+class ClubComments(db.Model):
+    club = db.ReferenceProperty(Club)
+    comment = db.ReferenceProperty(Comment)
+
 #relacion usuarios - clubs
 class Club_User(db.Model):
     user = db.UserProperty()
@@ -73,7 +82,7 @@ class Club_User(db.Model):
     @classmethod
     def clubsForUser(cls, user):
 	return cls.all().filter('user =', user).filter('state =','Invitacion Aceptada').fetch(128) + cls.all().filter('user =', user).filter('state =','Solicitud Aceptada').fetch(128) + cls.all().filter('user =', user).filter('state =','Propietario').fetch(128)
-    
+
 # Solicitud sobre un libro
 class Request(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='owner_copy')

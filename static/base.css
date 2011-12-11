@@ -64,3 +64,21 @@ thead th {
     text-align: center;
 }
 
+.clubtitle {
+    text-align: center;
+    font-variant: small-caps;
+    color: black;
+    font-size: 16px;
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 15px;
+}
+
+.clubtitle2 {
+    text-align: center;
+    font-variant: small-caps;
+    color: #AAA;
+    font-size: 16px;
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 15px;
+}
+
