@@ -122,7 +122,7 @@ var localScripts = {
                 });
         });
     },
-    
+
     "/profile/appliantcopies" : function () {
         var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(
             window.location.href.indexOf('?') + 1).split('&')[1]))[1];
@@ -200,7 +200,7 @@ var localScripts = {
             });
         });
     },
-    
+
     "/profile/club" : function () {
         pagination('/profile/club',10);
         var disable_modal = $('#modal-disable-club');
@@ -208,7 +208,7 @@ var localScripts = {
         var participation_modal = $('#modal-cancel-participation');
         var selected_club = null;
         var count = 0;
-        
+
         disable_modal.modal({backdrop: true, modal: true});
         enable_modal.modal({backdrop: true, modal: true});
         participation_modal.modal({backdrop: true, modal: true});
@@ -223,10 +223,10 @@ var localScripts = {
                     table.fadeOut(function () {table.remove();});
                     table.before($(data).find('table')).hide().fadeIn();
                 }
-            }); 
-            
+            });
+
         });
-        
+
         $('#reject-invitation-link').live('click',function(e) {
             selected_club = $(this).children().text();
             $.ajax({
@@ -238,10 +238,10 @@ var localScripts = {
                     table.fadeOut(function () {table.remove();});
                     table.before($(data).find('table')).hide().fadeIn();
                 }
-            }); 
-            
+            });
+
         });
-        
+
         $('#disable-club-link').live('click', function (e) {
             e.preventDefault();
             selected_club = $(this).children().text();
@@ -322,10 +322,10 @@ var localScripts = {
             });
         });
     },
-    
-    
+
+
     "/profile/club/edit" : function () {
-      
+
          $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
             var repetido=0;
@@ -340,8 +340,8 @@ var localScripts = {
             	if($.trim(email) == nombre )
             		repetido=1;
             });
-            
-            
+
+
             /*
              * Miramos si el email ya existe en los nuevos
              */
@@ -349,7 +349,7 @@ var localScripts = {
             	if((this).innerHTML==nombre)
             		repetido=1;
             });
-            
+
             /*Si no existe lo añadimos*/
             if(!repetido)
             {
@@ -368,7 +368,7 @@ var localScripts = {
         $('#optionsGeners').live('click', function (e){
            $("#resultado").val($('#optionsGeners').val());
         });
- 
+
 
     },
 
@@ -377,7 +377,7 @@ var localScripts = {
     "/profile/club/content" : function () {
         var selected_club = null;
         var count = 0;
-        
+
         $('#accept-request-link').live('click',function(e) {
             participation = $(this).children().text();
             debugger;
@@ -390,8 +390,8 @@ var localScripts = {
                     table.fadeOut(function () {table.remove();});
                     table.before($(data).find('table')).hide().fadeIn();
                 }
-            }); 
-            
+            });
+
         });
         $('#reject-request-link').live('click',function(e) {
             participation = $(this).children().text();
@@ -405,19 +405,19 @@ var localScripts = {
                     table.fadeOut(function () {table.remove();});
                     table.before($(data).find('table')).hide().fadeIn();
                 }
-            }); 
-            
+            });
+
         });
     },
-    
-    
+
+
 
 
 
 
     "/profile/club/new" : function () {
         if(/.*errorrepeat=true.*/.test(location.href)) {
-            
+
             $('#nombreClub').twipsy({trigger: 'manual'});
             $('#nombreClub').twipsy('show')
         }
@@ -426,7 +426,7 @@ var localScripts = {
             var repetido=0;
             var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
-            
+
             /*
              * Miramos si el email ya existe
              */
@@ -434,7 +434,7 @@ var localScripts = {
             	if((this).innerHTML==nombre)
             		repetido=1;
             });
-            
+
             /*Si no existe lo añadimos*/
             if(!repetido){
 	            nuevo.find('span').text(nombre);
@@ -453,7 +453,7 @@ var localScripts = {
          $('#optionsGeners').live('click', function (e){
            $("#resultado").val($('#optionsGeners').val());
              });
-       
+
     },
 
     "/profile/applicationcontent" : function () {
@@ -519,18 +519,33 @@ var localScripts = {
             return "";
         }
 
-        var ShowSelected = function ()
+        var showSelected = function(event, ui)
         {
-            var combo = document.getElementById("titleBook");
-            var selected = combo.options[combo.selectedIndex].text;
-            window.location="/profile/newcopy?selectedCopyTitle=" + selected;
+            var edit = $('#titleBook');
+            edit.val(ui.item.value);
+            window.location="/profile/newcopy?selectedCopyTitle=" + edit.val();
         }
 
-        $('#titleBook').live('change', ShowSelected);
         $('#TipoOferta').live('change', JSTipoOferta);
+        var titleEdit = $('#titleBook');
+        titleEdit.live('click', function() {titleEdit.focus(); titleEdit.select();});
 
         /*Ocultar/Mostra los campos segun valores de select*/
         JSTipoOferta();
+
+        $.ajax({
+            url: '/api/books/title',
+            dataType: 'json',
+            success: function(data) {
+                titleEdit.autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            }
+        });
+
+        $( "#titleBook" ).live("autocompleteselect", showSelected);
+
     },
 
     "/profile/editcopy" : function () {
