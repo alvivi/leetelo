@@ -21,7 +21,8 @@ class SearchResults():
 	
         testavail = SearchResults.searchAvailability(searchlist,optionsExchange, optionsRent, optionsSell)
 	
-	if len(testavail) > 0:
+	#Bandaid fix. Will redo later.
+	if (optionsRent == 'on' or optionsExchange == 'on' or optionsSell == 'on'):
 	    searchlist = testavail
 
 	
