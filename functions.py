@@ -8,6 +8,7 @@ class SearchResults():
     def searchAll(result,title,author,genre,publisher,yearFrom,yearTo,optionsExchange,optionsRent,optionsSell):
         result = []
         listoftitles =[]
+	testavail = []
 
         q = Book.all()
         q=SearchResults.searchGenre(q,genre)
@@ -17,11 +18,13 @@ class SearchResults():
         searchlist = SearchResults.searchName(searchlist,title)
         searchlist = SearchResults.searchAuthor(searchlist,author)
         searchlist = SearchResults.searchPublisher(searchlist,publisher)
-        searchlist = SearchResults.searchAvailabilityEx(searchlist,optionsExchange)
-        searchlist = SearchResults.searchAvailabilityRe(searchlist,optionsRent)
-        searchlist = SearchResults.searchAvailabilitySe(searchlist, optionsSell)
+	
+        testavail = SearchResults.searchAvailability(searchlist,optionsExchange, optionsRent, optionsSell)
+	
+	if len(testavail) > 0:
+	    searchlist = testavail
 
-
+	
         for bk in searchlist:
             if listoftitles.count(bk.title) == 0:
                 result.append(bk)
@@ -100,7 +103,7 @@ class SearchResults():
 
 	else:
 	    for x in list:
-		Clist = Copy.all().filter('book.title =',x.title)
+		Clist = Copy.all().filter('book =',x)
 		Clist = Clist.fetch(100)
 		for copy in Clist:
 		    if publisher.lower() in copy.publisher.lower():
@@ -108,54 +111,40 @@ class SearchResults():
 			break
 
 	return resulttemp
+    
 
     @classmethod
-    def searchAvailabilityEx(resulttemp, list, optionsExchange):
-	resulttemp = []
-
-	if optionsExchange == 'on':
-	    for x in list:
-		Clist = Copy.all().filter('book.title =',x.title)
-		Clist = Clist.fetch(100)
-		for copy in Clist:
-		    if copy.offerType == 'Intercambio':
-			resulttemp.append(x)
-			break
-	else:
-	    resulttemp = list
-
-	return resulttemp
-
-    @classmethod
-    def searchAvailabilityRe(resulttemp, list, optionsRent):
+    def searchAvailability(resulttemp, list, optionsExchange, optionsRent,  optionsSell):
 	resulttemp = []
 	if optionsRent == 'on':
 	    for x in list:
-		Clist = Copy.all().filter('book.title =',x.title)
+		Clist = Copy.all().filter('book =',x)
 		Clist = Clist.fetch(100)
 		for copy in Clist:
 		    if copy.offerType == 'Prestamo':
-			resulttemp.append(x)
-			break
-	else:
-	    resulttemp = list
-
-	return resulttemp
-
-
-    @classmethod
-    def searchAvailabilitySe(resulttemp, list, optionsSell):
-	resulttemp = []
+			if x not in resulttemp:
+			    resulttemp.append(x)
+			    break
+		    
 	if optionsSell == 'on':
 	    for x in list:
-		Clist = Copy.all().filter('book.title =',x.title)
+		Clist = Copy.all().filter('book =',x)
 		Clist = Clist.fetch(100)
 		for copy in Clist:
 		    if copy.offerType == 'Venta':
-			resulttemp.append(x)
-			break
-	else:
-	    resulttemp = list
+			if x not in resulttemp:
+			    resulttemp.append(x)
+			    break
+			
+	if optionsExchange == 'on':
+	    for x in list:
+		Clist = Copy.all().filter('book =',x)
+		Clist = Clist.fetch(100)
+		for copy in Clist:
+		     if copy.offerType == "Intercambio":
+		        if x not in resulttemp:
+			    resulttemp.append(x)
+			    break
 
 	return resulttemp
 
@@ -219,15 +208,17 @@ class ClubResult():
 	return resulttemp
     
     @classmethod
-    def searchBook(resulttemp, list, book):
+    def searchBook(resulttemp, list, bk):
 	resulttemp = []
-	if book == '':
+	if bk == '':
 	    resulttemp = list
 
 	else:
 	    for x in list:
-		if book.lower() in x.book.lower():
-		    resulttemp.append(x)
+		libro = x.book
+		if libro is not None:
+		    if bk.lower() in libro.title.lower():
+			 resulttemp.append(x)
 
 
 	return resulttemp
