@@ -8,7 +8,7 @@
     <div class="span16">
         <h5 class="clubtitle">Club {{selectedClub.name}}</h5>
         <div class="row">
-            <div class="span2"><img align="center" class="thumbnail book-cover" src="{{club.image}}" alt="{{club.name}}"></div>
+            <div class="span2"><img align="center" class="thumbnail book-cover" src="{{selectedClub.image}}" alt="{{selectedClub.name}}"></div>
             <div class="span14">
                 <p><b>Descripci&oacuten: </b>{{selectedClub.description}} </p>
                 {% if selectedClub.genre %}
@@ -76,7 +76,15 @@
                     <tr>
                         <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user}}' alt="Avatar del usuario"></td>
                         <td style="vertical-align:middle">{{participation.user.nickname}}</td>
-                        <td style="vertical-align:middle">{{participation.state}}</td>
+                        <td style="vertical-align:middle">
+                            {% ifequal participation.state 'Solicitud Aceptada' %}
+				Miembro
+			    {% else %}
+				{% ifequal participation.state 'Invitacion Aceptada' %}Miembro
+				{% else %}{{participation.state}}
+				{%endifequal%}
+			    {%endifequal%}
+                        </td>
                         {% ifequal selectedClub.owner user %}
                             <td style="vertical-align:middle">
                             {% ifequal participation.state 'Solicitado' %}
