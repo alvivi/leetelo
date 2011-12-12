@@ -1190,13 +1190,17 @@ class ClubRequestParticipationView(UserView):
         if participation:
             if participation.state == 'Invitado' or participation.state == 'Solicitado':
                 self.response.out.write(u'Usted ya ha solicitado participar en este club')
-            else:
+            elif participation.state == 'Invitacion Aceptada' or participation.state == 'Solicitud Aceptada':
                 self.response.out.write(u'Usted ya participa en este club')
                 #self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
+            else:
+                participation.state='Solicitado'
+                participation.put()
+                self.response.out.write('OK')
         else:
             Club_User(user=user,club=selectedClub,state='Solicitado').put()
             self.response.out.write('OK')
-            self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
+            #self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
 
 
 
