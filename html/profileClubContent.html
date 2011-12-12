@@ -27,8 +27,6 @@
 
 </div>
 
-
-<p></p>
 <div class="row">
     <div class="span6">
         <h5 class="clubtitle2">Eventos</h5>
@@ -38,7 +36,7 @@
         {% for c in comments %}
             <blockquote>
                 <p>{{c.comment.text}}</p>
-                <small>{{c.comment.user.nickname}} ({{c.comment.date}})</small>
+                <small> <img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"> {{c.comment.user.nickname}} ({{c.comment.date}})</small>
             </blockquote>
         {% endfor %}
         <a id="newcomment" href="#">Añade un nuevo comentario...</a>
@@ -74,7 +72,7 @@
             <tbody>
                 {% for participation in participations %}
                     <tr>
-                        <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user}}' alt="Avatar del usuario"></td>
+                        <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user.email}}' alt="Avatar del usuario"></td>
                         <td style="vertical-align:middle">{{participation.user.nickname}}</td>
                         <td style="vertical-align:middle">
                             {% ifequal participation.state 'Solicitud Aceptada' %}

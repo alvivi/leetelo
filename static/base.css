@@ -55,6 +55,13 @@ thead th {
     margin-left: 0px;
 }
 
+.avatar-tiny {
+    width: 15px;
+    height: 15px;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
 .book-cover {
     width: 90px;
     height: 110px;

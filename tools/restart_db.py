@@ -2,13 +2,24 @@
 from google.appengine.ext import db
 from google.appengine.api import users
 from models import *
+import urllib
+
+
 
 testUser   = users.User(email='test@example.com')
 nilsenUser = users.User(email='nilsen@example.com')
 billyUser  = users.User(email='billy@gates.com')
 userUser   = users.User(email='user@example.com')
 lolUser    = users.User(email='lol@example.com')
-patryUser = users.User(email='patriciapons89@gmail.com')
+patryUser  = users.User(email='patriciapons89@gmail.com')
+
+db.delete(UserAvatar.all().fetch(512))
+UserAvatar(user=testUser,   avatar=db.Blob(urllib.urlopen("http://s3.ryanparman.com/images/blue-avatar.jpg").read())).put()
+UserAvatar(user=nilsenUser, avatar=db.Blob(urllib.urlopen("http://lh3.ggpht.com/-xZQnCl3y_nA/TrUEXriz-SI/AAAAAAAAFKk/ObneIl5PWqk/bloggerPlus.jpg").read())).put()
+UserAvatar(user=patryUser,  avatar=db.Blob(urllib.urlopen("http://media.comicvine.com/uploads/4/48211/907038-mafalda_icon.jpg").read())).put()
+UserAvatar(user=billyUser,  avatar=db.Blob(urllib.urlopen("http://revistafortuna.com.mx/contenido/wp-content/uploads/2011/04/bill-gates-motor.jpg").read())).put()
+UserAvatar(user=userUser ,  avatar=db.Blob(urllib.urlopen("http://safopage.files.wordpress.com/2010/04/user.png").read())).put()
+UserAvatar(user=lolUser,    avatar=db.Blob(urllib.urlopen("http://images.mirror.co.uk/upl/m4/oct2009/0/9/image-1-for-olympic-history-gallery-553113648.jpg").read())).put()
 
 
 db.delete(Book.all().fetch(512))
@@ -149,3 +160,12 @@ Club_User(user=testUser,club=club6,state=u'Invitado').put()
 
 Club_User(user=nilsenUser,club=club7,state=u'Propietario').put()
 Club_User(user=testUser,club=club7,state=u'Invitacion Aceptada').put()
+
+db.delete(Comment.all().fetch(512))
+comment1 = Comment(user=patryUser, text=u'OseAaA, EsTa SuuuuupeR WeNnNoooOooO!!!').put()
+comment2 = Comment(user=nilsenUser, text=u'De mayor quiero se como él.').put()
+
+db.delete(ClubComment.all().fetch(512))
+ClubComment(club=club1, comment=comment1).put()
+ClubComment(club=club1, comment=comment2).put()
+
