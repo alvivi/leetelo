@@ -163,7 +163,7 @@ Club_User(user=testUser,club=club7,state=u'Invitacion Aceptada').put()
 
 db.delete(Comment.all().fetch(512))
 comment1 = Comment(user=patryUser, text=u'OseAaA, EsTa SuuuuupeR WeNnNoooOooO!!!').put()
-comment2 = Comment(user=nilsenUser, text=u'De mayor quiero se como él.').put()
+comment2 = Comment(user=nilsenUser, text=u'De mayor quiero ser como él.').put()
 
 db.delete(ClubComment.all().fetch(512))
 ClubComment(club=club1, comment=comment1).put()
