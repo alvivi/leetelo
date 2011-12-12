@@ -65,6 +65,7 @@ thead th {
 .book-cover {
     width: 90px;
     height: 110px;
+    vertical-align: middle;
 }
 
 .loading {
@@ -93,3 +94,6 @@ thead th {
     font-size: 14px;
 }
 
+.invitados {
+    margin: 3px 0 3px 0;
+}

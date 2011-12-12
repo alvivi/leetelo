@@ -350,7 +350,7 @@ var localScripts = {
             		repetido=1;
             });
 
-            /*Si no existe lo añadimos*/
+            /*Si no existe lo a?adimos*/
             if(!repetido)
             {
 	            nuevo.find('span').text(nombre);
@@ -422,31 +422,53 @@ var localScripts = {
 
 
     "/profile/club/new" : function () {
+
+        var invs = [];
+
         if(/.*errorrepeat=true.*/.test(location.href)) {
 
             $('#nombreClub').twipsy({trigger: 'manual'});
             $('#nombreClub').twipsy('show')
         }
+
+        $('.eliminar-invitado').live('click', function (e) {
+            e.preventDefault();
+            var self = this;
+            $(self).parent().fadeOut(function (e) {
+                $(self).parent().remove();
+            });
+            var i = invs.indexOf($(this).parent().find('span').text());
+            invs.splice(i, 1);
+            $('#invitaciones').val(invs.join(','));
+        });
+
         $('#nuevo-invitado').live('click', function (e) {
             e.preventDefault();
-            var repetido=0;
-            var nuevo = $($('.invitados')[0]).clone();
             var nombre = $('#invitacion').val();
 
-            /*
-             * Miramos si el email ya existe
-             */
-            $('.invitados span').each(function(){
-            	if((this).innerHTML==nombre)
-            		repetido=1;
-            });
+            if (nombre === "") {
+                $('#invitacion').twipsy({fallback : 'Introduce un nombre vÃ¡lido', trigger: 'manual', placement: 'right'});
+                $('#invitacion').twipsy('show');
+                return;
+            } else {
+                $('#invitacion').twipsy('hide');
+            }
+            var repetido=0;
+            var nuevo = $($('.invitados')[0]).clone();
 
-            /*Si no existe lo añadimos*/
-            if(!repetido){
+
+            /*Si no existe lo a?adimos*/
+            if(invs.indexOf(nombre) < 0) {
 	            nuevo.find('span').text(nombre);
+                nuevo.find('img').attr('src', nuevo.find('img').attr('src') + nombre);
 	            $('.invitados').after(nuevo);
 	            nuevo.fadeIn('slow');
-	            $('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+                invs.push(nombre);
+                $('#invitaciones').val(invs.join(','));
+	            //$('#invitaciones').val(($('#invitaciones').val() == "") ? $('#invitaciones').val() + nombre : $('#invitaciones').val() + ',' + nombre);
+            } else {
+                $('#invitacion').twipsy({fallback : 'Este usuario ya estÃ¡ invitado', trigger: 'manual', placement: 'right'});
+                $('#invitacion').twipsy('show');
             }
         });
 
