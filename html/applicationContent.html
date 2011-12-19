@@ -6,7 +6,15 @@
 <input type="hidden" id="selectedCopyTitle" name="selectedCopyTitle" value="{{selectedCopy.book.title}}">
 <input type="hidden" id="owner" name="owner" value={{selectedCopy.user}}>
 <input type="hidden" id="requestKey" name="requestKey" value={{request.key}}>
-    
+   
+   
+
+{% ifequal request.state "Sin contestar" %}
+    <div style="text-align: center" id="confirmRequestResponse">
+        <input type="submit" class="btn primary" name="action" value="Cancelar">
+    </div>
+{% endifequal %}
+
 {% ifequal request.state "Negociando" %}
 
 
@@ -33,7 +41,8 @@
         {% endifequal %}
     {% endifequal %}
     <div style="text-align: center" id="confirmRequestResponse">
-        <input type="submit" class="btn primary" name="processConfirm" value="Confirmar">
+        <input type="submit" class="btn primary" name="action" value="Confirmar">
+        <input type="submit" class="btn primary" name="action" value="Cancelar">
     </div>
     
 {% endifequal %}
@@ -45,7 +54,7 @@
         {% else %}
             {% ifequal selectedCopy.offerState "Esperando recepcion" %}
                 <div style="text-align: center" id="confirmRecieved">
-                    <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
+                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <! poner la fecha y hora del sistema>
                 </div>
             {% endifequal %}
         {% endif %}
@@ -53,7 +62,7 @@
     {% else %}
         {% ifequal selectedCopy.offerState "Esperando recepcion" %}
                 <div style="text-align: center" id="confirmRecieved">
-                    <input type="submit" class="btn primary" name="processConfirm" value="Recibido!"> <! poner la fecha y hora del sistema>
+                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <! poner la fecha y hora del sistema>
                 </div>
         {% endifequal %}
         {% ifequal selectedCopy.offerState "Prestado" %}

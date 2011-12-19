@@ -106,6 +106,10 @@ class Request(db.Model):
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).filter('state !=','Rechazada').fetch(128)
     
+    @classmethod
+    def getNotAnsweredRequest(cls, copy):
+        return cls.all().filter('copy =', copy).filter('state =', 'Sin contestar').fetch(128)
+        
 class HistoricalRequest(db.Model):
     copy = db.ReferenceProperty(Copy)
     appliant = db.UserProperty()

@@ -458,8 +458,14 @@ class ProfileCopyOffersView(UserView):
         appliantUser = request.user
         
         if action=="Rechazar oferta":
-            request.delete()
-            HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
+            if request.state=='Sin contestar':
+                request.delete()
+                HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
+            else:
+                request.state='Sin contestar'
+                request.put()
+                selectedCopy.offerState='Con solicitud'
+                selectedCopy.put()
         else:
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
@@ -501,7 +507,7 @@ class ApplicationContentView(UserView):
         self.response.out.write(template.render('html/applicationcontent.html',values))
 
     def post_as_user(self, user, logoutUri, avatarImg):
-        action = self.request.get('processConfirm')
+        action = self.request.get('action')
         request = Request.get(self.request.get('requestKey'))
         ownerUser = request.copy.user
         selectedCopy = request.copy
@@ -517,7 +523,14 @@ class ApplicationContentView(UserView):
             selectedCopy.offerState='Esperando recepcion'
             selectedCopy.put()
             
-            HistoricalRequest(appliant=user, copy=selectedCopy, initialUser=selectedCopy.user, state='Aceptada', initialOfferType=selectedCopy.offerType).put()
+            HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Aceptada', initialOfferType=selectedCopy.offerType).put()
+            
+            #eliminar el resto de solicitudes sobre esta oferta y pasarlas al historico
+            notAnsweredRequests = Request.getNotAnsweredRequest(selectedCopy)
+            for r in notAnsweredRequests:
+                HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=r.user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
+                r.delete()
+            #notificar a los solicitantes correspondientes
         elif action == "Recibido!":
             if selectedCopy.offerType=="Venta" or (selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto"):
                 transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).get()
@@ -560,7 +573,13 @@ class ApplicationContentView(UserView):
                 selectedCopy.offerState = 'Prestado'
                 selectedCopy.put()
                 Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
-
+        elif action=="Cancelar":
+            request.delete()
+            selectedCopy.offerState = 'Con solicitud'
+            selectedCopy.put()
+            #notificar a selectedCopy.user que esta solicitud se ha retirado
+            HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
+        
 
         values = {
             'requests'     : Request.allRequestsOf(user),
