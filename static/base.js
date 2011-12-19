@@ -123,27 +123,6 @@ var localScripts = {
         });
     },
 
-    "/profile/appliantcopies" : function () {
-        var user = (RegExp("appliant=(.*)").exec(window.location.href.slice(
-            window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-        var appliants = $(".appliant-column-name");
-        var inputs = $("#offersTable input[type=radio]");
-
-        for (var i = 0; i <appliants.length; i++) {
-            if ($(appliants[i]).text() == user) {
-                $(inputs[i]).attr("checked", "");
-            }
-        }
-
-
-        $("#exchange-buttons").children().removeClass("disabled");
-
-        var buttons = $("#exchange-buttons2");
-        $("#appliantCopiesTable input[type=radio]").live('click', function () {
-            $(buttons).children().removeClass("disabled");
-        });
-    },
-
     "/profile/copies" : function () {
         pagination('/profile/copies', 10);
 
@@ -386,7 +365,6 @@ var localScripts = {
 
         $('#accept-request-link').live('click',function(e) {
             participation = $(this).children().text();
-            debugger;
             $.ajax({
                 url  : '/profile/club/answerrequest',
                 data : {selected : participation, option : 'Aceptar'},
@@ -401,7 +379,6 @@ var localScripts = {
         });
         $('#reject-request-link').live('click',function(e) {
             participation = $(this).children().text();
-            debugger;
             $.ajax({
                 url  : '/profile/club/answerrequest',
                 data : {selected : participation, option : 'Rechazar'},
@@ -485,8 +462,8 @@ var localScripts = {
     },
 
     "/profile/applicationcontent" : function () {
-        var owner = (RegExp("owner=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[1]))[1];
-        var copy = decodeURI((RegExp("selectedCopyTitle=(.*)").exec(window.location.href.slice(window.location.href.indexOf('?') + 1).split('&')[0]))[1]);
+        var owner = $('#owner').val();
+        var copy = $('#selectedCopyTitle').val();
         var owners = $(".request-owner-column");
         var copies = $(".request-copy-column");
         var inputs = $("#requestsTable input[type=radio]");
@@ -497,9 +474,30 @@ var localScripts = {
             }
         }
     },
-
     "/profile/copyoffers" : function () {
-        var buttons = $("#exchange-buttons");
+        var acceptButton = $("#accept-offer-button");
+        var rejectButton = $("#reject-offer-button");
+        var selectedCopyKey = $("#selected-copy-key").text();
+        var directExchangeButton = $("#direct-exchange-button");
+        var actionText;
+        
+        $("#appliantCopiesTable input[type=radio]").live('click', function () {
+            var rows = $(".offer-state-column");
+            var flag = false;
+            for (var i = 0; i < rows.length; i++) {
+                if ($(rows[i]).text() == "Negociando") {
+                    flag = true;
+                }
+            }
+            if(flag)
+            {
+                if($("#offersTable input[type=radio]:checked").parent().parent().children(".offer-state-column").text() == "Negociando")
+                    $(directExchangeButton).removeClass("disabled");
+            }
+            else
+                $(directExchangeButton).removeClass("disabled");
+        });
+        
         $("#offersTable input[type=radio]").live('click', function () {
             var rows = $(".offer-state-column");
             var flag = false;
@@ -508,17 +506,96 @@ var localScripts = {
                     flag = true;
                 }
             }
-
+            
+            $(directExchangeButton).addClass("disabled");
+            
             if(flag)
-                $(buttons).children().last().removeClass("disabled");
+                $(rejectButton).removeClass("disabled");
             else
-                $(buttons).children().removeClass("disabled");
+            {
+                $(acceptButton).removeClass("disabled");
+                $(rejectButton).removeClass("disabled");
+            }
+            
+            if($('#transaction-type').text()=="Intercambio")
+            {
+                $.ajax({
+                    url  : '/profile/appliantcopies',
+                    data : {requestKey : $('input[name="offersRadios"]:checked').val(), selectedCopy: selectedCopyKey},
+                    type : 'GET',
+                    success : function (data) {
+                        $('#appliantCopies').remove();
+                        var appliantCopies = $(data).find('#appliantCopies');
+                        $("#exchange-buttons2").before(appliantCopies);
+                        $("#exchange-buttons2").removeClass('hide');
+                    }
+                });
+            }
         });
-
-        buttons.live('click', function(e) {
-            if ($(this).children().hasClass('disabled')){
+        
+        acceptButton.live('click',function(e) {
+            actionText=$(this).text();
+            if ($(this).hasClass('disabled')){
                 e.preventDefault();
                 e.stopPropagation();
+            }
+            else{
+                $.ajax({
+                    url  : '/profile/copyoffers',
+                    data : {action : actionText, requestKey : $('input[name="offersRadios"]:checked').val(), selectedCopy: selectedCopyKey},
+                    type : 'POST',
+                    success : function (data) {
+                        var table = $('#offersTable');
+                        table.fadeOut(function () {table.remove();});
+                        table.before($(data).find('#offersTable')).hide().fadeIn();
+                    }
+                });
+                $(acceptButton).addClass("disabled");
+                $(rejectButton).addClass("disabled");
+            }
+        });
+        rejectButton.live('click',function(e) {
+            actionText=$(this).text()
+            if ($(this).hasClass('disabled')){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            else{
+                $.ajax({
+                    url  : '/profile/copyoffers',
+                    data : {action : actionText, requestKey : $('input[name="offersRadios"]:checked').val(), selectedCopy: selectedCopyKey},
+                    type : 'POST',
+                    success : function (data) {
+                        var table = $('#offersTable');
+                        table.fadeOut(function () {table.remove();});
+                        table.before($(data).find('#offersTable')).hide().fadeIn();
+                    }
+                });
+                $(acceptButton).addClass("disabled");
+                $(rejectButton).addClass("disabled");
+            }
+        });
+        directExchangeButton.live('click',function(e) {
+            actionText=$(this).text()
+            if ($(this).hasClass('disabled')){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            else{
+                $.ajax({
+                    url  : '/profile/copyoffers',
+                    data : {action : actionText, requestKey : $('input[name="offersRadios"]:checked').val(), selectedCopy: selectedCopyKey, appliantSelectedCopy: $('input[name="appliantCopiesRadios"]:checked').val()},
+                    type : 'POST',
+                    success : function(data) {
+                        var table = $('#offersTable');
+                        table.fadeOut(function () {table.remove();});
+                        table.before($(data).find('#offersTable')).hide().fadeIn();
+                        $('#appliantCopies').remove();
+                        $("#exchange-buttons2").addClass('hide');
+                    }
+                });
+                $(acceptButton).addClass("disabled");
+                $(rejectButton).addClass("disabled");
             }
         });
     },

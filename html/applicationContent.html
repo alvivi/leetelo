@@ -3,8 +3,9 @@
 {% block application_content %}
 
 <form action="/profile/applicationcontent" method="post">
-<input type="hidden" name="selectedCopyTitle" value="{{selectedCopy.book.title}}">
-<input type="hidden" name="owner" value="{{selectedCopy.user}}">
+<input type="hidden" id="selectedCopyTitle" name="selectedCopyTitle" value="{{selectedCopy.book.title}}">
+<input type="hidden" id="owner" name="owner" value={{selectedCopy.user}}>
+<input type="hidden" id="requestKey" name="requestKey" value={{request.key}}>
     
 {% ifequal request.state "Negociando" %}
 
@@ -60,6 +61,7 @@
         {% endifequal %}
     {% endifequal %}
 {% endifequal %}    
+
 
 </form>
 {% endblock %}

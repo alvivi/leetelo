@@ -4,15 +4,17 @@
 
 {% block appliant_copies %}
 
-{% ifequal request.exchangeType "Directo" %}
-        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
-{% endifequal %}
-{% ifequal request.exchangeType "Indirecto" %}
-    <p style="margin-top:50px"><strong>Se est&aacute negociando un intercambio indirecto. </strong></p>
-{% endifequal %}
 
-<p style="margin-top:20px">Libros que posee el usuario {{appliantUser}}:</p>
-<form action="/profile/appliantcopies" method="post">
+
+
+<div id="appliantCopies">
+    {% ifequal request.exchangeType "Directo" %}
+        <p style="margin-top:50px"><strong>Intercambiar por: {{request.exchangeCopy.book.title}} </strong></p>
+    {% endifequal %}
+    {% ifequal request.exchangeType "Indirecto" %}
+        <p style="margin-top:50px"><strong>Se est&aacute negociando un intercambio indirecto. </strong></p>
+    {% endifequal %}
+    <p style="margin-top:20px">Libros que posee el usuario {{appliantUser}}:</p>
     <input type="hidden" value="{{appliantUser}}" name="appliant">
     <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
     <table class="zebra-striped sortable" id="appliantCopiesTable">
@@ -26,18 +28,14 @@
         <tbody>
             {% for appCopy in appliantCopies %}
             <tr>
-                <td><input type="radio" name="appliantCopiesRadios" value="{{appCopy.book.title}}"></td>
+                <td><input type="radio" name="appliantCopiesRadios" value="{{appCopy.key}}"></td>
                 <td>{{appCopy.book.title}}</td>
                 <td>{{appCopy.book.author}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <div style="text-align: center" id="exchange-buttons2">
-        <input type="submit" id="direct-exchange-button" class="btn primary disabled" name="processOffer" value="Proponer este libro para intercambio">
-    </div>
-    
-</form>
+</div>
 
 
 

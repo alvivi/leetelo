@@ -23,13 +23,19 @@
 		 {% for request in requests %}
          	   <tr>
             	    <td><input type="radio" name="RequestRadios" value="{{request.state}}" 
-			       onclick="window.location.href='/profile/applicationcontent?selectedCopyTitle={{request.copy.book.title}}&owner={{request.copy.user}}'"></td>
+			       onclick="window.location.href='/profile/applicationcontent?requestKey={{request.key}}'"></td>
                 	<td class="request-copy-column">{{request.copy.book.title}}</td>
                 	<td>{{request.copy.book.author}}</td>
                 	<td class="request-owner-column">{{request.copy.user}}</td>
                 	<td>{{request.state}}</td>
 			<td>{{request.copy.offerType}}</td>
-                	<td><a href="#" class="btn">Enviar Mensaje</a> </td>
+                	<td>
+				{% ifequal request.state 'Rechazada' %}
+					<a href="#" class="btn">Eliminar de la lista</a>
+				{% else %}
+					<a href="#" class="btn">Enviar Mensaje</a>
+				{% endifequal %}
+			</td>
             	</tr>
             	{% endfor %}
 		</tbody>

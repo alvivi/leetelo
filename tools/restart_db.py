@@ -88,6 +88,7 @@ prisioneroCopy1 = Copy(user=nilsenUser, book=prisioneroBook, offerType="Intercam
 imperioCopy1 = Copy(user=nilsenUser, book=imperioBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
 arenaCopy1 = Copy(user=nilsenUser, book=arenaBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
 libertadCopy1 = Copy(user=nilsenUser, book=libertadBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
+libertadCopy1 = Copy(user=lolUser, book=libertadBook, offerType="Intercambio", offerState="En oferta",language="Castellano",pages=457,edition=8,genre="Novela").put()
 
 db.delete(Request.all().fetch(512))
 Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
@@ -115,9 +116,7 @@ Request(user=testUser,copy=libertadCopy1, state="Sin contestar").put()
 
 
 
-db.delete(Loan.all().fetch(512))
-db.delete(Exchange.all().fetch(512))
-db.delete(Sale.all().fetch(512))
+db.delete(Transaction.all().fetch(512))
 
 db.delete(Club.all().fetch(512))
 club1 = Club(name=u'aficionados de Justin',description=u'Este club es una prueba', author=u'Justin Bieber', genre= [u'Poesia',u'Ciencia Ficcion'],invitaciones = [u'user@example.com'],state=u'Habilitado', book=justinBook,owner = testUser, image= db.Link('http://www.studentsoftheworld.info/sites/star/img/994_JustinBieber[1].png')).put()

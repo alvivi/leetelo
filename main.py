@@ -43,12 +43,10 @@ def main():
         ('/profile/copyoffers', CopyOffersView),
         ('/profile/datacopy', ProfileDataCopyView),
         ('/profile/editcopy', ProfileEditCopyView),
-        ('/profile/exchange', ExchangeView),
         ('/profile/historial', ProfileHistorialView),
-        ('/profile/loan', LoanView),
+        ('/profile/transaction', TransactionView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/offers', ProfileOffersView),
-        ('/profile/sale', SaleView),
         ('/search', SearchView)
         ], debug=True)
     util.run_wsgi_app(application)

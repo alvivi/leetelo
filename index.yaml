@@ -19,3 +19,8 @@ indexes:
   properties:
   - name: user
   - name: offerState
+
+- kind: Request
+  properties:
+  - name: copy
+  - name: state

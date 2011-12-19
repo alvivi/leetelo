@@ -423,27 +423,23 @@ class ProfileApplicationsNewView(UserView):
 
 class CopyOffersView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        selectedCopy = Copy.get(self.request.get('selectedCopy'))
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy)
+            'copyRequests'  : Request.allRequestsFor(selectedCopy)
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
 
     def post_as_user(self, user, logoutUri, avatarImg):
-        action = self.request.get('processOffer')
-        appliantUser = users.User(self.request.get('offersRadios'))
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('user =',appliantUser).filter('copy =',selectedCopy).get()
-
+        action = self.request.get('action')
+        selectedCopy = Copy.get(self.request.get('selectedCopy'))
+        request = Request.get(self.request.get('requestKey'))
+        appliantUser = request.user
+        
         if action=="Vender" or action=="Prestar":
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
@@ -455,6 +451,19 @@ class CopyOffersView(UserView):
             request.state='Negociando'
             request.put()
             selectedCopy.put()
+        elif action=="Proponer este libro para intercambio":
+            wantedCopy = Copy.get(self.request.get('appliantSelectedCopy'))
+            request.exchangeCopy = wantedCopy
+            request.state = 'Negociando'
+            request.exchangeType='Directo'
+            request.put()
+
+            selectedCopy.offerState='Esperando confirmacion'
+            selectedCopy.put()
+        elif action=="Rechazar oferta":
+            request.state='Rechazada'
+            request.put()
+            
 
         values = {
             'user'       : user,
@@ -462,23 +471,18 @@ class CopyOffersView(UserView):
             'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy)
+            'copyRequests'  : Request.allRequestsFor(selectedCopy)
         }
 
-        self.response.out.write(template.render('html/copyOffers.html', values))
+        self.redirect('/profile/copyoffers?selectedCopy=' + str(selectedCopy.key()))
 
 
 class ApplicationContentView(UserView):
     def get_as_user(self,user,logoutUri,avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        ownerUser = users.User(self.request.get('owner'))
-        book = Book.all().filter('title =', title).get()
-        selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
-        request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
-
+        request = Request.get(self.request.get('requestKey'))
 	values = {
             'requests'     : Request.allRequestsOf(user),
-            'selectedCopy' : selectedCopy,
+            'selectedCopy' : request.copy,
             'request'    : request,
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -489,37 +493,46 @@ class ApplicationContentView(UserView):
 
     def post_as_user(self, user, logoutUri, avatarImg):
         action = self.request.get('processConfirm')
-        title = self.request.get('selectedCopyTitle')
-        ownerUser = users.User(self.request.get('owner'))
-        book = Book.all().filter('title =', title).get()
-        selectedCopy = Copy.all().filter('user =',ownerUser).filter('book =',book).get()
-        request = Request.all().filter('user =',user).filter('copy =',selectedCopy).get()
+        request = Request.get(self.request.get('requestKey'))
+        ownerUser = request.copy.user
+        selectedCopy = request.copy
 
         if action == "Confirmar":
             request.state='Aceptada'
             request.put()
-
+            
+            if selectedCopy.offerType=="Venta" or (selectedCopy.offerType=="Intercambio" and request.exchangeType=="Indirecto"):
+                Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
+                
             selectedCopy.offerState='Esperando recepcion'
             selectedCopy.put()
         elif action == "Recibido!":
-            if selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto":
+            if selectedCopy.offerType=="Venta" or (selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto"):
+                transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).get()
+                transaction.endDate = datetime.now().date()
+                transaction.put()
+                
                 selectedCopy.offerState = 'No disponible'
                 selectedCopy.offerType = 'Ninguna'
                 selectedCopy.user = user
                 selectedCopy.put()
-                Exchange(copy1 = selectedCopy, owner1=ownerUser, owner2=user, exchangeType='Indirecto').put()
+
                 request.delete()
 
-            elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
-                exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', ownerUser).filter('owner2 =',user).filter('exchangeType =','Directo').get()
-                #getDirectExchange(selectedcopy, ownerUser, request.exchangeCopy, users.get_current_user())
+                
 
-                if exchange==None:
-                    Exchange(copy1 = selectedCopy, owner1=ownerUser, copy2=request.exchangeCopy, owner2=user, exchangeType='Directo').put()
+            elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
+                transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).filter('appliantCopy =',request.exchangeCopy).filter('exchangeType =','Directo').get()
+                
+                if transaction==None or (transaction!=None and transaction.endDate!=None):
+                    Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType, appliantCopy=request.exchangeCopy, exchangeType="Directo").put()
+                    
                     request.llegaCopia1 = True
                     selectedCopy.put()
                     request.put()
                 else:
+                    transaction.endDate = datetime.now().date()
+                    transaction.put()
                     selectedCopy.offerState = 'No disponible'
                     selectedCopy.offerType = 'Ninguna'
                     selectedCopy.user = user
@@ -529,21 +542,12 @@ class ApplicationContentView(UserView):
                     request.exchangeCopy.user = ownerUser
                     request.exchangeCopy.put()
                     request.delete()
-
-            elif selectedCopy.offerType=="Venta":
-                selectedCopy.offerState = 'No disponible'
-                selectedCopy.offerType = 'Ninguna'
-                selectedCopy.user = user
-                selectedCopy.put()
-
-                request.delete()
-
-                Sale(copy=selectedCopy, vendor=ownerUser, buyer=user).put()
-
+                    
+                    
             elif selectedCopy.offerType=="Prestamo":
                 selectedCopy.offerState = 'Prestado'
                 selectedCopy.put()
-                Loan(copy=selectedCopy, owner=ownerUser, lendingTo=user, arrivalDate=datetime.now().date()).put()
+                Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
 
 
         values = {
@@ -556,11 +560,9 @@ class ApplicationContentView(UserView):
 
 
 
-class SaleView(UserView):
+class TransactionView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
+        selectedCopy = Copy.get(self.request.get('selectedCopy'))
         request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
         values = {
             'user'       : user,
@@ -570,38 +572,45 @@ class SaleView(UserView):
             'selectedCopy': selectedCopy,
             'request'  : request
         }
-        self.response.out.write(template.render('html/sale.html', values))
-
-
-class LoanView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
-        values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg,
-            'copies'      : Copy.allCopiesWithRequests(user),
-            'selectedCopy': selectedCopy,
-            'request'  : request
-        }
-        self.response.out.write(template.render('html/loan.html', values))
-
+        self.response.out.write(template.render('html/transaction.html', values))
+        
     def post_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
+        selectedCopy = Copy.get(self.request.get('selectedCopy'))
+        request = Request.get(self.request.get('requestKey'))
+        
+        if selectedCopy.offerType=="Intercambio":
+            transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', user).filter('appliant =',request.user).filter('transactionType =',selectedCopy.offerType).filter('appliantCopy =',request.exchangeCopy).filter('exchangeType =',"Directo").get()
+            
+            if transaction==None or (transaction!=None and transaction.endDate!=None):
+                Transaction(copy=selectedCopy, owner=user, appliant=request.user, transactionType=selectedCopy.offerType, appliantCopy=request.exchangeCopy, exchangeType="Directo").put()
+                
+                request.llegaCopia2 = True
+                selectedCopy.put()
+                request.put()
+            else:
+                transaction.endDate = datetime.now().date()
+                transaction.put()
+                selectedCopy.offerState = 'No disponible'
+                selectedCopy.offerType = 'Ninguna'
+                selectedCopy.user = request.user
+                selectedCopy.put()
+                request.exchangeCopy.offerState = 'No disponible'
+                request.exchangeCopy.offerType = 'Ninguna'
+                request.exchangeCopy.user = user
+                request.exchangeCopy.put()
+                request.delete()
+                
+                
+        elif selectedCopy.offerType=="Prestamo":
+            selectedCopy.offerState = "No disponible"
+            selectedCopy.offerType = "Ninguna"
+            selectedCopy.put()
 
-        selectedCopy.offerState = "No disponible"
-        selectedCopy.offerType = "Ninguna"
-        selectedCopy.put()
-
-        Loan(copy=selectedCopy, owner=user, lendingTo=request.user, returningDate=datetime.now().date()).put()
-
-        request.delete()
+            transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =',user).filter('appliant =',request.user).filter('transactionType =',"Prestamo").get()
+            transaction.endDate=datetime.now().date()
+            transaction.put()
+            
+            request.delete()
 
         values = {
             'user'        : user,
@@ -611,111 +620,29 @@ class LoanView(UserView):
         }
         self.response.out.write(template.render('html/profileOffers.html', values))
 
-class ExchangeView(UserView):
-    def get_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('copy =', selectedCopy).filter('state =',"Aceptada").get()
-        values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg,
-            'copies'      : Copy.allCopiesWithRequests(user),
-            'selectedCopy': selectedCopy,
-            'request'  : request
-        }
-        self.response.out.write(template.render('html/exchange.html', values))
 
-    def post_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        request = Request.all().filter('copy =', selectedCopy).filter('state =','Aceptada').get()
-
-        exchange = Exchange.all().filter('copy1 =',selectedCopy).filter('copy2 =',request.exchangeCopy).filter('owner1 =', user).filter('owner2 =', request.user).filter('exchangeType =','Directo').get()
-        #getDirectExchange(selectedcopy, users.get_current_user(), request.exchangeCopy, request.user)
-        if exchange==None:
-            Exchange(copy1=selectedCopy, owner1=user, copy2=request.exchangeCopy, owner2=request.user, exchangeType='Directo').put()
-            request.llegaCopia2 = True
-            selectedCopy.put()
-            request.put()
-        else:
-            selectedCopy.offerState = 'No disponible'
-            selectedCopy.offerType = 'Ninguna'
-            selectedCopy.user = request.user
-            selectedCopy.put()
-            request.exchangeCopy.offerState = 'No disponible'
-            request.exchangeCopy.offerType = 'Ninguna'
-            request.exchangeCopy.user = user
-            request.exchangeCopy.put()
-            request.delete()
-
-        values = {
-            'user'        : user,
-            'logoutUri'   : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user),
-            'avatar'      : avatarImg
-        }
-        self.response.out.write(template.render('html/profileOffers.html', values))
 
 
 class AppliantCopiesView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        appliantUser = users.User(self.request.get('appliant'))
-        request = Request.all().filter('copy =', selectedCopy).filter('user =', appliantUser).get()
-
+        selectedCopy = Copy.get(self.request.get('selectedCopy'))
+        request = Request.get(self.request.get('requestKey'))
+        appliantUser = request.user
+        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
             'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy),
+            'copyRequests'  : Request.allRequestsFor(selectedCopy),
             'appliantUser' : appliantUser,
             'appliantCopies' : Copy.allCopiesOf(appliantUser),
             'request' : request
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
-
-    def post_as_user(self, user, logoutUri, avatarImg):
-        action = self.request.get('processOffer')
-        title = self.request.get('selectedCopyTitle')
-        book = Book.all().filter('title =',title).get()
-        selectedCopy = Copy.all().filter('user =',user).filter('book =',book).get()
-        appliantUser = users.User(self.request.get('appliant'))
-        request = Request.all().filter('copy =', selectedCopy).filter('user =', appliantUser).get()
-
-        if action=="Proponer intercambio indirecto" :
-            selectedCopy.offerState='Esperando confirmacion'
-            request.exchangeType='Indirecto'
-            request.state='Negociando'
-            selectedCopy.put()
-            request.put()
-        elif action=="Proponer este libro para intercambio":
-            wantedBook = Book.all().filter('title =', self.request.get('appliantCopiesRadios')).get()
-            wantedCopy = Copy.all().filter('user =', appliantUser).filter('book =', wantedBook).get()
-
-            request.exchangeCopy = wantedCopy
-            request.state = 'Negociando'
-            request.exchangeType='Directo'
-            request.put()
-
-            selectedCopy.offerState='Esperando confirmacion'
-            selectedCopy.put()
-
-        values = {
-            'user'       : user,
-            'logoutUri'  : users.create_logout_url('/'),
-            'copies'      : Copy.allCopiesWithRequests(user),
-            'selectedCopy': selectedCopy,
-            'copyOffers'  : Request.allRequestsFor(selectedCopy),
-            'avatar'      : avatarImg
-        }
-        self.response.out.write(template.render('html/copyOffers.html', values))
+        
+    
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
@@ -1190,7 +1117,7 @@ class ClubRequestParticipationView(UserView):
         if participation:
             if participation.state == 'Invitado' or participation.state == 'Solicitado':
                 self.response.out.write(u'Usted ya ha solicitado participar en este club')
-            elif participation.state == 'Invitacion Aceptada' or participation.state == 'Solicitud Aceptada':
+            elif participation.state == 'Invitacion Aceptada' or participation.state == 'Solicitud Aceptada' or participation.state == 'Propietario':
                 self.response.out.write(u'Usted ya participa en este club')
                 #self.redirect('/profile/club/content?selectedClub=' + str(selectedClub.key()))
             else:

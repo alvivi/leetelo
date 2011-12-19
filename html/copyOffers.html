@@ -2,51 +2,45 @@
 
 {% block copy_offers %} 
                         
-<p> <strong> Mostrando ofertas para: </strong>{{selectedCopy.book.title}}</p>
-<p> <strong> Tipo de transacci&oacuten: </strong>{{selectedCopy.offerType}}</p>
+<p> <strong> Mostrando ofertas para: </strong><span id="selected-copy-title">{{selectedCopy.book.title}}</span></p>
+<p> <strong> Tipo de transacci&oacuten: </strong><span id="transaction-type">{{selectedCopy.offerType}}</span></p>
+<span class="hide" id="selected-copy-key">{{selectedCopy.key}}</span>
 
-    
-<form action="/profile/copyoffers" method="post">
-    <input type="hidden" value="{{selectedCopy.book.title}}" name="selectedCopyTitle">
-    <table class="zebra-striped sortable" id="offersTable">
-        <thead>
-            <tr>
-                <th></th>
-                <th class="blue header">Lo quiere...</th>
-                <th class="blue header">Calificaci&oacuten</th>
-                <th class="blue header">Estado de la transacci&oacuten</th>
-                <th class="blue header"> </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for offer in copyOffers %}
-            <tr>
-                {% ifequal selectedCopy.offerType "Intercambio"%}
-                    <td><input type="radio" name="offersRadios" value={{offer.user}} onclick = "window.location.href='/profile/appliantcopies?selectedCopyTitle={{selectedCopy.book.title}}&appliant={{offer.user}}'"></td>
-                {% else %}
-                    <td><input type="radio" name="offersRadios" value={{offer.user}}></td>
-                {% endifequal %}
-                
-                <td class="appliant-column-name">{{offer.user}}</td>
-                <td>****</td>
-                <td class="offer-state-column">{{offer.state}}</td>
-                <td><a href="#" class="btn">Enviar Mensaje</a> </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="text-align: center" id="exchange-buttons">
-        {% ifequal selectedCopy.offerType "Intercambio" %}
-            <input  id="boton-indirecto" type="submit" class="btn primary disabled" name="processOffer" value="Proponer intercambio indirecto">
-        {% endifequal %}
-        {% ifequal selectedCopy.offerType "Venta" %} <input id="boton-vender" type="submit" class="btn primary disabled" name="processOffer" value="Vender">{% endifequal %}
-        {% ifequal selectedCopy.offerType "Prestamo" %} <input id="boton-prestar" type="submit" class="btn primary disabled" name="processOffer" value="Prestar">{% endifequal %}
-    
-        <input type="submit" class="btn primary disabled" name="processOffer" value="Rechazar oferta">    
-    </div>
-</form>
+<table class="zebra-striped sortable" id="offersTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th class="blue header">Lo quiere...</th>
+            <th class="blue header">Calificaci&oacuten</th>
+            <th class="blue header">Estado de la transacci&oacuten</th>
+            <th class="blue header"> </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in copyRequests %}
+        <tr>
+            <td><input type="radio" id="offersRadios" name="offersRadios" value={{request.key}}></td>
+            <td class="appliant-column-name">{{request.user}}</td>
+            <td>****</td>
+            <td class="offer-state-column">{{request.state}}</td>
+            <td><a href="#" class="btn">Enviar Mensaje</a> </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="row" id="exchange-buttons" style="text-align:center">
+    {% ifequal selectedCopy.offerType "Intercambio" %}<a id="accept-offer-button" class="btn primary disabled" href="#">Proponer intercambio indirecto</a>{% endifequal %}
+    {% ifequal selectedCopy.offerType "Venta" %} <a id="accept-offer-button" class="btn primary disabled" href="#">Vender</a>{% endifequal %}
+    {% ifequal selectedCopy.offerType "Prestamo" %} <a id="accept-offer-button" class="btn primary disabled" href="#">Prestar</a>{% endifequal %}
+    <a id="reject-offer-button" class="btn primary disabled" href="#">Rechazar oferta</a>    
+</div>
+
+
 {% block appliant_copies %}{% endblock %}
 
-
-
+<form method="POST" action="/profile/appliantcopies">
+    <div class="hide" style="text-align: center" id="exchange-buttons2">
+        <a id="direct-exchange-button" class="btn primary disabled" href="#">Proponer este libro para intercambio</a>
+        
+</form>
 {% endblock %}

@@ -86,10 +86,16 @@ class Club_User(db.Model):
 # Solicitud sobre un libro
 class Request(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='owner_copy')
-    exchangeCopy = db.ReferenceProperty(Copy,collection_name='exchange_copy')
     user = db.UserProperty()
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
+    startDate = db.DateProperty(auto_now=True)
+    endDate = db.DateProperty()
+    
+    #si copy.offerType es Intercambio, se usan estas dos propiedades para indicar la copia por la que se solicita intercambiar, y si el intercambio es directo o indirecto
+    exchangeCopy = db.ReferenceProperty(Copy,collection_name='exchange_copy')
     exchangeType = db.StringProperty(choices=set(['Directo','Indirecto']))
+    
+    #estas dos propiedades se usan para la logica de visualizacion (indican cuando ha llegado cada copia a su destino)
     llegaCopia1 = db.BooleanProperty()
     llegaCopia2 = db.BooleanProperty()
     # Método de clase que devuelve todas las solicitudes que ha realizado un usuario
@@ -100,38 +106,23 @@ class Request(db.Model):
     # Método de clase que devuelve todas las solicitudes que se han recibido sobre un libro
     @classmethod
     def allRequestsFor(cls, copy):
-        return cls.all().filter('copy =', copy).fetch(128)
-
-class Sale(db.Model):
-    copy = db.ReferenceProperty(Copy)
-    vendor = db.UserProperty()
-    buyer = db.UserProperty()
-    date = db.DateProperty(auto_now=True)
-
-class Loan(db.Model):
-    copy = db.ReferenceProperty(Copy)
+        return cls.all().filter('copy =', copy).filter('state !=','Rechazada').fetch(128)
+    
+class Transaction(db.Model):
+    copy = db.ReferenceProperty(Copy,collection_name='copy')
     owner = db.UserProperty()
-    lendingTo = db.UserProperty()
-    arrivalDate = db.DateProperty()
-    returningDate = db.DateProperty()
-
-class Exchange(db.Model):
-    copy1 = db.ReferenceProperty(Copy,collection_name='copy1')
-    owner1 = db.UserProperty()
-    copy2 = db.ReferenceProperty(Copy,collection_name='copy2')
-    owner2 = db.UserProperty()
-    exchangeDate = db.DateProperty(auto_now=True)
+    appliant = db.UserProperty()
+    transactionType = db.StringProperty(choices=set(['Intercambio','Venta','Prestamo']))
+    #si se trata de intercambio directo, tendrá "appliantCopy"
+    appliantCopy = db.ReferenceProperty(Copy,collection_name='appliantCopy')
     exchangeType = db.StringProperty(choices=set(['Directo','Indirecto']))
-
-    @classmethod
-    def allExchangesFromUser(cls, user):
-        return cls.all().filter('owner2', user).fetch(128)
-
-    @classmethod
-    def switchFor(cls, copy, user):
-        return cls.all().filter('copy1 =', copy).filter('copy2.user =', user).fetch(128)
-
-    @classmethod
-    def getDirectExchange(cls, copy1, owner1, copy2, owner2):
-        return cls.all().filter('copy1 =',copy1).filter('copy2 =',copy2).filter('owner1 =', owner1).filter('owner2 =',owner2).filter('exchangeType =','Directo').fetch(128)
-
+    #startDate:
+    # - prestamo: indica el dia en que el solicitante recibe el libro
+    # - venta: indica el dia en que se inicia la venta
+    # - intercambio: indica el dia en que se inicia el intercambio
+    startDate = db.DateProperty(auto_now=True)
+    #endDate:
+    # - prestamo: indica el dia en que el propietario recibe el ejemplar de vuelta
+    # - venta: indica el dia en que el solicitante recibe el libro
+    # - intercambio: indica el dia en que ambos participantes han recibido los libros intercambiados
+    endDate = db.DateProperty()

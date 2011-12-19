@@ -14,27 +14,27 @@
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
                                 {% ifequal copy.offerState "Con solicitud"%}
-                                    <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
+                                    <option onclick="window.location.href='/profile/copyoffers?selectedCopy={{copy.key}}'">
                                         {{copy.book.title}}
                                     </option>
                                 {% else %}
                                     {% ifequal copy.offerState "Esperando confirmacion"%}
-                                        <option onclick="window.location.href='/profile/copyoffers?selectedCopyTitle={{copy.book.title}}'">
+                                        <option onclick="window.location.href='/profile/copyoffers?selectedCopy={{copy.key}}'">
                                            {{copy.book.title}}
                                         </option>
                                     {% else %}
                                         {% ifequal copy.offerType "Venta" %}
-                                            <option onclick="window.location.href='/profile/sale?selectedCopyTitle={{copy.book.title}}'">
+                                            <option onclick="window.location.href='/profile/transaction?selectedCopy={{copy.key}}'">
                                                 {{copy.book.title}}
                                             </option>
                                         {% endifequal%}
                                         {% ifequal copy.offerType "Prestamo" %}
-                                            <option onclick="window.location.href='/profile/loan?selectedCopyTitle={{copy.book.title}}'">
+                                            <option onclick="window.location.href='/profile/transaction?selectedCopy={{copy.key}}'">
                                                 {{copy.book.title}}
                                             </option>
                                         {% endifequal%}
                                         {% ifequal copy.offerType "Intercambio" %}
-                                            <option onclick="window.location.href='/profile/exchange?selectedCopyTitle={{copy.book.title}}'">
+                                            <option onclick="window.location.href='/profile/transaction?selectedCopy={{copy.key}}'">
                                                 {{copy.book.title}}
                                             </option>
                                         {% endifequal%}
@@ -47,9 +47,7 @@
         </div>
         <div class="span12">
             {% block copy_offers %} {% endblock %}
-            {% block sale %}        {% endblock %}
-            {% block loan %}        {% endblock %}
-            {% block exchange %}    {% endblock %}
+            {% block transaction %} {% endblock %}
         </div>
     </div>
 
