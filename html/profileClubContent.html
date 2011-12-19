@@ -36,7 +36,7 @@
         {% for c in comments %}
             <blockquote>
                 <p>{{c.comment.text}}</p>
-                <small> <img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"> {{c.comment.user.nickname}} ({{c.comment.date}})</small>
+                <small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date}})</small>
             </blockquote>
         {% endfor %}
         <a id="newcomment" href="#">Añade un nuevo comentario...</a>
@@ -72,7 +72,7 @@
             <tbody>
                 {% for participation in participations %}
                     <tr>
-                        <td style="vertical-align:middle"><img class="avatar-small" src='/img?user={{participation.user.email}}' alt="Avatar del usuario"></td>
+                        <td style="vertical-align:middle"><a href="/user/details?selectedUser={{participation.user.email}}"><img class="avatar-small" src='/img?user={{participation.user.email}}' alt="Avatar del usuario"></a></td>
                         <td style="vertical-align:middle">{{participation.user.nickname}}</td>
                         <td style="vertical-align:middle">
                             {% ifequal participation.state 'Solicitud Aceptada' %}

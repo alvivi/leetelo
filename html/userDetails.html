@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+	<div class="span7">
+		<h6>Perfil de {{selectedUser.email}}</h6>
+		<div class="clearfix" >
+			<div class="input">
+			<span> <img class="avatar" src='/img?user={{selectedUser.email}}' alt="Avatar del usuario" width='170' style="border:1px gray;"></img></span>
+			</div>
+		</div>
+	</div>
+	<div class="span9">
+		<h6>Ejemplares disponibles</h6>
+		<table id="copiesTable" class="zebra-striped sortable">
+			<thead>
+				<tr>
+					<th class="header blue">Portada</th>
+					<th class="header blue">T&iacutetulo</th>
+					<th class="header blue">Autor</th>
+					<th class="header blue">Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for copy in copies %}
+					<tr>
+						<td style="vertical-align:middle"><a href="/book/details?book={{copy.book.key}}"><img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}"></a></td>
+						<td style="vertical-align:middle">{{copy.book.title}}</td>
+						<td style="vertical-align:middle">{{copy.book.author}}</td>
+						{% ifequal copy.offerState "No disponible" %}
+							<td style="vertical-align:middle">Disponible</td>
+						{% else %}
+							<td style="vertical-align:middle">{{copy.offerState}}</td>
+						{% endifequal %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row">
+<!aqui van los comentarios sobre este usuario>
+</div>
+{% endblock %}

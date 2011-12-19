@@ -548,6 +548,8 @@ var localScripts = {
                         var table = $('#offersTable');
                         table.fadeOut(function () {table.remove();});
                         table.before($(data).find('#offersTable')).hide().fadeIn();
+                        $('#appliantCopies').remove();
+                        $("#exchange-buttons2").addClass('hide');
                     }
                 });
                 $(acceptButton).addClass("disabled");

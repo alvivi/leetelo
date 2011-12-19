@@ -40,14 +40,15 @@ def main():
         ('/profile/club/view', ProfileDataClubView),
         ('/profile/copies', ProfileCopiesView),
         ('/profile/copies/delete', ProfileDeleteCopiesView),
-        ('/profile/copyoffers', CopyOffersView),
+        ('/profile/copyoffers', ProfileCopyOffersView),
         ('/profile/datacopy', ProfileDataCopyView),
         ('/profile/editcopy', ProfileEditCopyView),
         ('/profile/historial', ProfileHistorialView),
         ('/profile/transaction', TransactionView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/offers', ProfileOffersView),
-        ('/search', SearchView)
+        ('/search', SearchView),
+        ('/user/details', UserDetailsView)
         ], debug=True)
     util.run_wsgi_app(application)
 

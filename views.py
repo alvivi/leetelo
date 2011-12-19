@@ -213,6 +213,22 @@ class BookDetailsView(UserView):
             }
             self.response.out.write(template.render('html/bookDetails.html', values))
 
+
+class UserDetailsView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        selectedUser = users.User(self.request.get('selectedUser'))
+        
+        values = {
+            'user'        : user,
+            'logoutUri'   : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'copies'      : Copy.allCopiesOf(selectedUser),
+            'selectedUser': selectedUser
+        }
+        self.response.out.write(template.render('html/userDetails.html', values))
+        
+            
+            
 # /profile/newcopy
 # Vista que se encarga de crear una nuevo ejemplar de un libro
 class ProfileNewCopyView(UserView):
@@ -414,6 +430,7 @@ class ProfileApplicationsNewView(UserView):
                 self.response.out.write(u'Ya ha solicitado este ejemplar.')
             else:
                 Request(copy=copy, user=user, state='Sin contestar').put()
+                HistoricalRequest(appliant=user, copy=copy, initialUser=user, state='Sin contestar', initialOfferType=copy.offerType).put()
                 copy.offerState = 'Con solicitud'
                 copy.put()
                 self.response.out.write('OK')
@@ -421,7 +438,7 @@ class ProfileApplicationsNewView(UserView):
             self.response.out.write(u'No ha sido posible realizar su petición.')
 
 
-class CopyOffersView(UserView):
+class ProfileCopyOffersView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         selectedCopy = Copy.get(self.request.get('selectedCopy'))
         values = {
@@ -440,29 +457,21 @@ class CopyOffersView(UserView):
         request = Request.get(self.request.get('requestKey'))
         appliantUser = request.user
         
-        if action=="Vender" or action=="Prestar":
+        if action=="Rechazar oferta":
+            request.delete()
+            HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
+        else:
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
+            if action=="Proponer intercambio indirecto" :
+                request.exchangeType='Indirecto'
+            elif action=="Proponer este libro para intercambio":
+                wantedCopy = Copy.get(self.request.get('appliantSelectedCopy'))
+                request.exchangeCopy = wantedCopy
+                request.exchangeType='Directo'
+            request.put()
             selectedCopy.put()
-            request.put()
-        elif action=="Proponer intercambio indirecto" :
-            selectedCopy.offerState='Esperando confirmacion'
-            request.exchangeType='Indirecto'
-            request.state='Negociando'
-            request.put()
-            selectedCopy.put()
-        elif action=="Proponer este libro para intercambio":
-            wantedCopy = Copy.get(self.request.get('appliantSelectedCopy'))
-            request.exchangeCopy = wantedCopy
-            request.state = 'Negociando'
-            request.exchangeType='Directo'
-            request.put()
-
-            selectedCopy.offerState='Esperando confirmacion'
-            selectedCopy.put()
-        elif action=="Rechazar oferta":
-            request.state='Rechazada'
-            request.put()
+            HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state=request.state, initialOfferType=selectedCopy.offerType).put()
             
 
         values = {
@@ -501,11 +510,14 @@ class ApplicationContentView(UserView):
             request.state='Aceptada'
             request.put()
             
-            if selectedCopy.offerType=="Venta" or (selectedCopy.offerType=="Intercambio" and request.exchangeType=="Indirecto"):
+            if selectedCopy.offerType=="Venta":
                 Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
-                
+            elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Indirecto":
+                Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType, exchangeType="Indirecto").put()
             selectedCopy.offerState='Esperando recepcion'
             selectedCopy.put()
+            
+            HistoricalRequest(appliant=user, copy=selectedCopy, initialUser=selectedCopy.user, state='Aceptada', initialOfferType=selectedCopy.offerType).put()
         elif action == "Recibido!":
             if selectedCopy.offerType=="Venta" or (selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto"):
                 transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).get()

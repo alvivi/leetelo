@@ -13,6 +13,11 @@
                   <div class="input">
                         <select multiple="multiple" size="20" name="offerSelection" id="offerSelection">        
                             {% for copy in copies %}
+                                {% ifequal copy.offerState "En oferta" %}
+                                    <option onclick="window.location.href='/profile/copyoffers?selectedCopy={{copy.key}}'">
+                                        {{copy.book.title}}
+                                    </option>
+                                {% endifequal %}
                                 {% ifequal copy.offerState "Con solicitud"%}
                                     <option onclick="window.location.href='/profile/copyoffers?selectedCopy={{copy.key}}'">
                                         {{copy.book.title}}

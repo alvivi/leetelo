@@ -11,7 +11,6 @@
         <tr>
             <th></th>
             <th class="blue header">Lo quiere...</th>
-            <th class="blue header">Calificaci&oacuten</th>
             <th class="blue header">Estado de la transacci&oacuten</th>
             <th class="blue header"> </th>
         </tr>
@@ -20,8 +19,7 @@
         {% for request in copyRequests %}
         <tr>
             <td><input type="radio" id="offersRadios" name="offersRadios" value={{request.key}}></td>
-            <td class="appliant-column-name">{{request.user}}</td>
-            <td>****</td>
+            <td class="appliant-column-name"><a href="/user/details?selectedUser={{request.user.email}}">{{request.user}}</a></td>
             <td class="offer-state-column">{{request.state}}</td>
             <td><a href="#" class="btn">Enviar Mensaje</a> </td>
         </tr>

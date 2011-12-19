@@ -22,7 +22,7 @@
 	{% for copy in copies %}
 		<tr>
 			<td style="vertical-align:middle" class="nopadding centerrow"> <input type="checkbox"></td>
-			<td style="vertical-align:middle"><img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}"></td>
+			<td style="vertical-align:middle"><a href="/book/details?book={{copy.book.key}}"><img align="center" class="thumbnail book-cover" src="{{copy.book.image}}" alt="{{copy.book.title}}"></a></td>
 			<td style="vertical-align:middle">				
 				<a href="/profile/editcopy?selected={{copy.key}}">
 					{{copy.book.title}}

@@ -88,20 +88,31 @@ prisioneroCopy1 = Copy(user=nilsenUser, book=prisioneroBook, offerType="Intercam
 imperioCopy1 = Copy(user=nilsenUser, book=imperioBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
 arenaCopy1 = Copy(user=nilsenUser, book=arenaBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
 libertadCopy1 = Copy(user=nilsenUser, book=libertadBook, offerType="Intercambio", offerState="Con solicitud",language="Castellano",pages=457,edition=8,genre="Novela").put()
-libertadCopy1 = Copy(user=lolUser, book=libertadBook, offerType="Intercambio", offerState="En oferta",language="Castellano",pages=457,edition=8,genre="Novela").put()
+libertadCopy2 = Copy(user=lolUser, book=libertadBook, offerType="Intercambio", offerState="En oferta",language="Castellano",pages=457,edition=8,genre="Novela").put()
 
 db.delete(Request.all().fetch(512))
+db.delete(HistoricalRequest.all().fetch(512))
 Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=justinCopy1, state="Sin contestar").put()
+HistoricalRequest(appliant=nilsenUser, copy=justinCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=billyUser, copy=justinCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=lolUser, copy=justinCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Intercambio").put()
 
 Request(user=nilsenUser,copy=kafkaCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=kafkaCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=kafkaCopy1, state="Sin contestar").put()
+HistoricalRequest(appliant=nilsenUser, copy=kafkaCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Venta").put()
+HistoricalRequest(appliant=billyUser, copy=kafkaCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Venta").put()
+HistoricalRequest(appliant=lolUser, copy=kafkaCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Venta").put()
 
 Request(user=nilsenUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=panCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=panCopy1, state="Sin contestar").put()
+HistoricalRequest(appliant=nilsenUser, copy=panCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Prestamo").put()
+HistoricalRequest(appliant=billyUser, copy=panCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Prestamo").put()
+HistoricalRequest(appliant=lolUser, copy=panCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Prestamo").put()
+
 
 #requests de testuser
 Request(user=testUser,copy=austenCopy1, state="Sin contestar").put()
@@ -113,8 +124,15 @@ Request(user=testUser,copy=prisioneroCopy1, state="Sin contestar").put()
 Request(user=testUser,copy=imperioCopy1, state="Sin contestar").put()
 Request(user=testUser,copy=arenaCopy1, state="Sin contestar").put()
 Request(user=testUser,copy=libertadCopy1, state="Sin contestar").put()
-
-
+HistoricalRequest(appliant=testUser, copy=austenCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=deseoCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=tokyoCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=quienCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=cieloCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=prisioneroCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=imperioCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=arenaCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
+HistoricalRequest(appliant=testUser, copy=libertadCopy1, initialUser=nilsenUser, state="Sin contestar", initialOfferType="Intercambio").put()
 
 db.delete(Transaction.all().fetch(512))
 

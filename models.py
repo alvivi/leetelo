@@ -46,7 +46,7 @@ class Copy(db.Model):
     @classmethod
     def allCopiesWithRequests(cls, user):
         #return cls.all().filter('user =', user).filter('offerState =', 'Con solicitud').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando confirmacion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando recepcion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Prestado').fetch(128)
-        return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').fetch(128) + cls.all().filter('user !=', user).filter('offerState =', 'No disponible').fetch(128)
+        return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').filter('offerState !=', 'No disponible').fetch(128)
 
 # Comentarios
 class Comment(db.Model):
@@ -88,8 +88,6 @@ class Request(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='owner_copy')
     user = db.UserProperty()
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
-    startDate = db.DateProperty(auto_now=True)
-    endDate = db.DateProperty()
     
     #si copy.offerType es Intercambio, se usan estas dos propiedades para indicar la copia por la que se solicita intercambiar, y si el intercambio es directo o indirecto
     exchangeCopy = db.ReferenceProperty(Copy,collection_name='exchange_copy')
@@ -107,6 +105,14 @@ class Request(db.Model):
     @classmethod
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).filter('state !=','Rechazada').fetch(128)
+    
+class HistoricalRequest(db.Model):
+    copy = db.ReferenceProperty(Copy)
+    appliant = db.UserProperty()
+    initialUser = db.UserProperty()
+    initialOfferType = db.StringProperty(choices=set(['Intercambio','Venta','Prestamo','Ninguna']))
+    state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
+    date = db.DateProperty(auto_now=True)
     
 class Transaction(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='copy')
