@@ -18,7 +18,14 @@ import logging
 import time
 import urllib
 import hashlib
+import unicodedata
 from datetime import datetime
+from compiler.ast import Break
+
+
+def elimina_tildes(s):
+    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+
 
 # Clase que ayuda a la hora de crear vistas que requieran un usuario. Las
 # clases que hereden de ella deben implementar get_as_user (si requiren de un
@@ -853,10 +860,24 @@ class ProfileNewClubView(UserView):
                 book = Book.all().filter('title =', libro).get()
 
             if len(invitaciones)<2 and len(invitaciones[0])<2:
-                invitaciones = [];
-
-            if Club.all().filter('name =', nameClub).count() > 0:
+                invitaciones = [];            
+            
+            #if Club.all().filter('name =', nameClub).count() > 0:
+            #   self.redirect('/profile/club/new?errorrepeat=true')
+            
+            #NO DISTINGUIR ENTRE MAYUSCULAS MINUSCULAS Y ACENTOS
+            repetido = False
+            for clubf in Club.all():
+                nombre=elimina_tildes(clubf.name).lower()
+                nombreNuevo=elimina_tildes(nameClub).lower()
+                logging.debug(nombre)
+                if nombre == nombreNuevo:
+                    repetido= True
+                    break
+                    
+            if repetido:
                 self.redirect('/profile/club/new?errorrepeat=true')
+                
             else:
                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, invitaciones=invitaciones, state="Habilitado").put()
                 logging.debug(club_actual)
@@ -954,7 +975,9 @@ class ProfileEditClubView(UserView):
             if len(nuevos_invitados)<2 and len(nuevos_invitados[0])<2:
                 nuevos_invitados = [];
 
-            if selectedClub.name == nameClub:
+            
+            #NO DISTINGUIR ENTRE MAYUSCULAS MINUSCULAS Y ACENTOS
+            if elimina_tildes(selectedClub.name).lower() == elimina_tildes(nameClub).lower():
 
                 selectedClub.description=description
                 selectedClub.genre=generos
