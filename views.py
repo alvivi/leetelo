@@ -904,7 +904,16 @@ class ProfileNewClubView(UserView):
                 self.redirect('/profile/club')
                 logging.debug(invitaciones)
 
-        except:
+        except Exception, e:
+            campos=[]
+            strExp=str(e)
+            
+            if "URL" in strExp:
+                campos.append("image")
+            
+            if "name" in strExp:
+                campos.append("nombreClub")
+                
             libro = self.request.get('libros')
             book = Book.all().filter('title =', libro).get()
             values = {
@@ -913,6 +922,8 @@ class ProfileNewClubView(UserView):
                  'user'       : user,
                  'logoutUri'  : users.create_logout_url('/'),
                  'error'      : True,
+                 'textoerror' : e,
+                 'campos'     : campos,
                  'avatar'     : avatarImg
               }
             self.response.out.write(template.render('html/profileNewClub.html', values))
