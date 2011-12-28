@@ -13,7 +13,7 @@
 
 {% if error %}
     <div id="error-message" class="alert-message block-message error">
-        <p><strong>Error al introducir lo datos.</strong> Por favor comprueba que son correctos</p>
+        <p><strong>Error al introducir lo datos. {{textoerror}}</strong> Por favor comprueba que son correctos</p>
     </div>
 {% endif %}
 
@@ -57,7 +57,7 @@
                 <div class="clearfix">
                     <label for="edicion">Edición</label>
                     <div class="input">
-                        <input class="xlarge" type="number" min="1" max="5000" value="1" name="edicion" id="edicion" />
+                        <input class="xlarge {% for campo in campos %}{% ifequal 'edicion' campo %}errorCampo{% endifequal %}{% endfor %}" type="number" min="1" max="5000" value="1" name="edicion" id="edicion" />
                     </div>
                 </div>
                 <div class="clearfix">
@@ -76,7 +76,7 @@
                 <div class="clearfix">
                     <label for="paginas">Páginas</label>
                     <div class="input">
-                        <input class="xlarge" value="100" type="number" min="1" max="9000" name="paginas" id="paginas"/>
+                        <input class="xlarge {% for campo in campos %}{% ifequal 'paginas' campo %}errorCampo{% endifequal %}{% endfor %}" value="100" type="number" min="1" max="9000" name="paginas" id="paginas"/>
                     </div>
                 </div>
                 <div class="clearfix">

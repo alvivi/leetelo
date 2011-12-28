@@ -10,8 +10,7 @@
 {% if error %}
 <div class="row">
     <div class="alert-message block-message error span16">
-	    <p>Error al editar los datos del Club.
-	       </p>
+	   <p><strong>Error al introducir lo datos. {{textoerror}}</strong> Por favor comprueba que son correctos</p>
     </div>
 </div>
 {% else %}
@@ -35,13 +34,13 @@
                 <!--<div class="clearfix media-grid centerrow">
                     <img class="thumbnail book-cover" src="{{book.image}}" alt="{{book.title}}">
                 </div>-->
-                <div class="clearfix">
-                    <label for="nameClub">Nombre</label>
-                    <div class="input">
-                      <!--<input data-placement="right" rel='twipsy' title="Este Club ya existe" class="xlarge" id="nombreClub" name="nombreClub" value ="{{selectedClub.name}}" size="90" type="text">-->
-                      <input class="xlarge" type="text"  name="nombreClub" id="nombreClub" value= "{{selectedClub.name}}" />
+                	<div class="clearfix">
+	                    <label for="nameClub">Nombre</label>
+	                    <div class="input">
+	                      <!--<input data-placement="right" rel='twipsy' title="Este Club ya existe" class="xlarge" id="nombreClub" name="nombreClub" value ="{{selectedClub.name}}" size="90" type="text">-->
+	                      <input class="xlarge {% for campo in campos %}{% ifequal 'nombreClub' campo %}errorCampo{% endifequal %}{% endfor %}" type="text"  name="nombreClub" id="nombreClub" value= "{{selectedClub.name}}" />
+	                    </div>
                     </div>
-                    <div>
                     <div class="clearfix">
                        <label for="description">Descripcion</label>
                        <div class="input">
@@ -59,7 +58,7 @@
 				<div class="clearfix">
                     <label for="image">Cambiar Imágen</label>
                     <div class="input">
-                        <input class="xlarge" id="image" name="image" type="text" value="{{selectedClub.image}}" size="90"/>
+                        <input class="xlarge {% for campo in campos %}{% ifequal 'image' campo %}errorCampo{% endifequal %}{% endfor %}" id="image" name="image" type="text" value="{{selectedClub.image}}" size="90"/>
                     </div>
                 </div>
                   	

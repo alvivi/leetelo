@@ -195,8 +195,18 @@ class BookNewView(UserView):
             else:
                 Book(title=title, author=author, genre=genre, year=year, image=image).put()
                 self.redirect('/profile/newcopy?selectedCopyTitle=' + title)
-        except:
-            self.redirect('/book/new?error=true')
+        except Exception, e:
+            campos=[]
+            strExp=str(e)
+            values = {
+                'user'        : user,
+                'logoutUri'   : users.create_logout_url('/'),
+                'textoerror'  : e,
+                'error'       : True,
+                'campos'      : campos
+            }
+            self.response.out.write(template.render('html/bookNew.html', values))
+            #self.redirect('/book/new?error=true')
 
 class BookDetailsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
@@ -265,9 +275,11 @@ class ProfileNewCopyView(UserView):
 
     def post_as_user(self, user, logoutUri, avatarImg):
         try:
+            error = 1
             title      = self.request.get('titleBook')
             book       = Book.all().filter('title =', title).get()
             edit       = int(self.request.get('edicion'))
+            error = 2
             formato    = self.request.get('Formato')
             lang       = self.request.get('Idioma')
             pagina     = int(self.request.get('paginas'))
@@ -292,7 +304,16 @@ class ProfileNewCopyView(UserView):
 
             self.redirect('/profile/copies')
 
-        except:
+        except Exception, e:
+            campos=[]
+            strExp=str(e)
+            
+            if error == 1:
+                campos.append("edicion")
+            
+            if error == 2:
+                campos.append("paginas")
+                
             title = self.request.get('titleBook')
             book = Book.all().filter('title =', title).get()
             values = {
@@ -301,6 +322,8 @@ class ProfileNewCopyView(UserView):
                 'user'       : user,
                 'logoutUri'  : users.create_logout_url('/'),
                 'error'      : True,
+                'textoerror' : e,
+                'campos'     : campos,
                 'avatar'     : avatarImg
             }
             self.response.out.write(template.render('html/profileNewCopy.html', values))
@@ -840,12 +863,6 @@ class ProfileNewClubView(UserView):
             book=None
             invitaciones = self.request.get('invitaciones').split(',')
 
-            logging.debug(nameClub)
-            logging.debug(description)
-            logging.debug(imagen_txt)
-            logging.debug(generos)
-            logging.debug(libro)
-
             if imagen_txt == '' or imagen_txt == 'http://':
                 imagen=None
             else:
@@ -1060,7 +1077,16 @@ class ProfileEditClubView(UserView):
                                 """ % user)
 
                     self.redirect('/profile/club')
-        except:
+        except Exception, e:
+            campos=[]
+            strExp=str(e)
+            
+            if "URL" in strExp:
+                campos.append("image")
+            
+            if "name" in strExp:
+                campos.append("nombreClub")
+            
             key = self.request.get('selectedClub')
             selectedClub = Club.get(key)
             values = {
@@ -1069,6 +1095,8 @@ class ProfileEditClubView(UserView):
                     'avatar'     : avatarImg,
                     'error'      : True,
                     'errorrepeat': False,
+                    'textoerror' : e,
+                    'campos'     : campos,
                     'selectedClub': selectedClub
                }
             self.response.out.write(template.render('html/profileEditClub.html', values))
