@@ -4,6 +4,7 @@
 # modelos son persistentes.
 
 from google.appengine.ext import db
+import datetime
 
 class Usuario(db.Model):
     user = db.UserProperty()
@@ -53,6 +54,39 @@ class Comment(db.Model):
     text = db.StringProperty(required=True)
     user = db.UserProperty()
     date = db.DateProperty(auto_now=True)
+
+
+class Alert(db.Model):
+    date = db.DateProperty(required=True)
+    type = db.StringProperty(choices=set(['Club: Aceptado','Club: Rechazado','Transaccion: Finalizada','Transaccion','Transaccion: Sobrepasada fecha limite','Nuevo mensaje']))
+    description = db.StringProperty()
+    user = db.UserProperty(required=True)
+    remainder = db.IntegerProperty()
+    
+    @classmethod
+    def setDate(today):
+	today = datetime.date.today()
+	return today
+    
+    @classmethod
+    def allAlertsOf(result, user):
+        alertlist = []
+	result = []
+	
+	alertlist = Alert.all().filter('user =', user).fetch(512)
+	db.delete(Alert.all().fetch(512))
+	
+	today = datetime.date.today()
+	
+	for alert in alertlist:
+	    delta = today - alert.date
+	    if delta.days < 11:
+		alert.remainder = 10 - delta.days
+		result.append(alert)
+		db.put(alert)
+	    
+	return result
+	
 
 # Ficha del Club
 class Club(db.Model):

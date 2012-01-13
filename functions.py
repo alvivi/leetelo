@@ -6,7 +6,10 @@ from models import *
 class SearchResults():
     @classmethod
     def searchAll(result,title,author,genre,publisher,yearFrom,yearTo,optionsExchange,optionsRent,optionsSell):
+    
         result = []
+	
+	
         listoftitles =[]
 	testavail = []
 
@@ -155,7 +158,11 @@ class ClubResult():
     @classmethod
     def searchAll(result,name,creator,genre,book):
 	result = []
-	listoftitles =[]
+	
+	searchlist = []
+	searchlistf = []
+	searchlistff = []
+
 	
 	searchlist = Club.all().fetch(100)
 	searchlist = ClubResult.searchGenre(searchlist,genre)
@@ -163,7 +170,20 @@ class ClubResult():
 	searchlist = ClubResult.searchCreator(searchlist,creator)
 	searchlist = ClubResult.searchBook(searchlist,book)
 	
-	result = searchlist
+	
+	for club in searchlist:
+	    if(club.state == 'Habilitado'):
+		searchlistf.append(club)
+	
+	#BAND-AID FIX
+	for club in searchlistf:
+	    for genre in club.genre:
+		if(genre != u''):
+		    searchlistff.append(club)
+		    break
+		    
+	
+	result = searchlistff
 	return result
 
     @classmethod
