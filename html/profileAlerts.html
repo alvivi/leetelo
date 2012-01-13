@@ -4,5 +4,34 @@
 {% block nav_profile_alerts %} class="active" {% endblock %}
 {% block profileContent %}
 <h6> Contenido de notificaciones </h6>
+<h6 style="font-size:11px;"> Las notificaciones se eliminaran automaticamente al cabo de 10 dias. </h6>
+{% if alerts %}
+<table id="clubsTable" class="zebra-striped sortable">
+
+	<thead>
+		<tr>
+			<th class="header blue">Fecha</th>
+			<th class="header blue">Tipo</th>
+			<th class="header blue">Descripcion</th>
+                        <th class="header blue">Dias restantes</th>
+                        <th class="header blue">Acciones</th>
+
+          </tr>
+	</thead>
+	<tbody>
+            
+            	{% for res in alerts %}
+		<tr>
+			<td>{{res.date}}</td>
+			<td>{{res.type}}</td>
+			<td>{{res.description}}</td>
+			<td>{{res.remainder}}</td>
+			<td><a class="btn primary">Detalles</a></td>
+		</tr>
+                {% endfor %}
+        </tbody>
+
+</table>
+{%endif%}
 {% endblock %}
 

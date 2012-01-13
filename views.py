@@ -133,10 +133,16 @@ class ProfileAccountView(UserView):
 
 class ProfileAlertsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
+        
+        tod = Alert.setDate()
+        
+        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg
+            'avatar'     : avatarImg,
+            'alerts'     : Alert.allAlertsOf(user),
+            'today'      : tod
         }
         self.response.out.write(template.render('html/profileAlerts.html', values))
 
@@ -1182,6 +1188,7 @@ class clubView(UserView):
         creador = self.request.get("club_maker")
         genero = self.request.get("club_genre")
         libro = self.request.get("book_name")
+
 
         res = ClubResult.searchAll(nombre,creador,genero,libro)
 
