@@ -116,7 +116,7 @@ class HistoricalRequest(db.Model):
     initialUser = db.UserProperty()
     initialOfferType = db.StringProperty(choices=set(['Intercambio','Venta','Prestamo','Ninguna']))
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
-    date = db.DateProperty(auto_now=True)
+    date = db.DateTimeProperty(auto_now=True)
     
 class Transaction(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='copy')
@@ -130,9 +130,9 @@ class Transaction(db.Model):
     # - prestamo: indica el dia en que el solicitante recibe el libro
     # - venta: indica el dia en que se inicia la venta
     # - intercambio: indica el dia en que se inicia el intercambio
-    startDate = db.DateProperty(auto_now=True)
+    startDate = db.DateTimeProperty(auto_now=True)
     #endDate:
     # - prestamo: indica el dia en que el propietario recibe el ejemplar de vuelta
     # - venta: indica el dia en que el solicitante recibe el libro
     # - intercambio: indica el dia en que ambos participantes han recibido los libros intercambiados
-    endDate = db.DateProperty()
+    endDate = db.DateTimeProperty()
