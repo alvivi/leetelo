@@ -26,7 +26,17 @@
 			<td>{{res.type}}</td>
 			<td>{{res.description}}</td>
 			<td>{{res.remainder}}</td>
-			<td><a class="btn primary">Detalles</a></td>
+			<td>
+			{%if res.relatedClub %}
+			<a class="btn primary" href="/profile/club/content?selectedClub={{res.relatedClub.key}}">Detalles</a></td>
+			{%endif%}
+			{%if res.relatedCopy %}
+			<a class="btn primary" href="/profile/copyoffers?selectedCopy={{res.relatedCopy.key}}">Detalles</a>
+			{%endif%}
+			{%if res.relatedApp %}
+			<a class="btn primary" href="/profile/applications">Detalles</a>
+		        {%endif%}
+			</td>
 		</tr>
                 {% endfor %}
         </tbody>
@@ -34,4 +44,3 @@
 </table>
 {%endif%}
 {% endblock %}
-

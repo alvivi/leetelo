@@ -191,9 +191,9 @@ ClubComment(club=club1, comment=comment2).put()
 
 
 db.delete(Alert.all().fetch(512))
-Alert( date=datetime.date(year=2011,day=5,month=1), user=testUser, type='Transaccion: Finalizada', description='Notificacion de prueba, y nunca deberia de salir').put()
+Alert( date=datetime.date(year=2011,day=5,month=1), user=testUser, type='Solicitud: Finalizada', description='Notificacion de prueba, y nunca deberia de salir').put()
 Alert( date=datetime.date(year=2012,day=5,month=1), user=testUser, type='Club: Aceptado', description='Notificacion de prueba, anadida manualmente en la DB...' ).put()
 Alert( date=Alert.setDate(), user=testUser, type='Club: Rechazado', description='Notificacion de prueba, anadida manualmente en la DB...' ).put()
-Alert( date=Alert.setDate(), user=testUser, type='Transaccion: Finalizada', description='Notificacion de prueba, anadida manualmente en la DB...').put()
+Alert( date=Alert.setDate(), user=testUser, type='Solicitud: Finalizada', description='Notificacion de prueba, anadida manualmente en la DB...').put()
 
 
