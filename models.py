@@ -55,37 +55,6 @@ class Comment(db.Model):
     user = db.UserProperty()
     date = db.DateProperty(auto_now=True)
 
-
-class Alert(db.Model):
-    date = db.DateProperty(required=True)
-    type = db.StringProperty(choices=set(['Club: Aceptado','Club: Rechazado','Transaccion: Finalizada','Transaccion','Transaccion: Sobrepasada fecha limite','Nuevo mensaje']))
-    description = db.StringProperty()
-    user = db.UserProperty(required=True)
-    remainder = db.IntegerProperty()
-    
-    @classmethod
-    def setDate(today):
-	today = datetime.date.today()
-	return today
-    
-    @classmethod
-    def allAlertsOf(result, user):
-        alertlist = []
-	result = []
-	
-	alertlist = Alert.all().filter('user =', user).fetch(512)
-	db.delete(Alert.all().fetch(512))
-	
-	today = datetime.date.today()
-	
-	for alert in alertlist:
-	    delta = today - alert.date
-	    if delta.days < 11:
-		alert.remainder = 10 - delta.days
-		result.append(alert)
-		db.put(alert)
-	    
-	return result
 	
 
 # Ficha del Club
@@ -170,3 +139,36 @@ class Transaction(db.Model):
     # - venta: indica el dia en que el solicitante recibe el libro
     # - intercambio: indica el dia en que ambos participantes han recibido los libros intercambiados
     endDate = db.DateTimeProperty()
+
+class Alert(db.Model):
+    date = db.DateProperty(required=True)
+    type = db.StringProperty(choices=set(['Club: Solicitud','Club: Aceptado','Club: Rechazado','Solicitud: Cancelada','Solicitud: Finalizada','Solicitud: Rechazada', 'Solicitud: Aceptada','Solicitud: Sobrepasada fecha limite','Club: Invitacion','Nuevo mensaje','Solicitud: Nueva']))
+    description = db.StringProperty()
+    user = db.UserProperty(required=True)
+    remainder = db.IntegerProperty()
+    club = db.ReferenceProperty(Club)
+    transaction = db.ReferenceProperty(Transaction)
+    
+    @classmethod
+    def setDate(today):
+	today = datetime.date.today()
+	return today
+    
+    @classmethod
+    def allAlertsOf(result, user):
+        alertlist = []
+	result = []
+	
+	alertlist = Alert.all().filter('user =', user).fetch(512)
+	
+	today = datetime.date.today()
+	
+	for alert in alertlist:
+	    delta = today - alert.date
+	    if delta.days < 11:
+		alert.remainder = 10 - delta.days
+		result.append(alert)
+	    else:
+		db.delete(alert)
+	    
+	return result
