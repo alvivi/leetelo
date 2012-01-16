@@ -470,7 +470,11 @@ class ProfileApplicationsNewView(UserView):
                 copy.offerState = 'Con solicitud'
                 copy.put()
                 # notificación: notificar a "copy.user" que tiene una nueva solicitud sobre el libro "copy"
+<<<<<<< HEAD
                 Alert( user=copy.user, type='Solicitud: Nueva', relatedCopy = copy, date=Alert.setDate(), description='El usuario %s solicita tu libro %s.' % (user.email() , copy.book.title) ).put()
+=======
+                Alert( user=copy.user, type='Solicitud: Nueva', date=Alert.setDate(), description='El usuario %s solicita tu libro %s.' % (user.email() , copy.book.title) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
                 self.response.out.write('OK')
         except:
             self.response.out.write(u'No ha sido posible realizar su petición.')
@@ -528,7 +532,11 @@ class ProfileCopyOffersView(UserView):
             selectedCopy.put()
             HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state=request.state, initialOfferType=selectedCopy.offerType).put()
             # notificación: notificar a appliantUser que su solicitud se ha aceptado
+<<<<<<< HEAD
             Alert( user=appliantUser, type='Solicitud: Aceptada', relatedApp='true', date=Alert.setDate(), description='El usuario %s ha aceptado tu solicitud por el libro %s.' % (user.email() , selectedCopy.book.title) ).put()
+=======
+            Alert( user=appliantUser, type='Solicitud: Aceptada', date=Alert.setDate(), description='El usuario %s ha aceptado tu solicitud por el libro %s. Debes confirmar el intercambio.' % (user.email() , selectedCopy.book.title) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
         
         values = {
             'user'       : user,
@@ -581,7 +589,11 @@ class ApplicationContentView(UserView):
                 HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=r.user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
                 r.delete()
                 # notificación: notificar a r.user que se ha rechazado su solicitud porque se está realizando una transacción con otro usuario. El libro ya no está en oferta.
+<<<<<<< HEAD
                 Alert( user=r.user, type='Solicitud: Rechazada', date=Alert.setDate(), relatedApp='true', description='Tu solicitud por el libro %s de %s ha sido cancelada. El libro ya no esta en oferta.' % (selectedCopy.book.title, user.email()) ).put()
+=======
+                Alert( user=r.user, type='Solicitud: Rechazada', date=Alert.setDate(), description='Tu solicitud por el libro %s de %s ha sido cancelada. El libro ya no esta en oferta.' % (selectedCopy.book.title, user.email()) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
                 
         elif action == "Recibido!":
             if selectedCopy.offerType=="Venta" or (selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto"):
@@ -638,7 +650,11 @@ class ApplicationContentView(UserView):
                 selectedCopy.offerState = 'Con solicitud'
             selectedCopy.put()
             # notificación: notificar a ownerUser que user ha cancelado la solicitud
+<<<<<<< HEAD
             Alert( user=ownerUser, type='Solicitud: Cancelada', date=Alert.setDate(), relatedApp='true', description='La solicitud por el libro %s ha sido cancelada por %s.' % (selectedCopy.book.title, user.email()) ).put()
+=======
+            Alert( user=ownerUser, type='Solicitud: Cancelada', date=Alert.setDate(), description='La solicitud por el libro %s ha sido cancelada por %s.' % (selectedCopy.book.title, user.email()) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
             HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
         
 
@@ -693,14 +709,22 @@ class TransactionView(UserView):
                 request.delete()
                 
             # notificación opcional: notificar a request.user que el libro que ha intercambiado ya le ha llegado a user
+<<<<<<< HEAD
             Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro..' % (user.email() ) ).put()
+=======
+            Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro %s.' % (user.email() , selectedCopy.book.title) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
             
         elif selectedCopy.offerType=="Prestamo":
             selectedCopy.offerState = "No disponible"
             selectedCopy.offerType = "Ninguna"
             selectedCopy.put()
             # notificación opcional: notificar a request.user que el libro que devolvió ya le ha llegado al dueño
+<<<<<<< HEAD
             Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro.' % ( user.email() ) ).put()
+=======
+            Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro %s.' % (user.email() , selectedCopy.book.title) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
             
             transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =',user).filter('appliant =',request.user).filter('transactionType =',"Prestamo").get()
             transaction.endDate=datetime.now()#.date()
@@ -868,7 +892,11 @@ class ProfileAnswerRequestView(UserView):
             participation.state = 'Solicitud Aceptada'
             participation.put()
             # notificación: notificar a participation.user que su solicitud sobre el club ha sido aceptada
+<<<<<<< HEAD
             Alert( user=participation.user, type='Club: Aceptado', relatedClub=participation.club, date=Alert.setDate(), description='Has sido aceptado en el club %s.' % ( participation.club.name ) ).put()
+=======
+            Alert( user=participation.user, type='Club: Aceptado', date=Alert.setDate(), description='Has sido aceptado en el club %s.' % ( participation.club.name ) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
             
         elif option == 'Rechazar':
             participation.state = 'Solicitud Rechazada'
@@ -957,7 +985,11 @@ class ProfileNewClubView(UserView):
                             except Exception, e:
                                 logging.debug(e)
                         # notificación: si el usuario sí que existe en el sistema, enviarle notificación avisando de que tiene una nueva invitación a club
+<<<<<<< HEAD
                         Alert( user=user_ins, type='Club: Invitacion', date=Alert.setDate(), relatedClub=club_actual, description='Has sido invitado al club %s por el usuario %s.' % ( nameClub ,user.email() ) ).put()
+=======
+                        Alert( user=user_ins, type='Club: Invitacion', date=Alert.setDate(), description='Has sido invitado al club %s por el usuario %s.' % ( nameClub ,user.email() ) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
                 self.redirect('/profile/club')
                 logging.debug(invitaciones)
 
@@ -1075,7 +1107,11 @@ class ProfileEditClubView(UserView):
                             except Exception, e:
                                 logging.debug(e)
                         # notificación: si el usuario sí que existe en el sistema, enviarle notificación avisando de que tiene una nueva invitación a club
+<<<<<<< HEAD
                         Alert( user=user_ins, type='Club: Invitacion', date=Alert.setDate(), relatedClub=selectedClub, description='Has sido invitado al club %s por el usuario %s.' % ( nameClub,user.email() ) ).put()
+=======
+                        Alert( user=user_ins, type='Club: Invitacion', date=Alert.setDate(), description='Has sido invitado al club %s por el usuario %s.' % ( nameClub,user.email() ) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
                 self.redirect('/profile/club')
             else:
                 if Club.all().filter('name =', nameClub).count()>0:
@@ -1259,11 +1295,19 @@ class ClubRequestParticipationView(UserView):
                 participation.state='Solicitado'
                 participation.put()
                 self.response.out.write('OK')
+<<<<<<< HEAD
                 Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), relatedClub=selectedClub, description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
         else:
             Club_User(user=user,club=selectedClub,state='Solicitado').put()
             self.response.out.write('OK')
             Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), relatedClub=selectedClub, description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
+=======
+                Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
+        else:
+            Club_User(user=user,club=selectedClub,state='Solicitado').put()
+            self.response.out.write('OK')
+            Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
             #self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
             
 

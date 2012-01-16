@@ -146,6 +146,7 @@ class Alert(db.Model):
     description = db.StringProperty()
     user = db.UserProperty(required=True)
     remainder = db.IntegerProperty()
+<<<<<<< HEAD
     relatedClub = db.ReferenceProperty(Club)
     #Campo para que la alerta lleve a una pagina de club.
     
@@ -155,6 +156,10 @@ class Alert(db.Model):
     relatedApp = db.StringProperty()
     #Campo para que la alerta lleve a la pagina de applications (normalmente para requesting users)
  
+=======
+    club = db.ReferenceProperty(Club)
+    transaction = db.ReferenceProperty(Transaction)
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
     
     @classmethod
     def setDate(today):

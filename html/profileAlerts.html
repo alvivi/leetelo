@@ -27,6 +27,7 @@
 			<td>{{res.description}}</td>
 			<td>{{res.remainder}}</td>
 			<td>
+<<<<<<< HEAD
 			{%if res.relatedClub %}
 			<a class="btn primary" href="/profile/club/content?selectedClub={{res.relatedClub.key}}">Detalles</a></td>
 			{%endif%}
@@ -35,6 +36,13 @@
 			{%endif%}
 			{%if res.relatedApp %}
 			<a class="btn primary" href="/profile/applications">Detalles</a>
+=======
+			{%if res.club %}
+			<a class="btn primary" href="/profile/club/content?selectedClub=={{res.key}}">Detalles Club</a></td>
+			{%endif%}
+			{%if res.transaction %}
+			<a class="btn primary" href="/book/details?book={{res.key}}">Detalles Trans.</a>
+>>>>>>> 161807761d466434ebaf905cf72deb20c4fa107b
 		        {%endif%}
 			</td>
 		</tr>
