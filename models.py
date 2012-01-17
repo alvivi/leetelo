@@ -20,7 +20,7 @@ class Book(db.Model):
     image  = db.LinkProperty()
     title  = db.StringProperty(required=True)
     year   = db.IntegerProperty()
-
+    
 # El ejemplar del libro
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
@@ -37,6 +37,7 @@ class Copy(db.Model):
     format = db.StringProperty(choices=set(['Bolsillo','Tapa dura','Tapa blanda','Coleccionista']))
     publishing = db.StringProperty()
     limitOfferDate = db.DateProperty()
+    alertActivated = db.BooleanProperty() # flag para saber si se ha creado la alerta de limite de oferta excedido o no
     salePrice = db.FloatProperty()
     offerType = db.StringProperty(choices=set(['Intercambio','Venta','Prestamo','Ninguna']))
     # Método de clase que devuelve todos los ejemplares que posee un usuario
@@ -49,14 +50,27 @@ class Copy(db.Model):
         #return cls.all().filter('user =', user).filter('offerState =', 'Con solicitud').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando confirmacion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Esperando recepcion').fetch(128) + cls.all().filter('user =', user).filter('offerState =', 'Prestado').fetch(128)
         return cls.all().filter('user =', user).filter('offerState !=', 'En oferta').filter('offerState !=', 'No disponible').fetch(128)
 
+    @classmethod
+    def allOfferredCopiesOf(cls, user):
+        return cls.all().filter('user =', user).filter('offerState =', 'En oferta').fetch(128)
+        
 # Comentarios
 class Comment(db.Model):
     text = db.StringProperty(required=True)
     user = db.UserProperty()
-    date = db.DateProperty(auto_now=True)
+    date = db.DateTimeProperty(auto_now=True)
 
-	
+class BookComment(db.Model):
+    book = db.ReferenceProperty(Book)
+    comment = db.ReferenceProperty(Comment)	
 
+class UserComment(db.Model):
+    user = db.UserProperty()
+    comment = db.ReferenceProperty(Comment)
+    @classmethod
+    def allCommentsFor(cls, user):
+        return cls.all().filter('user =', user).fetch(128)
+        
 # Ficha del Club
 class Club(db.Model):
     image  = db.LinkProperty()
@@ -142,7 +156,7 @@ class Transaction(db.Model):
 
 class Alert(db.Model):
     date = db.DateProperty(required=True)
-    type = db.StringProperty(choices=set(['Club: Solicitud','Club: Aceptado','Club: Rechazado','Solicitud: Cancelada','Solicitud: Finalizada','Solicitud: Rechazada', 'Solicitud: Aceptada','Solicitud: Sobrepasada fecha limite','Club: Invitacion','Nuevo mensaje','Solicitud: Nueva']))
+    type = db.StringProperty(choices=set(['Club: Solicitud','Club: Aceptado','Club: Rechazado','Solicitud: Cancelada','Solicitud: Finalizada','Solicitud: Rechazada', 'Solicitud: Aceptada','Solicitud: Sobrepasada fecha limite','Club: Invitacion','Nuevo mensaje','Solicitud: Nueva', 'Fecha oferta excedida']))
     description = db.StringProperty()
     user = db.UserProperty(required=True)
     remainder = db.IntegerProperty()
@@ -154,7 +168,6 @@ class Alert(db.Model):
     
     relatedApp = db.StringProperty()
     #Campo para que la alerta lleve a la pagina de applications (normalmente para requesting users)
- 
     
     @classmethod
     def setDate(today):
@@ -179,3 +192,4 @@ class Alert(db.Model):
 		db.delete(alert)
 	    
 	return result
+    

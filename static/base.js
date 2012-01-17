@@ -64,6 +64,30 @@ var localScripts = {
 
     "/book/details" : function () {
         var modalError = $('#modal-error');
+        
+        $('#newbookcomment').live('click', function(e) {
+            e.preventDefault();
+            $(this).slideToggle();
+            $('#bookcommentform').slideToggle();
+        });
+        
+        $('#modifybookcomment').live('click', function(e) {
+            e.preventDefault();
+            selected_book = $("#modifybookcomment").parent().find('span').text()
+            $(this).slideToggle();
+            $('#bookcommentform').slideToggle();
+            $.ajax({
+                url  : '/book/details/comment/delete',
+                data : {selectedBook : selected_book},
+                type : 'POST',
+                success : function (data) {
+                    $('#bookcomment').text(data);
+                }
+            });
+            
+            
+        });
+         
         modalError.modal({backdrop: true, modal: true});
 
         $('#modal-error .close').live('click', function() {
@@ -92,6 +116,30 @@ var localScripts = {
     },
 
 
+    
+    "/user/details" : function () {
+        $('#newusercomment').live('click', function(e) {
+            e.preventDefault();
+            $(this).slideToggle();
+            $('#usercommentform').slideToggle();
+        });
+        
+        $('#modifyusercomment').live('click', function(e) {
+            e.preventDefault();
+            selected_user = $("#modifyusercomment").parent().find('span').text()
+            $(this).slideToggle();
+            $('#usercommentform').slideToggle();
+            $.ajax({
+                url  : '/user/details/comment/delete',
+                data : {selectedUser : selected_user},
+                type : 'POST',
+                success : function (data) {
+                    $('#usercomment').text(data);
+                }
+            });
+        });
+    },
+    
     "/club" : function () {
         var modalError = $('#modal-club-error');
         var selectedClub;
@@ -361,6 +409,23 @@ var localScripts = {
             e.preventDefault();
             $(this).slideToggle();
             $('#commentform').slideToggle();
+        });
+
+        $('#modifyclubcomment').live('click', function(e) {
+            e.preventDefault();
+            selected_club = $("#modifyclubcomment").parent().find('span').text()
+            $(this).slideToggle();
+            $('#commentform').slideToggle();
+            $.ajax({
+                url  : '/profile/club/comment/delete',
+                data : {selectedClub : selected_club},
+                type : 'POST',
+                success : function (data) {
+                    $('#comment').text(data);
+                }
+            });
+            
+            
         });
 
         $('#accept-request-link').live('click',function(e) {

@@ -31,7 +31,11 @@
 			<a class="btn primary" href="/profile/club/content?selectedClub={{res.relatedClub.key}}">Detalles</a></td>
 			{%endif%}
 			{%if res.relatedCopy %}
-			<a class="btn primary" href="/profile/copyoffers?selectedCopy={{res.relatedCopy.key}}">Detalles</a>
+                            {% ifequal res.type 'Fecha oferta excedida' %}
+                                <a class="btn primary" href="/profile/editcopy?selected={{res.relatedCopy.key}}">Detalles</a>
+                            {% else %}
+                                <a class="btn primary" href="/profile/copyoffers?selectedCopy={{res.relatedCopy.key}}">Detalles</a>
+                            {% endifequal %}
 			{%endif%}
 			{%if res.relatedApp %}
 			<a class="btn primary" href="/profile/applications">Detalles</a>

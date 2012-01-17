@@ -136,7 +136,12 @@ class ProfileAlertsView(UserView):
         
         tod = Alert.setDate()
         
-        
+        for copy in Copy.allOfferredCopiesOf(user):
+            if copy.limitOfferDate!=None and copy.limitOfferDate >= tod and copy.alertActivated==False:
+                copy.alertActivated=True
+                copy.put()
+                Alert( user=copy.user, type='Fecha oferta excedida', relatedCopy = copy, date=tod, description='Se ha excedido la fecha de oferta para el libro %s.' % (copy.book.title) ).put()
+                
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -218,12 +223,23 @@ class BookDetailsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         try:
             book   = Book.get(self.request.get('book'))
+            comments = BookComment.all().filter('book =', book).fetch(512)
+            if comments:
+                orderedComments = sorted(comments, key=lambda bookcomment: bookcomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+            else:
+                orderedComments = comments
+                lastComment = None
+                
             copies = Copy.all().filter('book =', book).filter('offerState =', 'Con solicitud').fetch(128) + Copy.all().filter('book =', book).filter('offerState =', 'En oferta').fetch(128)
             values = {
                 'user'        : user,
                 'logoutUri'   : users.create_logout_url('/'),
                 'avatar'     : avatarImg,
                 'copies'      : copies,
+                'comments'    : orderedComments,
+                'lastComment' : lastComment,
                 'book'        : Book.get(self.request.get('book'))
             }
             self.response.out.write(template.render('html/bookDetails.html', values))
@@ -236,21 +252,122 @@ class BookDetailsView(UserView):
             }
             self.response.out.write(template.render('html/bookDetails.html', values))
 
+# Añade comentarios a un club
+class BookCommentNew(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            bookKey = self.request.get('selectedBook')
+            book = Book.get(bookKey)
+            text = self.request.get('bookcomment')
+            comment = Comment(text=text, user=user).put()
+            BookComment(book=book, comment=comment).put()
+        except:
+            pass
+        finally:
+            self.redirect('/book/details?book=' + bookKey)
+            
 
+class BookCommentDelete(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        try:
+            bookKey = self.request.get('selectedBook')
+            book = Book.get(bookKey)
+            comments = BookComment.all().filter('book =', book).fetch(512)
+            if comments:
+                orderedComments = sorted(comments, key=lambda bookcomment: bookcomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                lastComment.delete()
+            
+        except:
+            pass
+        finally:
+            self.redirect('/book/details?book=' + bookKey)
+            
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            bookKey = self.request.get('selectedBook')
+            book = Book.get(bookKey)
+            comments = BookComment.all().filter('book =', book).fetch(512)
+            text = ''
+            if comments:
+                orderedComments = sorted(comments, key=lambda bookcomment: bookcomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                text = lastComment.comment.text
+                lastComment.delete()
+        except:
+            pass
+        finally:
+            self.response.out.write(text)
+            
+            
 class UserDetailsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         selectedUser = users.User(self.request.get('selectedUser'))
-        
+        comments = UserComment.all().filter('user =', selectedUser).fetch(512)
+        if comments:
+            orderedComments = sorted(comments, key=lambda usercomment: usercomment.comment.date)
+            orderedComments.reverse()
+            lastComment = orderedComments[0]
+        else:
+            orderedComments = comments
+            lastComment = None
+            
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesOf(selectedUser),
+            'comments'    : orderedComments,
+            'lastComment' : lastComment,
             'selectedUser': selectedUser
         }
         self.response.out.write(template.render('html/userDetails.html', values))
-        
+
+class UserCommentNew(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            selectedUser = users.User(self.request.get('selectedUser'))
+            text = self.request.get('usercomment')
+            comment = Comment(text=text, user=user).put()
+            UserComment(user=selectedUser, comment=comment).put()
+        except:
+            pass
+        finally:
+            self.redirect('/user/details?selectedUser=' + selectedUser.email())
+
+class UserCommentDelete(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        try:
+            selectedUser = users.User(self.request.get('selectedUser'))
+            comments = UserComment.all().filter('user =', selectedUser).fetch(512)
+            if comments:
+                orderedComments = sorted(comments, key=lambda usercomment: usercomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                lastComment.delete()
             
+        except:
+            pass
+        finally:
+            self.redirect('/user/details?selectedUser=' + selectedUser.email())
+            
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            selectedUser = users.User(self.request.get('selectedUser'))
+            comments = UserComment.all().filter('user =', selectedUser).fetch(512)
+            text = ''
+            if comments:
+                orderedComments = sorted(comments, key=lambda usercomment: usercomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                text = lastComment.comment.text
+                lastComment.delete()
+        except:
+            pass
+        finally:
+            self.response.out.write(text)
             
 # /profile/newcopy
 # Vista que se encarga de crear una nuevo ejemplar de un libro
@@ -297,16 +414,16 @@ class ProfileNewCopyView(UserView):
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
                preciof=float(precio)
-               Copy(book=book, user=user, salePrice=preciof, language=lang, limitOfferDate=fechaParseada, offerType=tipoOferta, offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
+               Copy(book=book, user=user, salePrice=preciof, language=lang, limitOfferDate=fechaParseada, alertActivated=False, offerType=tipoOferta, offerState="En oferta",format=formato, pages=pagina, edition=edit).put()
 
             if tipoOferta == "Intercambio" or tipoOferta == "Prestamo":
                fechaLim = self.request.get('fechaLimite')
                fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                fechaParseada=fechaParseada.date()
-               Copy(book=book, user=user, limitOfferDate=fechaParseada, language=lang, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()
+               Copy(book=book, user=user, limitOfferDate=fechaParseada, alertActivated=False, language=lang, offerType=tipoOferta,format=formato,pages=pagina,edition=edit, offerState="En oferta").put()
 
             if tipoOferta == "Ninguna":
-                Copy(book=book, user=user, offerType=tipoOferta, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put()
+                Copy(book=book, user=user, offerType=tipoOferta, alertActivated=False, format=formato, pages=pagina, language=lang, edition=edit, offerState="No disponible").put()
 
             self.redirect('/profile/copies')
 
@@ -384,23 +501,23 @@ class ProfileEditCopyView(UserView):
                 fechaParseada=fechaParseada.date()
 
                 db.delete(selectedCopy)
-                Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+                Copy(book=book, user=user, salePrice=preciof, limitOfferDate=fechaParseada, alertActivated=False, offerType="Venta", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
             elif tipoOferta == "Intercambio":
                 fechaLim = self.request.get('fechaLimite')
                 fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                 fechaParseada=fechaParseada.date()
 
                 db.delete(selectedCopy)
-                Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Intercambio", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+                Copy(book=book, user=user,limitOfferDate=fechaParseada, alertActivated=False, offerType="Intercambio", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
             elif tipoOferta == "Prestamo":
                 fechaLim = self.request.get('fechaLimite')
                 fechaParseada=datetime.strptime(fechaLim, "%d/%m/%Y")
                 fechaParseada=fechaParseada.date()
                 db.delete(selectedCopy)
-                Copy(book=book, user=user,limitOfferDate=fechaParseada, offerType="Prestamo", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
+                Copy(book=book, user=user,limitOfferDate=fechaParseada, alertActivated=False, offerType="Prestamo", format=formato, pages=pagina, edition=edit, language=lang, offerState="En oferta").put()
             else:
                 db.delete(selectedCopy)
-                Copy(book=book, user=user, offerType="Ninguna", format=formato, pages=pagina, edition=edit, language=lang, offerState="No disponible").put()
+                Copy(book=book, user=user, offerType="Ninguna", alertActivated=False, format=formato, pages=pagina, edition=edit, language=lang, offerState="No disponible").put()
             self.redirect('/profile/copies')
 
 
@@ -1160,9 +1277,18 @@ class ProfileClubContentView(UserView):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
         comments = ClubComment.all().filter('club =', selectedClub).fetch(512)
+        if comments:
+            orderedComments = sorted(comments, key=lambda clubcomment: clubcomment.comment.date)
+            orderedComments.reverse()
+            lastComment = orderedComments[0]
+        else:
+            orderedComments = comments
+            lastComment = None
+            
         values = {
             'avatar'         : avatarImg,
-            'comments'       : comments,
+            'comments'       : orderedComments,
+            'lastComment' : lastComment,
             'logoutUri'      : users.create_logout_url('/'),
             'participations' : Club_User.allParticipantsOf(selectedClub),
             'selectedClub'   : selectedClub,
@@ -1175,9 +1301,14 @@ class ProfileDisabledClubContentView(UserView):
         key = self.request.get('selectedClub')
         selectedClub = Club.get(key)
         comments = ClubComment.all().filter('club =', selectedClub).fetch(512)
+        if comments:
+            orderedComments = sorted(comments, key=lambda clubcomment: clubcomment.comment.date)
+            orderedComments.reverse()
+        else:
+            orderedComments = comments
         values = {
             'avatar'         : avatarImg,
-            'comments'       : comments,
+            'comments'       : orderedComments,
             'logoutUri'      : users.create_logout_url('/'),
             'participations' : Club_User.allParticipantsOf(selectedClub),
             'selectedClub'   : selectedClub,
@@ -1186,7 +1317,7 @@ class ProfileDisabledClubContentView(UserView):
         self.response.out.write(template.render('html/profileDisabledClubContent.html', values))
 
 # Añade comentarios a un club
-class ProfilenClubCommentNew(UserView):
+class ProfileClubCommentNew(UserView):
     def post_as_user(self, user, logoutUri, avatarImg):
         try:
             clubKey = self.request.get('selectedClub')
@@ -1199,6 +1330,40 @@ class ProfilenClubCommentNew(UserView):
         finally:
             self.redirect('/profile/club/content?selectedClub=' + clubKey)
 
+class ProfileClubCommentDelete(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        try:
+            clubKey = self.request.get('selectedClub')
+            club = Club.get(clubKey)
+            comments = ClubComment.all().filter('club =', club).fetch(512)
+            if comments:
+                orderedComments = sorted(comments, key=lambda clubcomment: clubcomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                lastComment.delete()
+            
+        except:
+            pass
+        finally:
+            self.redirect('/profile/club/content?selectedClub=' + clubKey)
+            
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            clubKey = self.request.get('selectedClub')
+            club = Club.get(clubKey)
+            comments = ClubComment.all().filter('club =', club).fetch(512)
+            text = ''
+            if comments:
+                orderedComments = sorted(comments, key=lambda clubcomment: clubcomment.comment.date)
+                orderedComments.reverse()
+                lastComment = orderedComments[0]
+                text = lastComment.comment.text
+                lastComment.delete()
+        except:
+            pass
+        finally:
+            self.response.out.write(text)
+            
 # Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):

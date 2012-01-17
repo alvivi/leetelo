@@ -36,7 +36,7 @@
         {% for c in comments %}
             <blockquote>
                 <p>{{c.comment.text}}</p>
-                <small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date}})</small>
+                <small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date|date:"Y-m-d H:i:s"}})</small>
             </blockquote>
         {% endfor %}
         <a id="newcomment" href="#">Añade un nuevo comentario...</a>
@@ -53,6 +53,12 @@
                 </div>
             </fieldset>
         </form>
+        {% if lastComment %}
+	    {% ifequal lastComment.comment.user.email user.email %}
+	    	<p><a id="removeclubcomment" href="/profile/club/comment/delete?selectedClub={{selectedClub.key}}">Borrar &uacuteltimo comentario</a></p>
+		<p><a id="modifyclubcomment" href="#"><span class="hide">{{selectedClub.key}}</span>Modificar &uacuteltimo comentario</a></p>
+	    {% endifequal %}
+	{% endif %}
     </div>
 </div>
 <div class="row centerrow">

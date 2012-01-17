@@ -8,6 +8,37 @@
 			<span> <img class="avatar" src='/img?user={{selectedUser.email}}' alt="Avatar del usuario" width='170' style="border:1px gray;"></img></span>
 			</div>
 		</div>
+	
+		
+		<h6>Comentarios</h6>
+		<div class="clearfix" id="usercomments">
+	        {% for c in comments %}
+		        <blockquote>
+				<p>{{c.comment.text}}</p>
+				<small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date|date:"Y-m-d H:i:s"}})</small>
+		        </blockquote>
+		{% endfor %}
+		</div>
+		<p><a id="newusercomment" href="#">A&ntildeade un nuevo comentario...</a></p>
+	        <form class="hide" id="usercommentform" action="/user/details/comment/new?selectedUser={{selectedUser.email}}" method="post">
+			<fieldset>
+				<div class="clearfix">
+					<label for="titleBook">Texto</label>
+					<div class="input">
+						<textarea  name="usercomment" id="usercomment" rows="3"></textarea>
+					</div>
+				</div>
+				<div class="actions">
+					<input type="submit" class="btn primary" value="Publicar" />
+				</div>
+			</fieldset>
+	        </form>
+		{% if lastComment %}
+			{% ifequal lastComment.comment.user.email user.email %}
+				<p><a id="removeusercomment" href="/user/details/comment/delete?selectedUser={{selectedUser.email}}">Borrar &uacuteltimo comentario</a></p>
+				<p><a id="modifyusercomment" href="#"><span class="hide">{{selectedUser.email}}</span>Modificar &uacuteltimo comentario</a></p>
+			{% endifequal %}
+		{% endif %}
 	</div>
 	<div class="span9">
 		<h6>Ejemplares disponibles</h6>

@@ -53,6 +53,7 @@
 					</div>
 				</fieldset>
 			</form>
+
 		</div>
 		<div class="span9">
 			<h6>Ejemplares disponibles</h6>
@@ -76,6 +77,34 @@
 					{% endfor %}
 				</tbody>
 			</table>
+			
+			<h6>Comentarios</h6>
+		        {% for c in comments %}
+			        <blockquote>
+					<p>{{c.comment.text}}</p>
+					<small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date|date:"Y-m-d H:i:s"}})</small>
+			        </blockquote>
+			{% endfor %}
+			<a id="newbookcomment" href="#">Añade un nuevo comentario...</a>
+		        <form class="hide" id="bookcommentform" action="/book/details/comment/new?selectedBook={{book.key}}" method="post">
+				<fieldset>
+					<div class="clearfix">
+						<label for="titleBook">Texto</label>
+						<div class="input">
+							<textarea class="xlarge" name="bookcomment" id="bookcomment" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="actions">
+						<input type="submit" class="btn primary" value="Publicar" />
+					</div>
+				</fieldset>
+		        </form>
+			{% if lastComment %}
+				{% ifequal lastComment.comment.user.email user.email %}
+					<p><a id="removebookcomment" href="/book/details/comment/delete?selectedBook={{book.key}}">Borrar &uacuteltimo comentario</a></p>
+					<p><a id="modifybookcomment" href="#"><span class="hide">{{book.key}}</span>Modificar &uacuteltimo comentario</a></p>
+				{% endifequal %}
+			{% endif %}
 		</div>
 	{% endif %}
 </div>

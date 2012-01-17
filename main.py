@@ -16,6 +16,8 @@ def main():
         ('/', IndexView),
         ('/api/books/title', BooksByTitleRequest),
         ('/book/details', BookDetailsView),
+        ('/book/details/comment/new', BookCommentNew),
+        ('/book/details/comment/delete', BookCommentDelete),
         ('/book/new', BookNewView),
         ('/club', clubView),
         ('/club/requestparticipation', ClubRequestParticipationView),
@@ -30,7 +32,8 @@ def main():
         ('/profile/club', ProfileClubListView),
         ('/profile/club/answerinvitation', ProfileAnswerInvitationView),
         ('/profile/club/answerrequest', ProfileAnswerRequestView),
-        ('/profile/club/comment/new', ProfilenClubCommentNew),
+        ('/profile/club/comment/new', ProfileClubCommentNew),
+        ('/profile/club/comment/delete', ProfileClubCommentDelete),
         ('/profile/club/content', ProfileClubContentView),
         ('/profile/club/deleteparticipation', ProfileDeleteParticipationView),
         ('/profile/club/disable', ProfileDisableClubsView),
@@ -48,7 +51,9 @@ def main():
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/offers', ProfileOffersView),
         ('/search', SearchView),
-        ('/user/details', UserDetailsView)
+        ('/user/details', UserDetailsView),
+        ('/user/details/comment/new', UserCommentNew),
+        ('/user/details/comment/delete', UserCommentDelete)
         ], debug=True)
     util.run_wsgi_app(application)
 

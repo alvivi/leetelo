@@ -26,7 +26,7 @@
 			       onclick="window.location.href='/profile/applicationcontent?requestKey={{request.key}}'"></td>
                 	<td class="request-copy-column">{{request.copy.book.title}}</td>
                 	<td>{{request.copy.book.author}}</td>
-                	<td class="request-owner-column">{{request.copy.user}}</td>
+                	<td class="request-owner-column"><a href="/user/details?selectedUser={{request.copy.user.email}}">{{request.copy.user}}</a></td>
                 	<td>{{request.state}}</td>
 			<td>{{request.copy.offerType}}</td>
                 	<td>
