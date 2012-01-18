@@ -156,7 +156,7 @@ class Transaction(db.Model):
 
 class Alert(db.Model):
     date = db.DateProperty(required=True)
-    type = db.StringProperty(choices=set(['Club: Solicitud','Club: Aceptado','Club: Rechazado','Solicitud: Cancelada','Solicitud: Finalizada','Solicitud: Rechazada', 'Solicitud: Aceptada','Solicitud: Sobrepasada fecha limite','Club: Invitacion','Nuevo mensaje','Solicitud: Nueva', 'Fecha oferta excedida']))
+    type = db.StringProperty(choices=set(['Club: Solicitud','Club: Aceptado','Club: Rechazado','Solicitud: Cancelada','Solicitud: Finalizada','Solicitud: Rechazada', 'Solicitud: Aceptada','Club: Invitacion','Nuevo mensaje','Solicitud: Nueva', 'Fecha oferta excedida']))
     description = db.StringProperty()
     user = db.UserProperty(required=True)
     remainder = db.IntegerProperty()

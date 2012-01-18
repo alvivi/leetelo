@@ -13,6 +13,20 @@
 			<a href="#" class="btn primary">Aceptar</a>
 		</div>
 	</div>
+	
+	<div id="modal-bookcomment-deletion" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">x</a>
+			<h3>Borrar comentario</h3>
+		</div>
+		<div class="modal-body">
+			<p>¿Est&aacute seguro de que desea borrar su comentario?</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Aceptar</a>
+		</div>
+	</div>
+	
 	{% if error %}
 		<div id="error-message" class="alert-message block-message error">
 			<p>El libro indicado no existe.</p>
@@ -61,7 +75,7 @@
 				<thead>
 					<tr>
 						<th class="header blue">Propietario</th>
-						<th class="header blue">Editorial</th>
+						<th class="header blue">Edici&oacuten</th>
 						<th class="header blue">Disponibilidad</th>
 						<th class="header blue">Petición</th>
 					</tr>
@@ -70,8 +84,8 @@
 					{% for copy in copies %}
 						<tr>
 							<td>{{copy.user.nickname}}</td>
-							<td>{{copy.user.edition}}</td>
-							<td>{{copy.user.offerType}}</td>
+							<td>{{copy.edition}}</td>
+							<td>{{copy.offerType}}</td>
 							<td><a class="btn primary" href="#">Solicitar</a><span class="hide">{{copy.key}}</span></td>
 						</tr>
 					{% endfor %}
@@ -101,7 +115,7 @@
 		        </form>
 			{% if lastComment %}
 				{% ifequal lastComment.comment.user.email user.email %}
-					<p><a id="removebookcomment" href="/book/details/comment/delete?selectedBook={{book.key}}">Borrar &uacuteltimo comentario</a></p>
+					<p><a id="removebookcomment" href="#"><span class="hide">{{book.key}}</span>Borrar &uacuteltimo comentario</a></p>
 					<p><a id="modifybookcomment" href="#"><span class="hide">{{book.key}}</span>Modificar &uacuteltimo comentario</a></p>
 				{% endifequal %}
 			{% endif %}

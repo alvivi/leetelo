@@ -35,7 +35,7 @@
 	        </form>
 		{% if lastComment %}
 			{% ifequal lastComment.comment.user.email user.email %}
-				<p><a id="removeusercomment" href="/user/details/comment/delete?selectedUser={{selectedUser.email}}">Borrar &uacuteltimo comentario</a></p>
+				<p><a id="removeusercomment" href="#"><span class="hide">{{selectedUser.email}}</span>Borrar &uacuteltimo comentario</a></p>
 				<p><a id="modifyusercomment" href="#"><span class="hide">{{selectedUser.email}}</span>Modificar &uacuteltimo comentario</a></p>
 			{% endifequal %}
 		{% endif %}
@@ -68,7 +68,18 @@
 		</table>
 	</div>
 </div>
-<div class="row">
-<!aqui van los comentarios sobre este usuario>
+
+
+<div id="modal-usercomment-deletion" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">x</a>
+			<h3>Borrar comentario</h3>
+		</div>
+		<div class="modal-body">
+			<p>¿Est&aacute seguro de que desea borrar su comentario?</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Aceptar</a>
+		</div>
 </div>
 {% endblock %}

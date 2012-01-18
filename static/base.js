@@ -64,6 +64,8 @@ var localScripts = {
 
     "/book/details" : function () {
         var modalError = $('#modal-error');
+        var modalDelete = $('#modal-bookcomment-deletion');
+        var selected_book = null;
         
         $('#newbookcomment').live('click', function(e) {
             e.preventDefault();
@@ -89,14 +91,35 @@ var localScripts = {
         });
          
         modalError.modal({backdrop: true, modal: true});
-
+        modalDelete.modal({backdrop: true, modal: true});
+        
         $('#modal-error .close').live('click', function() {
             modalError.modal('hide');
         });
+        $('#modal-bookcomment-deletion .close').live('click', function() {
+            modalError.modal('hide');
+        });
+        
         $('#modal-error .btn').live('click', function() {
             modalError.modal('hide');
         });
-
+        $('#modal-bookcomment-deletion .btn').live('click', function() {
+            selected_book = $("#removebookcomment").parent().find('span').text()
+            $.ajax({
+                url  : '/book/details/comment/delete',
+                data : {selectedBook : selected_book},
+                type : 'GET',
+                success : function (data) {
+                    modalDelete.modal('hide');
+                    location.href = '/book/details?book=' + selected_book;
+                }
+            });
+        });
+        
+        $('#removebookcomment').live('click', function() {
+            modalDelete.modal('show');
+        })
+        
         $('table .btn').live('click', function() {
             $.ajax({
                     url  : '/profile/applications/new',
@@ -118,6 +141,9 @@ var localScripts = {
 
     
     "/user/details" : function () {
+        var modalDelete = $('#modal-usercomment-deletion');
+        var selected_user = null;
+        
         $('#newusercomment').live('click', function(e) {
             e.preventDefault();
             $(this).slideToggle();
@@ -138,6 +164,30 @@ var localScripts = {
                 }
             });
         });
+        
+        modalDelete.modal({backdrop: true, modal: true});
+        
+        $('#modal-usercomment-deletion .close').live('click', function() {
+            modalError.modal('hide');
+        });
+        
+        $('#modal-usercomment-deletion .btn').live('click', function() {
+            selected_user = $("#removeusercomment").parent().find('span').text()
+            $.ajax({
+                url  : '/user/details/comment/delete',
+                data : {selectedUser : selected_user},
+                type : 'GET',
+                success : function (data) {
+                    modalDelete.modal('hide');
+                    location.href = '/user/details?selectedUser=' + selected_user;
+                }
+            });
+        });
+        
+        $('#removeusercomment').live('click', function() {
+            modalDelete.modal('show');
+        })
+        
     },
     
     "/club" : function () {
@@ -404,7 +454,8 @@ var localScripts = {
     "/profile/club/content" : function () {
         var selected_club = null;
         var count = 0;
-
+        var modalDelete = $('#modal-clubcomment-deletion');
+        
         $('#newcomment').live('click', function(e) {
             e.preventDefault();
             $(this).slideToggle();
@@ -427,6 +478,31 @@ var localScripts = {
             
             
         });
+        
+        modalDelete.modal({backdrop: true, modal: true});
+        
+        $('#modal-clubcomment-deletion .close').live('click', function() {
+            modalError.modal('hide');
+        });
+        
+        $('#modal-clubcomment-deletion .btn').live('click', function() {
+            selected_club = $("#removeclubcomment").parent().find('span').text()
+            $.ajax({
+                url  : '/profile/club/comment/delete',
+                data : {selectedClub : selected_club},
+                type : 'GET',
+                success : function (data) {
+                    modalDelete.modal('hide');
+                    location.href = '/profile/club/content?selectedClub=' + selected_club;
+                }
+            });
+        });
+        
+        $('#removeclubcomment').live('click', function() {
+            modalDelete.modal('show');
+        })
+        
+        
 
         $('#accept-request-link').live('click',function(e) {
             participation = $(this).children().text();
