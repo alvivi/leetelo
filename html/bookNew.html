@@ -14,7 +14,7 @@
 
         <div class="alert-message block-message warning">
             <p>Ten en cuenta que el libro debe ser admitido por un <strong>administrador</strong>
-               antes de que aparezca en nuestra biblioteca. Aegúrate de que el
+               antes de que aparezca en nuestra biblioteca. Aeg&uacuterate de que el
                libro que vas a introducir no existe ya en nuestra biblioteca
                utilizando nuestro <a href="/search">buscador</a>.
                </p>
@@ -25,7 +25,7 @@
             <fieldset>
                 <legend>Nuevo libro</legend>
                 <div class="clearfix">
-                    <label for="title">Título</label>
+                    <label for="title">T&iacutetulo</label>
                     <div class="input">
                         <input data-placement="right" rel='twipsy' title="Este libro ya existe" class="xlarge" id="title" name="title" size="90" type="text">
                     </div>
@@ -37,33 +37,38 @@
                     </div>
                 </div>
                 <div class="clearfix">
-                    <label for="genre">Género</label>
+                    <label for="genre">G&eacutenero</label>
                     <div class="input">
                         <select class="xlarge" id="genre" name="genre">
                             <option>Aventuras</option>
-                            <option>Biografía</option>
+                            <option>Biograf&iacutea</option>
                             <option>Ciencia Ficción</option>
                             <option>Ensayo</option>
-                            <option>Histórico</option>
+                            <option>Hist&ocauterico</option>
                             <option>Narrativa</option>
                             <option>Novela</option>
-                            <option>Poesía</option>
+                            <option>Poes&iacutea</option>
                             <option>Romántico</option>
                         </select>
                     </div>
                 </div>
                 <div class="clearfix">
-                    <label for="year">Año</label>
+                    <label for="year">A&ntildeo</label>
                     <div class="input">
                         <input class="xlarge" id="year" name="year" type="number" min="868" max ="2011" step="1" value="2011" />
                     </div>
                 </div>
                 <div class="clearfix">
-                    <label for="image">Imágen</label>
+                    <label for="image">Im&aacutegen</label>
                     <div class="input">
                         <input class="xlarge" id="image" name="image" type="text" value="http://" size="90"/>
                     </div>
-                </div>
+		</div>
+		<div class="clearfix centerrow">
+		    <a id="checkimage" href="#">Comprobar imagen</a>
+		    <img id="bookimage" style="border:1px solid grey" src="/static/img/error.jpg" class="thumbnail book-cover">
+		</div>
+			
                 <div class="actions">
                     <input type="submit" class="btn primary" value="Añadir ejemplar">
                     <a href="/profile/copies" class="btn">Cancelar</a>

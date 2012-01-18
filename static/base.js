@@ -60,6 +60,14 @@ var localScripts = {
             $('#title').twipsy({trigger: 'manual'});
             $('#title').twipsy('show')
         }
+        
+        $("#checkimage").live('click', function() {
+            $("<img>", {
+                src: $("#image").val(),
+                error: function() { $("#bookimage").attr("src","/static/img/error.jpg");},
+                load: function() { $("#bookimage").attr("src",$("#image").val());}
+            })
+        })
     },
 
     "/book/details" : function () {
@@ -543,6 +551,14 @@ var localScripts = {
 
         var invs = [];
 
+        $("#checkclubimage").live('click', function() {
+            $("<img>", {
+                src: $("#image").val(),
+                error: function() { $("#clubimage").attr("src","/static/img/error.jpg");},
+                load: function() { $("#clubimage").attr("src",$("#image").val());}
+            })
+        })
+
         if(/.*errorrepeat=true.*/.test(location.href)) {
 
             $('#nombreClub').twipsy({trigger: 'manual'});
@@ -747,7 +763,7 @@ var localScripts = {
 
     "/profile/newcopy" : function () {
         $("#fechaLimite").datepicker();
-
+        
         var getParameter = function (parameter) {
             // Obtiene la cadena completa de URL
             var url = location.href;
@@ -771,6 +787,7 @@ var localScripts = {
 
         var showSelected = function(event, ui)
         {
+            debugger;
             var edit = $('#titleBook');
             edit.val(ui.item.value);
             window.location="/profile/newcopy?selectedCopyTitle=" + edit.val();

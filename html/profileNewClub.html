@@ -29,22 +29,27 @@
 	                    </div>
 	                </div>
                     <div class="clearfix">
-                       <label for="description">Descripcion</label>
+                       <label for="description">Descripci&oacuten</label>
                        <div class="input">
                        <textarea class="xlarge" id="description" name="description" rows="3"></textarea>
                        <span class="help-block">
-                        Descripcion del Club que desea Crear.
+                        Descripci&ocauten del Club que desea Crear.
                        </span>
                     </div>
                    </div>
 
-				<div class="clearfix">
-                    <label for="image">Imágen</label>
+		<div class="clearfix">
+                    <label for="image">Im&aacutegen</label>
                     <div class="input">
                         <input class="xlarge {% for campo in campos %}{% ifequal 'image' campo %}errorCampo{% endifequal %}{% endfor %}" id="image" name="image" type="text" value="http://" size="90"/>
                     </div>
                 </div>
-
+                <div class="clearfix">
+		    <label for="nothing"></label>
+                    <a id="checkclubimage" href="#">Comprobar imagen</a>
+		    <img id="clubimage" style="border:1px solid grey" src="/static/img/error.jpg" class="thumbnail book-cover">
+		</div>
+                
                     <div class="clearfix">
                        <label id="optionsGener">Generos</label>
                         <div class="input" >
