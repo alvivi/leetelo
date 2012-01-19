@@ -39,6 +39,7 @@ def main():
         ('/profile/club/disable', ProfileDisableClubsView),
         ('/profile/club/disabledcontent', ProfileDisabledClubContentView),
         ('/profile/club/edit', ProfileEditClubView),
+        ('/profile/club/events/new', ProfileClubEventsNew),
         ('/profile/club/new', ProfileNewClubView),
         ('/profile/club/view', ProfileDataClubView),
         ('/profile/copies', ProfileCopiesView),

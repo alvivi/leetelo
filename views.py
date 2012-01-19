@@ -693,6 +693,7 @@ class ApplicationContentView(UserView):
     def post_as_user(self, user, logoutUri, avatarImg):
         action = self.request.get('action')
         request = Request.get(self.request.get('requestKey'))
+
         ownerUser = request.copy.user
         selectedCopy = request.copy
 
@@ -775,9 +776,14 @@ class ApplicationContentView(UserView):
             Alert( user=ownerUser, type='Solicitud: Cancelada', date=Alert.setDate(), relatedApp='true', description='La solicitud por el libro %s ha sido cancelada por %s.' % (selectedCopy.book.title, user.email()) ).put()
             HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
 
+        requests = []
+        requestsRaw = Request.allRequestsOf(user)
+        for r in requestsRaw:
+            requests.append({'req' : r, 'cmtCount' : RequestComment.notViewedCount(r, user)})
+        RequestComment.markAllAsViewed(request, user)
 
         values = {
-            'requests'     : Request.allRequestsOf(user),
+            'requests'   : requests,
             'user'       : user,
             'avatar'     : avatarImg,
             'logoutUri'  : users.create_logout_url('/')
@@ -1549,6 +1555,8 @@ class ClubRequestParticipationView(UserView):
             Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), relatedClub=selectedClub, description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
             #self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
 
-
+class ProfileClubEventsNew(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        pass
 
 
