@@ -6,7 +6,7 @@
 <h6> Contenido de solicitudes </h6>
 
 <form action="/profile/applications" method="post">
-	
+
 	<table id="requestsTable" class="zebra-striped sortable">
 		<thead>
 			<tr>
@@ -22,18 +22,26 @@
 		<tbody>
 		 {% for request in requests %}
          	   <tr>
-            	    <td><input type="radio" name="RequestRadios" value="{{request.state}}" 
-			       onclick="window.location.href='/profile/applicationcontent?requestKey={{request.key}}'"></td>
-                	<td class="request-copy-column">{{request.copy.book.title}}</td>
-                	<td>{{request.copy.book.author}}</td>
-                	<td class="request-owner-column"><a href="/user/details?selectedUser={{request.copy.user.email}}">{{request.copy.user}}</a></td>
-                	<td>{{request.state}}</td>
-			<td>{{request.copy.offerType}}</td>
+            	    <td><input type="radio" name="RequestRadios" value="{{request.req.state}}"
+			       onclick="window.location.href='/profile/applicationcontent?requestKey={{request.req.key}}'"></td>
+                	<td class="request-copy-column">{{request.req.copy.book.title}}</td>
+                	<td>{{request.req.copy.book.author}}</td>
+                	<td class="request-owner-column"><a href="/user/details?selectedUser={{request.req.copy.user.email}}">{{request.req.copy.user}}</a></td>
+                	<td>{{request.req.state}}</td>
+			<td>{{request.req.copy.offerType}}</td>
                 	<td>
-				{% ifequal request.state 'Rechazada' %}
+				{% ifequal request.req.state 'Rechazada' %}
 					<a href="#" class="btn">Eliminar de la lista</a>
 				{% else %}
-					<a href="#" class="btn">Enviar Mensaje</a>
+                {% ifequal request.cmtCount 0 %}
+                    <p>No hay mensajes nuevos</p>
+                {% else %}
+                    {% ifequal request.cmtCount 1 %}
+                        <p><strong>Un mensaje nuevo</strong></p>
+                    {% else %}
+                        <p><strong>{{request.cmtCount}} mensajes nuevos</strong></p>
+                    {% endifequal %}
+                {% endifequal %}
 				{% endifequal %}
 			</td>
             	</tr>
@@ -42,7 +50,7 @@
 	</table>
 </form>
 	{% block application_content %}
-	
+
 	 {% endblock %}
 
 

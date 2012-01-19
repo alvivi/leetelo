@@ -565,8 +565,13 @@ class ProfileOffersView(UserView):
 
 class ProfileApplicationsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
+        requests = []
+        requestsRaw = Request.allRequestsOf(user)
+        for r in requestsRaw:
+            requests.append({'req' : r, 'cmtCount' : RequestComment.notViewedCount(r, user)})
+
         values = {
-            'requests'     : Request.allRequestsOf(user),
+            'requests'   : requests,
             'user'       : user,
             'logoutUri'  : logoutUri,
             'avatar'     : avatarImg
@@ -596,13 +601,18 @@ class ProfileApplicationsNewView(UserView):
 class ProfileCopyOffersView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         selectedCopy = Copy.get(self.request.get('selectedCopy'))
+        requests = []
+        requestsRaw = Request.allRequestsFor(selectedCopy)
+        for r in requestsRaw:
+            requests.append({'req' : r, 'cmtCount' : RequestComment.notViewedCount(r, user)})
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'copies'      : Copy.allCopiesWithRequests(user),
-            'selectedCopy': selectedCopy,
-            'copyRequests'  : Request.allRequestsFor(selectedCopy)
+            'selectedCopy' : selectedCopy,
+            'copyRequests'  : requests,
         }
         self.response.out.write(template.render('html/copyOffers.html', values))
 
@@ -662,8 +672,15 @@ class ProfileCopyOffersView(UserView):
 class ApplicationContentView(UserView):
     def get_as_user(self,user,logoutUri,avatarImg):
         request = Request.get(self.request.get('requestKey'))
-	values = {
-            'requests'     : Request.allRequestsOf(user),
+        requests = []
+        requestsRaw = Request.allRequestsOf(user)
+        for r in requestsRaw:
+            requests.append({'req' : r, 'cmtCount' : RequestComment.notViewedCount(r, user)})
+        RequestComment.markAllAsViewed(request, user)
+
+        values = {
+            'requests'   : requests,
+            'comments'   : RequestComment.allFrom(request),
             'selectedCopy' : request.copy,
             'request'    : request,
             'user'       : user,
@@ -838,9 +855,14 @@ class TransactionView(UserView):
 
 class AppliantCopiesView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        selectedCopy = Copy.get(self.request.get('selectedCopy'))
         request = Request.get(self.request.get('requestKey'))
+        try:
+            selectedCopy = Copy.get(self.request.get('selectedCopy'))
+        except:
+            selectedCopy = request.copy
+
         appliantUser = request.user
+        RequestComment.markAllAsViewed(request, user)
 
         values = {
             'user'       : user,
@@ -851,7 +873,8 @@ class AppliantCopiesView(UserView):
             'copyRequests'  : Request.allRequestsFor(selectedCopy),
             'appliantUser' : appliantUser,
             'appliantCopies' : Copy.allCopiesOf(appliantUser),
-            'request' : request
+            'request' : request,
+            'comments' : RequestComment.allFrom(request)
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
 
@@ -860,25 +883,25 @@ class AppliantCopiesView(UserView):
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         option= "Prestamos"
-        
+
         logging.debug(option)
         trans=Transaction.all().filter('owner = ',user).filter('transactionType =', 'Prestamo').fetch(512) + Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
         #trans2=Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
         logging.debug("entra aqui")
-        
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'trans'      : trans
-        } 
+        }
         self.response.out.write(template.render('html/profileHistorial.html', values))
 
 
-           
+
     def post_as_user(self, user, logoutUri, avatarImg):
         option= self.request.get('Transaccion')
-        
+
         logging.debug(option)
         if option == "Prestamos":
            trans=Transaction.all().filter('owner = ',user).filter('transactionType =', 'Prestamo').fetch(512) + Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
@@ -891,7 +914,7 @@ class ProfileHistorialView(UserView):
            trans=Transaction.all().filter('owner = ',user).filter('exchangeType = ', 'Directo').fetch(512) + Transaction.all().filter('appliant =', user).filter('exchangeType =', 'Directo').fetch(512)
         if option== "Intercambio indirecto":
            trans=Transaction.all().filter('owner = ',user).filter('exchangeType = ', 'Indirecto').fetch(512) + Transaction.all().filter('appliant = ', user).filter('exchangeType =', 'Indirecto').fetch(512)
-           
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -900,30 +923,30 @@ class ProfileHistorialView(UserView):
             #'trans2'     : trans2,
             'selected'   : option
         }
-        self.response.out.write(template.render('html/profileHistorial.html', values))        
+        self.response.out.write(template.render('html/profileHistorial.html', values))
 
 class ProfileHistorialRequestView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         option= "Prestamos"
-        
+
         logging.debug(option)
         trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Prestamo').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Prestamo').fetch(512)
-        
+
         logging.debug("entra aqui")
-        
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
             'avatar'     : avatarImg,
             'trans'      : trans
-        } 
+        }
         self.response.out.write(template.render('html/profileHistorialRequest.html', values))
 
 
-           
+
     def post_as_user(self, user, logoutUri, avatarImg):
         option= self.request.get('Transaccion')
-        
+
         logging.debug(option)
         if option == "Prestamos":
            trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Prestamo').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Prestamo').fetch(512)
@@ -933,7 +956,7 @@ class ProfileHistorialRequestView(UserView):
            trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Venta').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Venta').fetch(512)
         if option== "Intercambio":
            trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Intercambio').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Intercambio').fetch(512)
-                   
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -942,7 +965,7 @@ class ProfileHistorialRequestView(UserView):
             #'trans2'     : trans2,
             'selected'   : option
         }
-        self.response.out.write(template.render('html/profileHistorialRequest.html', values))        
+        self.response.out.write(template.render('html/profileHistorialRequest.html', values))
 
 
 # Página del buscador.
@@ -1395,6 +1418,21 @@ class ProfileDisabledClubContentView(UserView):
             'user'           : user
         }
         self.response.out.write(template.render('html/profileDisabledClubContent.html', values))
+
+# Añade mensajes a una oferta
+class ProfileOfferCommentNew(UserView):
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            requestKey = self.request.get('request')
+            request = Request.get(requestKey)
+            text = self.request.get('comment')
+            comment = Comment(text=text, user=user).put()
+            RequestComment(comment=comment, request=request).put()
+        except:
+            pass
+        finally:
+            self.redirect('/profile/appliantcopies?requestKey=' + requestKey)
+
 
 # Añade comentarios a un club
 class ProfileClubCommentNew(UserView):

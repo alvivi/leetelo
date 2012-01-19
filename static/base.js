@@ -60,7 +60,7 @@ var localScripts = {
             $('#title').twipsy({trigger: 'manual'});
             $('#title').twipsy('show')
         }
-        
+
         $("#checkimage").live('click', function() {
             $("<img>", {
                 src: $("#image").val(),
@@ -74,13 +74,13 @@ var localScripts = {
         var modalError = $('#modal-error');
         var modalDelete = $('#modal-bookcomment-deletion');
         var selected_book = null;
-        
+
         $('#newbookcomment').live('click', function(e) {
             e.preventDefault();
             $(this).slideToggle();
             $('#bookcommentform').slideToggle();
         });
-        
+
         $('#modifybookcomment').live('click', function(e) {
             e.preventDefault();
             selected_book = $("#modifybookcomment").parent().find('span').text()
@@ -94,20 +94,20 @@ var localScripts = {
                     $('#bookcomment').text(data);
                 }
             });
-            
-            
+
+
         });
-         
+
         modalError.modal({backdrop: true, modal: true});
         modalDelete.modal({backdrop: true, modal: true});
-        
+
         $('#modal-error .close').live('click', function() {
             modalError.modal('hide');
         });
         $('#modal-bookcomment-deletion .close').live('click', function() {
             modalError.modal('hide');
         });
-        
+
         $('#modal-error .btn').live('click', function() {
             modalError.modal('hide');
         });
@@ -123,11 +123,11 @@ var localScripts = {
                 }
             });
         });
-        
+
         $('#removebookcomment').live('click', function() {
             modalDelete.modal('show');
         })
-        
+
         $('table .btn').live('click', function() {
             $.ajax({
                     url  : '/profile/applications/new',
@@ -147,17 +147,17 @@ var localScripts = {
     },
 
 
-    
+
     "/user/details" : function () {
         var modalDelete = $('#modal-usercomment-deletion');
         var selected_user = null;
-        
+
         $('#newusercomment').live('click', function(e) {
             e.preventDefault();
             $(this).slideToggle();
             $('#usercommentform').slideToggle();
         });
-        
+
         $('#modifyusercomment').live('click', function(e) {
             e.preventDefault();
             selected_user = $("#modifyusercomment").parent().find('span').text()
@@ -172,13 +172,13 @@ var localScripts = {
                 }
             });
         });
-        
+
         modalDelete.modal({backdrop: true, modal: true});
-        
+
         $('#modal-usercomment-deletion .close').live('click', function() {
             modalError.modal('hide');
         });
-        
+
         $('#modal-usercomment-deletion .btn').live('click', function() {
             selected_user = $("#removeusercomment").parent().find('span').text()
             $.ajax({
@@ -191,13 +191,13 @@ var localScripts = {
                 }
             });
         });
-        
+
         $('#removeusercomment').live('click', function() {
             modalDelete.modal('show');
         })
-        
+
     },
-    
+
     "/club" : function () {
         var modalError = $('#modal-club-error');
         var selectedClub;
@@ -463,7 +463,7 @@ var localScripts = {
         var selected_club = null;
         var count = 0;
         var modalDelete = $('#modal-clubcomment-deletion');
-        
+
         $('#newcomment').live('click', function(e) {
             e.preventDefault();
             $(this).slideToggle();
@@ -483,16 +483,16 @@ var localScripts = {
                     $('#comment').text(data);
                 }
             });
-            
-            
+
+
         });
-        
+
         modalDelete.modal({backdrop: true, modal: true});
-        
+
         $('#modal-clubcomment-deletion .close').live('click', function() {
             modalError.modal('hide');
         });
-        
+
         $('#modal-clubcomment-deletion .btn').live('click', function() {
             selected_club = $("#removeclubcomment").parent().find('span').text()
             $.ajax({
@@ -505,12 +505,12 @@ var localScripts = {
                 }
             });
         });
-        
+
         $('#removeclubcomment').live('click', function() {
             modalDelete.modal('show');
         })
-        
-        
+
+
 
         $('#accept-request-link').live('click',function(e) {
             participation = $(this).children().text();
@@ -630,6 +630,25 @@ var localScripts = {
                 $(inputs[i]).attr("checked", "");
             }
         }
+
+        $('#newcomment').live('click', function(e) {
+            e.preventDefault();
+            $(this).slideToggle();
+            $('#commentform').slideToggle();
+        });
+
+        $('#submitcomment').live('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url  : $('#comments form').attr('action'),
+                data : {comment : $('#comments textarea').val()},
+                type : 'POST',
+                success : function (data) {
+                    $('#comments').remove();
+                    $('#main-container').append($(data).find('#comments'))
+                }
+            });
+        });
     },
     "/profile/copyoffers" : function () {
         var acceptButton = $("#accept-offer-button");
@@ -637,7 +656,27 @@ var localScripts = {
         var selectedCopyKey = $("#selected-copy-key").text();
         var directExchangeButton = $("#direct-exchange-button");
         var actionText;
-        
+
+        $('#newcomment').live('click', function(e) {
+            e.preventDefault();
+            $(this).slideToggle();
+            $('#commentform').slideToggle();
+        });
+
+        $('#submitcomment').live('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url  : $('#comments form').attr('action'),
+                data : {comment : $('#comments textarea').val()},
+                type : 'POST',
+                success : function (data) {
+                    $('#comments').remove();
+                    $("#exchange-buttons2").after($(data).find('#comments'));
+                }
+            });
+            console.log('mola');
+        })
+
         $("#appliantCopiesTable input[type=radio]").live('click', function () {
             var rows = $(".offer-state-column");
             var flag = false;
@@ -654,7 +693,7 @@ var localScripts = {
             else
                 $(directExchangeButton).removeClass("disabled");
         });
-        
+
         $("#offersTable input[type=radio]").live('click', function () {
             var rows = $(".offer-state-column");
             var flag = false;
@@ -663,9 +702,9 @@ var localScripts = {
                     flag = true;
                 }
             }
-            
+
             $(directExchangeButton).addClass("disabled");
-            
+
             if(flag)
                 $(rejectButton).removeClass("disabled");
             else
@@ -673,7 +712,7 @@ var localScripts = {
                 $(acceptButton).removeClass("disabled");
                 $(rejectButton).removeClass("disabled");
             }
-            
+
             if($('#transaction-type').text()=="Intercambio")
             {
                 $.ajax({
@@ -682,14 +721,16 @@ var localScripts = {
                     type : 'GET',
                     success : function (data) {
                         $('#appliantCopies').remove();
+                        $('#comments').remove();
                         var appliantCopies = $(data).find('#appliantCopies');
                         $("#exchange-buttons2").before(appliantCopies);
+                        $("#exchange-buttons2").after($(data).find('#comments'));
                         $("#exchange-buttons2").removeClass('hide');
                     }
                 });
             }
         });
-        
+
         acceptButton.live('click',function(e) {
             actionText=$(this).text();
             if ($(this).hasClass('disabled')){
@@ -763,7 +804,7 @@ var localScripts = {
 
     "/profile/newcopy" : function () {
         $("#fechaLimite").datepicker();
-        
+
         var getParameter = function (parameter) {
             // Obtiene la cadena completa de URL
             var url = location.href;

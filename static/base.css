@@ -102,3 +102,7 @@ thead th {
 {
 	border-color: red;
 }
+
+#comments {
+    margin-bottom: 25px;
+}

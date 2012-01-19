@@ -6,8 +6,8 @@
 <input type="hidden" id="selectedCopyTitle" name="selectedCopyTitle" value="{{selectedCopy.book.title}}">
 <input type="hidden" id="owner" name="owner" value={{selectedCopy.user}}>
 <input type="hidden" id="requestKey" name="requestKey" value={{request.key}}>
-   
-   
+
+
 
 {% ifequal request.state "Sin contestar" %}
     <div style="text-align: center" id="confirmRequestResponse">
@@ -23,7 +23,7 @@
             <div ><strong>Te han propuesto un intercambio indirecto.</strong></div>
         {% endifequal %}
         {% ifequal request.exchangeType "Directo"%}
-        <div ><strong>Te han propuesto...</strong></div>  <!debe mostrar el libro que me ofrecen>
+        <div ><strong>Te han propuesto...</strong></div>  <!-- debe mostrar el libro que me ofrecen -->
         <table id="exchangeTable" class="zebra-striped sortable">
             <thead>
                 <tr>
@@ -44,7 +44,7 @@
         <input type="submit" class="btn primary" name="action" value="Confirmar">
         <input type="submit" class="btn primary" name="action" value="Cancelar">
     </div>
-    
+
 {% endifequal %}
 
 {% ifequal request.state "Aceptada" %}
@@ -54,23 +54,47 @@
         {% else %}
             {% ifequal selectedCopy.offerState "Esperando recepcion" %}
                 <div style="text-align: center" id="confirmRecieved">
-                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <! poner la fecha y hora del sistema>
+                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <!--  poner la fecha y hora del sistema -->
                 </div>
             {% endifequal %}
         {% endif %}
-        
+
     {% else %}
         {% ifequal selectedCopy.offerState "Esperando recepcion" %}
                 <div style="text-align: center" id="confirmRecieved">
-                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <! poner la fecha y hora del sistema>
+                    <input type="submit" class="btn primary" name="action" value="Recibido!"> <!-- poner la fecha y hora del sistema -->
                 </div>
         {% endifequal %}
         {% ifequal selectedCopy.offerState "Prestado" %}
             <p><strong>Esperando que {{selectedCopy.user}} reciba el libro de vuelta... </p>
         {% endifequal %}
     {% endifequal %}
-{% endifequal %}    
+{% endifequal %}
 
 
 </form>
+
+<div id="comments">
+    <h6>Mensajes</h6>
+    {% for c in comments %}
+        <blockquote>
+            <p>{{c.comment.text}}</p>
+            <small> <a href="/user/details?selectedUser={{c.comment.user.email}}"><img class="avatar-tiny" src='/img?user={{c.comment.user.email}}' alt="Avatar del usuario"></a> {{c.comment.user.nickname}} ({{c.comment.date|date:"Y-m-d H:i:s"}})</small>
+        </blockquote>
+    {% endfor %}
+    <a id="newcomment" href="#">Añade un nuevo mensaje...</a>
+    <form class="hide" id="commentform" action="/profile/offers/comment/new?request={{request.key}}" method="post">
+        <fieldset>
+            <div class="clearfix">
+                <label for="comment">Texto</label>
+                <div class="input">
+                    <textarea class="xlarge" name="comment" id="comment" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="actions">
+                <input id="submitcomment" type="submit" class="btn primary" value="Enviar mensaje" />
+            </div>
+        </fieldset>
+    </form>
+</div>
 {% endblock %}

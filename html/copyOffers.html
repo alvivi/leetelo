@@ -1,7 +1,7 @@
 {% extends "profileOffers.html" %}
 
-{% block copy_offers %} 
-                        
+{% block copy_offers %}
+
 <p> <strong> Mostrando ofertas para: </strong><span id="selected-copy-title">{{selectedCopy.book.title}}</span></p>
 <p> <strong> Tipo de transacci&oacuten: </strong><span id="transaction-type">{{selectedCopy.offerType}}</span></p>
 <span class="hide" id="selected-copy-key">{{selectedCopy.key}}</span>
@@ -12,16 +12,26 @@
             <th></th>
             <th class="blue header">Lo quiere...</th>
             <th class="blue header">Estado de la transacci&oacuten</th>
-            <th class="blue header"> </th>
+            <th class="blue header">Mensajes</th>
         </tr>
     </thead>
     <tbody>
         {% for request in copyRequests %}
         <tr>
-            <td><input type="radio" id="offersRadios" name="offersRadios" value={{request.key}}></td>
-            <td class="appliant-column-name"><a href="/user/details?selectedUser={{request.user.email}}">{{request.user}}</a></td>
-            <td class="offer-state-column">{{request.state}}</td>
-            <td><a href="#" class="btn">Enviar Mensaje</a> </td>
+            <td><input type="radio" id="offersRadios" name="offersRadios" value={{request.req.key}}></td>
+            <td class="appliant-column-name"><a href="/user/details?selectedUser={{request.req.user.email}}">{{request.req.user}}</a></td>
+            <td class="offer-state-column">{{request.req.state}}</td>
+            <td>
+                {% ifequal request.cmtCount 0 %}
+                    <p>No hay mensajes nuevos</p>
+                {% else %}
+                    {% ifequal request.cmtCount 1 %}
+                        <p><strong>Un mensaje nuevo</strong></p>
+                    {% else %}
+                        <p><strong>{{request.cmtCount}} mensajes nuevos</strong></p>
+                    {% endifequal %}
+                {% endifequal %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -30,15 +40,17 @@
     {% ifequal selectedCopy.offerType "Intercambio" %}<a id="accept-offer-button" class="btn primary disabled" href="#">Proponer intercambio indirecto</a>{% endifequal %}
     {% ifequal selectedCopy.offerType "Venta" %} <a id="accept-offer-button" class="btn primary disabled" href="#">Vender</a>{% endifequal %}
     {% ifequal selectedCopy.offerType "Prestamo" %} <a id="accept-offer-button" class="btn primary disabled" href="#">Prestar</a>{% endifequal %}
-    <a id="reject-offer-button" class="btn primary disabled" href="#">Rechazar oferta</a>    
+    <a id="reject-offer-button" class="btn primary disabled" href="#">Rechazar oferta</a>
 </div>
 
 
 {% block appliant_copies %}{% endblock %}
 
+{% block comments %}{% endblock %}
+
 <form method="POST" action="/profile/appliantcopies">
     <div class="hide" style="text-align: center" id="exchange-buttons2">
         <a id="direct-exchange-button" class="btn primary disabled" href="#">Proponer este libro para intercambio</a>
-        
+
 </form>
 {% endblock %}

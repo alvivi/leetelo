@@ -20,7 +20,7 @@ class Book(db.Model):
     image  = db.LinkProperty()
     title  = db.StringProperty(required=True)
     year   = db.IntegerProperty()
-    
+
 # El ejemplar del libro
 class Copy(db.Model):
     book = db.ReferenceProperty(Book)
@@ -53,7 +53,7 @@ class Copy(db.Model):
     @classmethod
     def allOfferredCopiesOf(cls, user):
         return cls.all().filter('user =', user).filter('offerState =', 'En oferta').fetch(128)
-        
+
 # Comentarios
 class Comment(db.Model):
     text = db.StringProperty(required=True)
@@ -62,7 +62,7 @@ class Comment(db.Model):
 
 class BookComment(db.Model):
     book = db.ReferenceProperty(Book)
-    comment = db.ReferenceProperty(Comment)	
+    comment = db.ReferenceProperty(Comment)
 
 class UserComment(db.Model):
     user = db.UserProperty()
@@ -70,7 +70,7 @@ class UserComment(db.Model):
     @classmethod
     def allCommentsFor(cls, user):
         return cls.all().filter('user =', user).fetch(128)
-        
+
 # Ficha del Club
 class Club(db.Model):
     image  = db.LinkProperty()
@@ -105,11 +105,11 @@ class Request(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='owner_copy')
     user = db.UserProperty()
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
-    
+
     #si copy.offerType es Intercambio, se usan estas dos propiedades para indicar la copia por la que se solicita intercambiar, y si el intercambio es directo o indirecto
     exchangeCopy = db.ReferenceProperty(Copy,collection_name='exchange_copy')
     exchangeType = db.StringProperty(choices=set(['Directo','Indirecto']))
-    
+
     #estas dos propiedades se usan para la logica de visualizacion (indican cuando ha llegado cada copia a su destino)
     llegaCopia1 = db.BooleanProperty()
     llegaCopia2 = db.BooleanProperty()
@@ -122,11 +122,37 @@ class Request(db.Model):
     @classmethod
     def allRequestsFor(cls, copy):
         return cls.all().filter('copy =', copy).filter('state !=','Rechazada').fetch(128)
-    
+
     @classmethod
     def getNotAnsweredRequest(cls, copy):
         return cls.all().filter('copy =', copy).filter('state =', 'Sin contestar').fetch(128)
-        
+
+class RequestComment(db.Model):
+    comment = db.ReferenceProperty(Comment)
+    request = db.ReferenceProperty(Request)
+    viewed  = db.BooleanProperty(default=False)
+
+    @classmethod
+    def notViewedCount(cls, request, user):
+        count = 0
+        cs = cls.all().filter('request =', request).fetch(128)
+        for c in cs:
+            if c.comment.user != user and not c.viewed:
+                count += 1
+        return count
+
+    @classmethod
+    def markAllAsViewed(cls, request, user):
+        cs = cls.all().filter('request =', request).fetch(128)
+        for c in cs:
+            if c.comment.user != user and not c.viewed:
+                c.viewed = True
+                c.put()
+
+    @classmethod
+    def allFrom(cls, request):
+        return cls.all().filter('request =', request).fetch(128)
+
 class HistoricalRequest(db.Model):
     copy = db.ReferenceProperty(Copy)
     appliant = db.UserProperty()
@@ -134,7 +160,7 @@ class HistoricalRequest(db.Model):
     initialOfferType = db.StringProperty(choices=set(['Intercambio','Venta','Prestamo','Ninguna']))
     state = db.StringProperty(choices=set(['Sin contestar','Negociando','Aceptada','Rechazada']))
     date = db.DateTimeProperty(auto_now=True)
-    
+
 class Transaction(db.Model):
     copy = db.ReferenceProperty(Copy,collection_name='copy')
     owner = db.UserProperty()
@@ -162,27 +188,27 @@ class Alert(db.Model):
     remainder = db.IntegerProperty()
     relatedClub = db.ReferenceProperty(Club)
     #Campo para que la alerta lleve a una pagina de club.
-    
+
     relatedCopy = db.ReferenceProperty(Copy)
     #Campo para que la alerta lleve a una pagina de ofertas de copia (solo para owners)
-    
+
     relatedApp = db.StringProperty()
     #Campo para que la alerta lleve a la pagina de applications (normalmente para requesting users)
-    
+
     @classmethod
     def setDate(today):
 	today = datetime.date.today()
 	return today
-    
+
     @classmethod
     def allAlertsOf(result, user):
         alertlist = []
 	result = []
-	
+
 	alertlist = Alert.all().filter('user =', user).fetch(512)
-	
+
 	today = datetime.date.today()
-	
+
 	for alert in alertlist:
 	    delta = today - alert.date
 	    if delta.days < 11:
@@ -190,6 +216,6 @@ class Alert(db.Model):
 		result.append(alert)
 	    else:
 		db.delete(alert)
-	    
+
 	return result
-    
+

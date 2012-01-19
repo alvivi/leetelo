@@ -94,7 +94,7 @@ libertadCopy2 = Copy(user=lolUser, book=libertadBook, offerType="Intercambio", o
 
 db.delete(Request.all().fetch(512))
 db.delete(HistoricalRequest.all().fetch(512))
-Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
+nilsenRequest = Request(user=nilsenUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=billyUser,copy=justinCopy1, state="Sin contestar").put()
 Request(user=lolUser,copy=justinCopy1, state="Sin contestar").put()
 HistoricalRequest(appliant=nilsenUser, copy=justinCopy1, initialUser=testUser, state="Sin contestar", initialOfferType="Intercambio").put()
@@ -226,3 +226,6 @@ Alert( date=Alert.setDate(), user=testUser, type='Club: Rechazado', description=
 Alert( date=Alert.setDate(), user=testUser, type='Solicitud: Finalizada', description='Notificacion de prueba, anadida manualmente en la DB...').put()
 Alert( date=Alert.setDate(), user=nilsenUser, type='Club: Solicitud', description="Usuario test@example.com quiere unirse al club Fans de Knut Hamsun", relatedClub=club5).put()
 
+db.delete(RequestComment.all().fetch(512))
+commentReqNilsen = Comment(user=nilsenUser, text=u'O me lo das o te pego una paliza').put()
+RequestComment(comment=commentReqNilsen, request=nilsenRequest).put()
