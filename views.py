@@ -20,7 +20,7 @@ import urllib
 import hashlib
 import unicodedata
 from datetime import datetime
-from compiler.ast import Break
+
 
 
 def elimina_tildes(s):
@@ -133,15 +133,15 @@ class ProfileAccountView(UserView):
 
 class ProfileAlertsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        
+
         tod = Alert.setDate()
-        
+
         for copy in Copy.allOfferredCopiesOf(user):
             if copy.limitOfferDate!=None and copy.limitOfferDate >= tod and copy.alertActivated==False:
                 copy.alertActivated=True
                 copy.put()
                 Alert( user=copy.user, type='Fecha oferta excedida', relatedCopy = copy, date=tod, description='Se ha excedido la fecha de oferta para el libro %s.' % (copy.book.title) ).put()
-                
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -231,7 +231,7 @@ class BookDetailsView(UserView):
             else:
                 orderedComments = comments
                 lastComment = None
-                
+
             copies = Copy.all().filter('book =', book).filter('offerState =', 'Con solicitud').fetch(128) + Copy.all().filter('book =', book).filter('offerState =', 'En oferta').fetch(128)
             values = {
                 'user'        : user,
@@ -265,7 +265,7 @@ class BookCommentNew(UserView):
             pass
         finally:
             self.redirect('/book/details?book=' + bookKey)
-            
+
 
 class BookCommentDelete(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
@@ -278,12 +278,12 @@ class BookCommentDelete(UserView):
                 orderedComments.reverse()
                 lastComment = orderedComments[0]
                 lastComment.delete()
-            
+
         except:
             pass
         finally:
             self.redirect('/book/details?book=' + bookKey)
-            
+
     def post_as_user(self, user, logoutUri, avatarImg):
         try:
             bookKey = self.request.get('selectedBook')
@@ -300,8 +300,8 @@ class BookCommentDelete(UserView):
             pass
         finally:
             self.response.out.write(text)
-            
-            
+
+
 class UserDetailsView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
         selectedUser = users.User(self.request.get('selectedUser'))
@@ -313,7 +313,7 @@ class UserDetailsView(UserView):
         else:
             orderedComments = comments
             lastComment = None
-            
+
         values = {
             'user'        : user,
             'logoutUri'   : users.create_logout_url('/'),
@@ -347,12 +347,12 @@ class UserCommentDelete(UserView):
                 orderedComments.reverse()
                 lastComment = orderedComments[0]
                 lastComment.delete()
-            
+
         except:
             pass
         finally:
             self.redirect('/user/details?selectedUser=' + selectedUser.email())
-            
+
     def post_as_user(self, user, logoutUri, avatarImg):
         try:
             selectedUser = users.User(self.request.get('selectedUser'))
@@ -368,7 +368,7 @@ class UserCommentDelete(UserView):
             pass
         finally:
             self.response.out.write(text)
-            
+
 # /profile/newcopy
 # Vista que se encarga de crear una nuevo ejemplar de un libro
 class ProfileNewCopyView(UserView):
@@ -430,13 +430,13 @@ class ProfileNewCopyView(UserView):
         except Exception, e:
             campos=[]
             strExp=str(e)
-            
+
             if error == 1:
                 campos.append("edicion")
-            
+
             if error == 2:
                 campos.append("paginas")
-                
+
             title = self.request.get('titleBook')
             book = Book.all().filter('title =', title).get()
             values = {
@@ -611,7 +611,7 @@ class ProfileCopyOffersView(UserView):
         selectedCopy = Copy.get(self.request.get('selectedCopy'))
         request = Request.get(self.request.get('requestKey'))
         appliantUser = request.user
-        
+
         if action=="Rechazar oferta":
             HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
             if request.state=='Sin contestar':
@@ -623,7 +623,7 @@ class ProfileCopyOffersView(UserView):
                 selectedCopy.put()
                 # notificación: notificar a appliantUser de que su solicitud se ha rechazado
                 Alert( user=appliantUser, type='Solicitud: Rechazada', date=Alert.setDate(), description='El usuario %s ha rechazado tu solicitud por el libro %s.' % (user.email() , selectedCopy.book.title) ).put()
-                
+
             else:
                 request.state='Sin contestar'
                 request.put()
@@ -631,7 +631,7 @@ class ProfileCopyOffersView(UserView):
                 selectedCopy.put()
                 # notificación: notificar a appliantUser de que su solicitud se ha cancelado
                 Alert( user=appliantUser, type='Solicitud: Cancelada', date=Alert.setDate(), description='Tu solicitud por el libro %s de %s ha sido cancelada.' % (selectedCopy.book.title, user.email()) ).put()
-                
+
         else:
             selectedCopy.offerState='Esperando confirmacion'
             request.state='Negociando'
@@ -646,7 +646,7 @@ class ProfileCopyOffersView(UserView):
             HistoricalRequest(appliant=appliantUser, copy=selectedCopy, initialUser=user, state=request.state, initialOfferType=selectedCopy.offerType).put()
             # notificación: notificar a appliantUser que su solicitud se ha aceptado
             Alert( user=appliantUser, type='Solicitud: Aceptada', relatedApp='true', date=Alert.setDate(), description='El usuario %s ha aceptado tu solicitud por el libro %s.' % (user.email() , selectedCopy.book.title) ).put()
-        
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -682,16 +682,16 @@ class ApplicationContentView(UserView):
         if action == "Confirmar":
             request.state='Aceptada'
             request.put()
-            
+
             if selectedCopy.offerType=="Venta":
                 Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
             elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Indirecto":
                 Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType, exchangeType="Indirecto").put()
             selectedCopy.offerState='Esperando recepcion'
             selectedCopy.put()
-            
+
             HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Aceptada', initialOfferType=selectedCopy.offerType).put()
-            
+
             #eliminar el resto de solicitudes sobre esta oferta y pasarlas al historico
             notAnsweredRequests = Request.getNotAnsweredRequest(selectedCopy)
             for r in notAnsweredRequests:
@@ -699,13 +699,13 @@ class ApplicationContentView(UserView):
                 r.delete()
                 # notificación: notificar a r.user que se ha rechazado su solicitud porque se está realizando una transacción con otro usuario. El libro ya no está en oferta.
                 Alert( user=r.user, type='Solicitud: Rechazada', date=Alert.setDate(), relatedApp='true', description='Tu solicitud por el libro %s de %s ha sido cancelada. El libro ya no esta en oferta.' % (selectedCopy.book.title, user.email()) ).put()
-                
+
         elif action == "Recibido!":
             if selectedCopy.offerType=="Venta" or (selectedCopy.offerType == "Intercambio" and request.exchangeType == "Indirecto"):
                 transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).get()
                 transaction.endDate = datetime.now()#.date()
                 transaction.put()
-                
+
                 selectedCopy.offerState = 'No disponible'
                 selectedCopy.offerType = 'Ninguna'
                 selectedCopy.user = user
@@ -717,10 +717,10 @@ class ApplicationContentView(UserView):
 
             elif selectedCopy.offerType=="Intercambio" and request.exchangeType=="Directo":
                 transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', ownerUser).filter('appliant =',user).filter('transactionType =',selectedCopy.offerType).filter('appliantCopy =',request.exchangeCopy).filter('exchangeType =','Directo').get()
-                
+
                 if transaction==None or (transaction!=None and transaction.endDate!=None):
                     Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType, appliantCopy=request.exchangeCopy, exchangeType="Directo").put()
-                    
+
                     request.llegaCopia1 = True
                     selectedCopy.put()
                     request.put()
@@ -736,17 +736,17 @@ class ApplicationContentView(UserView):
                     request.exchangeCopy.user = ownerUser
                     request.exchangeCopy.put()
                     request.delete()
-                    
+
                 # notificación opcional: notificar a ownerUser de que el libro ha llegado a user
                 Alert( user=ownerUser, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro %s.' % (user.email() , selectedCopy.book.title) ).put()
-                
+
             elif selectedCopy.offerType=="Prestamo":
                 selectedCopy.offerState = 'Prestado'
                 selectedCopy.put()
                 Transaction(copy=selectedCopy, owner=ownerUser, appliant=user, transactionType=selectedCopy.offerType).put()
                 # notificación opcional: notificar a ownerUser de que el libro que prestó le ha llegado a user
                 Alert( user=ownerUser, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro %s.' % (user.email() , selectedCopy.book.title) ).put()
-                
+
         elif action=="Cancelar":
             request.delete()
             if len(Request.allRequestsFor(selectedCopy)) == 0:
@@ -757,7 +757,7 @@ class ApplicationContentView(UserView):
             # notificación: notificar a ownerUser que user ha cancelado la solicitud
             Alert( user=ownerUser, type='Solicitud: Cancelada', date=Alert.setDate(), relatedApp='true', description='La solicitud por el libro %s ha sido cancelada por %s.' % (selectedCopy.book.title, user.email()) ).put()
             HistoricalRequest(copy=selectedCopy, initialUser=ownerUser, appliant=user, state='Rechazada', initialOfferType=selectedCopy.offerType).put()
-        
+
 
         values = {
             'requests'     : Request.allRequestsOf(user),
@@ -782,17 +782,17 @@ class TransactionView(UserView):
             'request'  : request
         }
         self.response.out.write(template.render('html/transaction.html', values))
-        
+
     def post_as_user(self, user, logoutUri, avatarImg):
         selectedCopy = Copy.get(self.request.get('selectedCopy'))
         request = Request.get(self.request.get('requestKey'))
-        
+
         if selectedCopy.offerType=="Intercambio":
             transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =', user).filter('appliant =',request.user).filter('transactionType =',selectedCopy.offerType).filter('appliantCopy =',request.exchangeCopy).filter('exchangeType =',"Directo").get()
-            
+
             if transaction==None or (transaction!=None and transaction.endDate!=None):
                 Transaction(copy=selectedCopy, owner=user, appliant=request.user, transactionType=selectedCopy.offerType, appliantCopy=request.exchangeCopy, exchangeType="Directo").put()
-                
+
                 request.llegaCopia2 = True
                 selectedCopy.put()
                 request.put()
@@ -808,21 +808,21 @@ class TransactionView(UserView):
                 request.exchangeCopy.user = user
                 request.exchangeCopy.put()
                 request.delete()
-                
+
             # notificación opcional: notificar a request.user que el libro que ha intercambiado ya le ha llegado a user
             Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro..' % (user.email() ) ).put()
-            
+
         elif selectedCopy.offerType=="Prestamo":
             selectedCopy.offerState = "No disponible"
             selectedCopy.offerType = "Ninguna"
             selectedCopy.put()
             # notificación opcional: notificar a request.user que el libro que devolvió ya le ha llegado al dueño
             Alert( user=request.user, type='Solicitud: Finalizada', date=Alert.setDate(), description='El usuario %s ha recibido tu libro.' % ( user.email() ) ).put()
-            
+
             transaction = Transaction.all().filter('copy =',selectedCopy).filter('owner =',user).filter('appliant =',request.user).filter('transactionType =',"Prestamo").get()
             transaction.endDate=datetime.now()#.date()
             transaction.put()
-            
+
             request.delete()
 
         values = {
@@ -841,7 +841,7 @@ class AppliantCopiesView(UserView):
         selectedCopy = Copy.get(self.request.get('selectedCopy'))
         request = Request.get(self.request.get('requestKey'))
         appliantUser = request.user
-        
+
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
@@ -854,8 +854,8 @@ class AppliantCopiesView(UserView):
             'request' : request
         }
         self.response.out.write(template.render('html/appliantCopies.html', values))
-        
-    
+
+
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
@@ -986,7 +986,7 @@ class ProfileAnswerRequestView(UserView):
             participation.put()
             # notificación: notificar a participation.user que su solicitud sobre el club ha sido aceptada
             Alert( user=participation.user, type='Club: Aceptado', relatedClub=participation.club, date=Alert.setDate(), description='Has sido aceptado en el club %s.' % ( participation.club.name ) ).put()
-            
+
         elif option == 'Rechazar':
             participation.state = 'Solicitud Rechazada'
             participation.put()
@@ -1033,11 +1033,11 @@ class ProfileNewClubView(UserView):
                 book = Book.all().filter('title =', libro).get()
 
             if len(invitaciones)<2 and len(invitaciones[0])<2:
-                invitaciones = [];            
-            
+                invitaciones = [];
+
             #if Club.all().filter('name =', nameClub).count() > 0:
             #   self.redirect('/profile/club/new?errorrepeat=true')
-            
+
             #NO DISTINGUIR ENTRE MAYUSCULAS MINUSCULAS Y ACENTOS
             repetido = False
             for clubf in Club.all():
@@ -1047,10 +1047,10 @@ class ProfileNewClubView(UserView):
                 if nombre == nombreNuevo:
                     repetido= True
                     break
-                    
+
             if repetido:
                 self.redirect('/profile/club/new?errorrepeat=true')
-                
+
             else:
                 club_actual=Club(book=book, owner=user, name=nameClub, description=description, image=imagen, genre=generos, invitaciones=invitaciones, state="Habilitado").put()
                 logging.debug(club_actual)
@@ -1081,13 +1081,13 @@ class ProfileNewClubView(UserView):
         except Exception, e:
             campos=[]
             strExp=str(e)
-            
+
             if "URL" in strExp:
                 campos.append("image")
-            
+
             if "name" in strExp:
                 campos.append("nombreClub")
-                
+
             libro = self.request.get('libros')
             book = Book.all().filter('title =', libro).get()
             values = {
@@ -1160,7 +1160,7 @@ class ProfileEditClubView(UserView):
             if len(nuevos_invitados)<2 and len(nuevos_invitados[0])<2:
                 nuevos_invitados = [];
 
-            
+
             #NO DISTINGUIR ENTRE MAYUSCULAS MINUSCULAS Y ACENTOS
             if elimina_tildes(selectedClub.name).lower() == elimina_tildes(nameClub).lower():
 
@@ -1238,13 +1238,13 @@ class ProfileEditClubView(UserView):
         except Exception, e:
             campos=[]
             strExp=str(e)
-            
+
             if "URL" in strExp:
                 campos.append("image")
-            
+
             if "name" in strExp:
                 campos.append("nombreClub")
-            
+
             key = self.request.get('selectedClub')
             selectedClub = Club.get(key)
             values = {
@@ -1284,7 +1284,7 @@ class ProfileClubContentView(UserView):
         else:
             orderedComments = comments
             lastComment = None
-            
+
         values = {
             'avatar'         : avatarImg,
             'comments'       : orderedComments,
@@ -1341,12 +1341,12 @@ class ProfileClubCommentDelete(UserView):
                 orderedComments.reverse()
                 lastComment = orderedComments[0]
                 lastComment.delete()
-            
+
         except:
             pass
         finally:
             self.redirect('/profile/club/content?selectedClub=' + clubKey)
-            
+
     def post_as_user(self, user, logoutUri, avatarImg):
         try:
             clubKey = self.request.get('selectedClub')
@@ -1363,7 +1363,7 @@ class ProfileClubCommentDelete(UserView):
             pass
         finally:
             self.response.out.write(text)
-            
+
 # Página principal.
 class IndexView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
@@ -1430,7 +1430,7 @@ class ClubRequestParticipationView(UserView):
             self.response.out.write('OK')
             Alert( user=selectedClub.owner, type='Club: Solicitud', date=Alert.setDate(), relatedClub=selectedClub, description='Usuario %s quiere unirse al club %s.' % ( user.email(), selectedClub.name ) ).put()
             #self.redirect('/profile/club/disabledcontent?selectedClub=' + str(selectedClub.key()))
-            
+
 
 
 
