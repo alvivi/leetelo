@@ -1,21 +1,20 @@
 
 {% extends "profile.html" %}
 
-{% block nav_profile_historial %} class="active" {% endblock %}
+{% block nav_profile_historialRequest %} class="active" {% endblock %}
 
 {% block profileContent %}
 <h6> Contenido del historial </h6>
 <div class="container-fluid">
 <div class="sidebar">
-<form action="/profile/historial" method="post">
+<form action="/profile/historialRequest" method="post">
 
-                    <label for="formato">Transacción</label>
+                    <label for="formato">Transaccion</label>
                     <div class="input">
                         <!--<select onchange="this.form.action = this.value; this.disabled = true; this.form.submit()" >-->
                         <select class="xlarge" name="Transaccion" id="Transaccion" onchange="this.form.submit()">
                             <option {% ifequal selected 'Prestamos' %}selected{% endifequal %}>Prestamos</option>
-                            <option {% ifequal selected 'Intercambio directo' %}selected{% endifequal %}>Intercambio directo</option>
-                            <option {% ifequal selected 'Intercambio indirecto' %}selected{% endifequal %}>Intercambio indirecto</option>
+                            <option {% ifequal selected 'Intercambio' %}selected{% endifequal %}>Intercambio</option>
                             <option {% ifequal selected 'Venta' %}selected{% endifequal %}>Venta</option>
                         </select>
                     </div>
@@ -33,12 +32,12 @@
 
 	<thead>
 		<tr>
-			<th class="header blue" style="width: 75px;">Libro dado</th>
-            <th class="header blue" style="width: 75px;">Libro recibido</th>
-			<th class="header blue" style="width: 170px;">Propietario</th>
+			<th class="header blue" style="width: 75px;">Libro</th>
+            <th class="header blue" style="width: 170px;">Propietario</th>
             <th class="header blue" style="width: 170px;">Demandante</th>
-			<th class="header blue" style="width: 50px;">Fecha de inicio transacción</th>
-            <th class="header blue" style="width: 50px;">Fecha de fin de transacción</th>
+            <th class="header blue" style="width: 170px;">Estado</th>
+            <th class="header blue" style="width: 170px;">Tipo de Transacción</th>
+			<th class="header blue" style="width: 50px;">Fecha de intercambio</th>
 			
 			
 		</tr>
@@ -48,11 +47,11 @@
 		<tr>
 			
 			<td>{{res.copy.book.title}}</td>
-            <td>{{res.appliantCopy.book.title}}</td>
-			<td>{{res.owner}}</td>
+            <td>{{res.initialUser}}</td>
             <td>{{res.appliant}}</td>
-			<td>{{res.startDate}}</td>
-            <td>{{res.endDate}}</td>
+            <td>{{res.state}}</td> 
+            <td>{{res.initialOfferType}}</td> 
+			<td>{{res.date}}</td>
             
 			
 		</tr>

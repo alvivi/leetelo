@@ -859,12 +859,91 @@ class AppliantCopiesView(UserView):
 
 class ProfileHistorialView(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
+        option= "Prestamos"
+        
+        logging.debug(option)
+        trans=Transaction.all().filter('owner = ',user).filter('transactionType =', 'Prestamo').fetch(512) + Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
+        #trans2=Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
+        logging.debug("entra aqui")
+        
         values = {
             'user'       : user,
             'logoutUri'  : users.create_logout_url('/'),
-            'avatar'     : avatarImg
-        }
+            'avatar'     : avatarImg,
+            'trans'      : trans
+        } 
         self.response.out.write(template.render('html/profileHistorial.html', values))
+
+
+           
+    def post_as_user(self, user, logoutUri, avatarImg):
+        option= self.request.get('Transaccion')
+        
+        logging.debug(option)
+        if option == "Prestamos":
+           trans=Transaction.all().filter('owner = ',user).filter('transactionType =', 'Prestamo').fetch(512) + Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Prestamo').fetch(512)
+           logging.debug("entra aqui")
+        if option== "Venta":
+           logging.debug(user)
+           trans=Transaction.all().filter('owner = ',user).filter('transactionType =', 'Venta').fetch(512) + Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Venta').fetch(512)
+           #trans2=Transaction.all().filter('appliant = ', user).filter('transactionType =', 'Venta').fetch(512)
+        if option== "Intercambio directo":
+           trans=Transaction.all().filter('owner = ',user).filter('exchangeType = ', 'Directo').fetch(512) + Transaction.all().filter('appliant =', user).filter('exchangeType =', 'Directo').fetch(512)
+        if option== "Intercambio indirecto":
+           trans=Transaction.all().filter('owner = ',user).filter('exchangeType = ', 'Indirecto').fetch(512) + Transaction.all().filter('appliant = ', user).filter('exchangeType =', 'Indirecto').fetch(512)
+           
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'trans'      : trans,
+            #'trans2'     : trans2,
+            'selected'   : option
+        }
+        self.response.out.write(template.render('html/profileHistorial.html', values))        
+
+class ProfileHistorialRequestView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        option= "Prestamos"
+        
+        logging.debug(option)
+        trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Prestamo').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Prestamo').fetch(512)
+        
+        logging.debug("entra aqui")
+        
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'trans'      : trans
+        } 
+        self.response.out.write(template.render('html/profileHistorialRequest.html', values))
+
+
+           
+    def post_as_user(self, user, logoutUri, avatarImg):
+        option= self.request.get('Transaccion')
+        
+        logging.debug(option)
+        if option == "Prestamos":
+           trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Prestamo').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Prestamo').fetch(512)
+           logging.debug("entra aqui")
+        if option== "Venta":
+           logging.debug(user)
+           trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Venta').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Venta').fetch(512)
+        if option== "Intercambio":
+           trans=HistoricalRequest.all().filter('initialUser = ',user).filter('initialOfferType =', 'Intercambio').fetch(512) + HistoricalRequest.all().filter('appliant = ', user).filter('initialOfferType =', 'Intercambio').fetch(512)
+                   
+        values = {
+            'user'       : user,
+            'logoutUri'  : users.create_logout_url('/'),
+            'avatar'     : avatarImg,
+            'trans'      : trans,
+            #'trans2'     : trans2,
+            'selected'   : option
+        }
+        self.response.out.write(template.render('html/profileHistorialRequest.html', values))        
+
 
 # Página del buscador.
 class SearchView(UserView):
@@ -1073,6 +1152,7 @@ class ProfileNewClubView(UserView):
                                 """ % user)
                             except Exception, e:
                                 logging.debug(e)
+
                         # notificación: si el usuario sí que existe en el sistema, enviarle notificación avisando de que tiene una nueva invitación a club
                         Alert( user=user_ins, type='Club: Invitacion', date=Alert.setDate(), relatedClub=club_actual, description='Has sido invitado al club %s por el usuario %s.' % ( nameClub ,user.email() ) ).put()
                 self.redirect('/profile/club')
