@@ -47,6 +47,7 @@ def main():
         ('/profile/datacopy', ProfileDataCopyView),
         ('/profile/editcopy', ProfileEditCopyView),
         ('/profile/historial', ProfileHistorialView),
+        ('/profile/historialRequest', ProfileHistorialRequestView), 
         ('/profile/transaction', TransactionView),
         ('/profile/newcopy', ProfileNewCopyView),
         ('/profile/offers', ProfileOffersView),
