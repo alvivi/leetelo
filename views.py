@@ -1401,7 +1401,8 @@ class ProfileClubContentView(UserView):
             'logoutUri'      : users.create_logout_url('/'),
             'participations' : Club_User.allParticipantsOf(selectedClub),
             'selectedClub'   : selectedClub,
-            'user'           : user
+            'user'           : user,
+            'events'         : ClubEvent.allOf(selectedClub)
         }
         self.response.out.write(template.render('html/profileClubContent.html', values))
 
@@ -1557,6 +1558,46 @@ class ClubRequestParticipationView(UserView):
 
 class ProfileClubEventsNew(UserView):
     def get_as_user(self, user, logoutUri, avatarImg):
-        pass
+        club = Club.get(self.request.get('club'))
+        values = {
+            'user'       : user,
+            'club'       : club,
+            'logoutUri'  : users.create_logout_url('/'),
+        }
+        self.response.out.write(template.render('html/profileClubEventNew.html', values))
 
+    def post_as_user(self, user, logoutUri, avatarImg):
+        try:
+            club = Club.get(self.request.get('club'))
+            name = self.request.get('name')
+            place = self.request.get('place')
+            date = datetime.strptime(self.request.get('date'), "%d/%m/%Y")
+            comment = self.request.get('comment')
+            ClubEvent(club=club, name=name, place=place, date=date, comment=comment).put()
+        except:
+            pass
+        finally:
+            self.redirect('/profile/club/content?selectedClub=' + self.request.get('club'))
+
+class ProfileClubEventsView(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        event = ClubEvent.get(self.request.get('event'))
+        values = {
+            'user'       : user,
+            'event'       : event,
+            'participants' : ClubEventAssit.allOf(event),
+            'amINotIn'   : ClubEventAssit.amINotIn(event, user),
+            'logoutUri'  : users.create_logout_url('/'),
+        }
+        self.response.out.write(template.render('html/profileClubEventView.html', values))
+
+class ProfileClubEventsAssist(UserView):
+    def get_as_user(self, user, logoutUri, avatarImg):
+        try:
+            event = ClubEvent.get(self.request.get('event'))
+            ClubEventAssit(event=event, user=user).put();
+        except:
+            pass
+        finally:
+            self.redirect('/profile/club/events/view?event=' + self.request.get('event'))
 

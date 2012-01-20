@@ -862,6 +862,42 @@ var localScripts = {
         $("#idprecio").toggle(opc_sel == 'Venta');
         $("#idfecha").toggle(opc_sel != 'Ninguna');
         $("#fechaLimite").datepicker();
+    },
+
+    "/profile/club/events/new" : function () {
+        $("#date").datepicker();
+        $("#submit").live('click', function(e) {
+            errors = 0;
+            $('#name').twipsy('hide');
+            if ($('#name').val() == "") {
+                $('#name').addClass('error');
+                $('#name').twipsy({fallback : 'Campo no válido', trigger: 'manual', placement: 'right'});
+                $('#name').twipsy('show');
+                errors++;
+            }
+            $('#place').twipsy('hide');
+            if ($('#place').val() == "") {
+                $('#place').addClass('error');
+                $('#place').twipsy({fallback : 'Campo no válido', trigger: 'manual', placement: 'right'});
+                $('#place').twipsy('show');
+                errors++;
+            }
+            $('#date').twipsy('hide');
+            if ($('#date').val() == "") {
+                $('#date').addClass('error');
+                $('#date').twipsy({fallback : 'Campo no válido', trigger: 'manual', placement: 'right'});
+                $('#date').twipsy('show');
+                errors++;
+            }
+            $('#comment').twipsy('hide');
+            if ($('#comment').val() == "") {
+                $('#comment').addClass('error');
+                $('#comment').twipsy({fallback : 'Campo no válido', trigger: 'manual', placement: 'right'});
+                $('#comment').twipsy('show');
+                errors++;
+            }
+            if (errors > 0) e.preventDefault();
+        });
     }
 }
 

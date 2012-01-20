@@ -40,6 +40,8 @@ def main():
         ('/profile/club/disabledcontent', ProfileDisabledClubContentView),
         ('/profile/club/edit', ProfileEditClubView),
         ('/profile/club/events/new', ProfileClubEventsNew),
+        ('/profile/club/events/view', ProfileClubEventsView),
+        ('/profile/club/events/assist', ProfileClubEventsAssist),
         ('/profile/club/new', ProfileNewClubView),
         ('/profile/club/view', ProfileDataClubView),
         ('/profile/copies', ProfileCopiesView),

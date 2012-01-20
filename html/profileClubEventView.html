@@ -1,0 +1,52 @@
+{% extends "profile.html" %}
+
+{% block nav_profile_club %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<div class="row">
+    <div class="span16">
+        <h2>{{event.name}}</h2>
+        <h3>{{event.club.name}}</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span8">
+        <p>Lugar: {{event.place}}</p>
+    </div>
+    <div class="span8">
+        <p>Fecha: {{event.date}}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span16">
+        <p>{{event.comment}}</p>
+        {% if amINotIn %}
+            <a class="btn" href="/profile/club/events/assist?event={{event.key}}">¡Asistiré!</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row centerrow">
+    <div class="offset4 span8">
+        <table class="zebra-striped sortable">
+            <thead>
+                <tr>
+                    <th class="header blue"  style="width:50px"></th>
+                    <th class="header blue" >Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in participants %}
+                    <tr>
+                        <td style="vertical-align:middle"><a href="/user/details?selectedUser={{p.user.email}}"><img class="avatar-small" src='/img?user={{p.user.email}}' alt="Avatar del usuario"></a></td>
+                        <td style="vertical-align:middle">{{p.user.nickname}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "profile.html" %}
+
+{% block nav_profile_club %} class="active" {% endblock %}
+
+{% block profileContent %}
+
+<div class="row">
+    <div class="span16">
+        <h6>Nuevo evento en el club {{club.name}}...</h6>
+    </div>
+</div>
+
+<form action="#" method="post">
+    <fieldset>
+        <div class="row">
+            <div class="span8">
+                <div class="clearfix">
+                    <label for="name">Nombre</label>
+                    <div class="input">
+                        <input class="xlarge" name="name" id="name">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="place">Lugar</label>
+                    <div class="input">
+                        <input class="xlarge" name="place" id="place">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="date">Fecha</label>
+                    <div class="input">
+                        <input class="xlarge" type="text" name="date" id="date" readonly="readonly" size="12"/>
+                    </div>
+                </div>
+            </div>
+            <div class="span8">
+                <div class="clearfix">
+                    <label for="comment">Descripción</label>
+                    <div class="input">
+                        <textarea class="xlarge" name="comment" id="comment" rows="6"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span16">
+                <div class="actions">
+                    <input id="submit" type="submit" class="btn primary" value="Crear evento" />
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+{% endblock %}

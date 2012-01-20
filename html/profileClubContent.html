@@ -30,6 +30,26 @@
 <div class="row">
     <div class="span6">
         <h5 class="clubtitle2">Eventos</h5>
+        <table class="zebra-striped sortable">
+            <thead>
+                <tr>
+                    <th class="header blue" >Próximos eventos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in events %}
+                    <tr>
+                        <td>
+                            <a href="/profile/club/events/view?event={{e.key}}">{{e.name}}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% ifequal selectedClub.owner user %}
+            <a id="newevent" href="/profile/club/events/new?club={{selectedClub.key}}">Añade un nuevo evento...</a>
+        {% endifequal %}
     </div>
     <div class="span10">
         <h5 class="clubtitle2">Comentarios</h5>
