@@ -235,7 +235,7 @@ RequestComment(comment=commentReqNilsen, request=nilsenRequest).put()
 db.delete(ClubEvent.all().fetch(512))
 db.delete(ClubEventAssit.all().fetch(512))
 
-gritos = ClubEvent(club=club1, name=u'Ensayo de gritos', comment=u'Como siempre. ToDoOo Por JustIn!', place=u'Donde siempre').put()
+gritos = ClubEvent(club=club1, name=u'Ensayo de gritos', comment=u'Como siempre. ToDoOo Por JustIn!', place=u'Donde siempre',  date=datetime.datetime.strptime("01/02/2012", "%d/%m/%Y")).put()
 concierto = ClubEvent(club=club1, name=u'Concierto Valencia!!', comment=u'Por fin vieneeee!!', place=u'Plaza de toros', date=datetime.datetime.strptime("01/01/2011", "%d/%m/%Y")).put()
 ClubEventAssit(event=gritos, user=nilsenUser).put();
 ClubEventAssit(event=gritos, user=billyUser).put();
