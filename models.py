@@ -92,7 +92,7 @@ class ClubEvent(db.Model):
     name = db.StringProperty()
     place = db.StringProperty()
     comment = db.StringProperty()
-    date = db.DateTimeProperty(auto_now=True)
+    date = db.DateTimeProperty(auto_now_add=True)
 
     @classmethod
     def allOf(cls, club):
