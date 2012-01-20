@@ -6,32 +6,29 @@
 
 <div class="row">
     <div class="span16">
-        <h2>{{event.name}}</h2>
-        <h3>{{event.club.name}}</h3>
+        <h6>Evento {{event.name}} del club {{event.club.name}}</h6>
     </div>
 </div>
 
 <div class="row">
-    <div class="span8">
-        <p>Lugar: {{event.place}}</p>
-    </div>
-    <div class="span8">
-        <p>Fecha: {{event.date}}</p>
+    <div class="span14 offset1">
+        <div class="alert-message block-message info">
+            <p><strong>Lugar</strong>: {{event.place}}</p>
+            <p><strong>Fecha</strong>: {{event.date}}</p>
+            <br>
+            <p>{{event.comment}}</p>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="span16">
-        <p>{{event.comment}}</p>
-        {% if amINotIn %}
-            <a class="btn" href="/profile/club/events/assist?event={{event.key}}">¡Asistiré!</a>
-        {% endif %}
-    </div>
-</div>
 
 <div class="row centerrow">
     <div class="offset4 span8">
-        <table class="zebra-striped sortable">
+        <h5 class="clubtitle2">Asistentes</h5>
+        {% if amINotIn %}
+            <a class="btn" style="margin-bottom:20px" href="/profile/club/events/assist?event={{event.key}}">¡Asistiré!</a>
+        {% endif %}
+        <table class="zebra-striped sortable" style="margin-bottom:25px">
             <thead>
                 <tr>
                     <th class="header blue"  style="width:50px"></th>

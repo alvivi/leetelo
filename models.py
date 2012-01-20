@@ -4,7 +4,7 @@
 # modelos son persistentes.
 
 from google.appengine.ext import db
-from datetime import datetime
+import datetime
 
 class Usuario(db.Model):
     user = db.UserProperty()
@@ -96,7 +96,7 @@ class ClubEvent(db.Model):
 
     @classmethod
     def allOf(cls, club):
-        return cls.all().filter('club =', club).filter('date <=', datetime.now()).fetch(128)
+        return cls.all().filter('club =', club).filter('date <=', datetime.datetime.now()).fetch(128)
 
 class ClubEventAssit(db.Model):
     event = db.ReferenceProperty(ClubEvent)
