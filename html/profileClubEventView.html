@@ -28,7 +28,7 @@
         {% if amINotIn %}
             <a class="btn" style="margin-bottom:20px" href="/profile/club/events/assist?event={{event.key}}">¡Asistiré!</a>
         {% endif %}
-        <table class="zebra-striped sortable" style="margin-bottom:25px">
+        <table class="zebra-striped sortable" style="margin-bottom:20px">
             <thead>
                 <tr>
                     <th class="header blue"  style="width:50px"></th>
@@ -39,7 +39,7 @@
                 {% for p in participants %}
                     <tr>
                         <td style="vertical-align:middle"><a href="/user/details?selectedUser={{p.user.email}}"><img class="avatar-small" src='/img?user={{p.user.email}}' alt="Avatar del usuario"></a></td>
-                        <td style="vertical-align:middle">{{p.user.nickname}}</td>
+                        <td style="vertical-align:middle"><a href="/user/details?selectedUser={{p.user.email}}">{{p.user.nickname}}</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

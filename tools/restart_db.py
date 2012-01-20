@@ -227,5 +227,18 @@ Alert( date=Alert.setDate(), user=testUser, type='Solicitud: Finalizada', descri
 Alert( date=Alert.setDate(), user=nilsenUser, type='Club: Solicitud', description="Usuario test@example.com quiere unirse al club Fans de Knut Hamsun", relatedClub=club5).put()
 
 db.delete(RequestComment.all().fetch(512))
-commentReqNilsen = Comment(user=nilsenUser, text=u'O me lo das o te pego una paliza').put()
+commentReqNilsen = Comment(user=nilsenUser, text=u'O me lo das o te pego una paliza.').put()
 RequestComment(comment=commentReqNilsen, request=nilsenRequest).put()
+
+
+
+db.delete(ClubEvent.all().fetch(512))
+db.delete(ClubEventAssit.all().fetch(512))
+
+gritos = ClubEvent(club=club1, name=u'Ensayo de gritos', comment=u'Como siempre. ToDoOo Por JustIn!', place=u'Donde siempre').put()
+ClubEventAssit(event=gritos, user=nilsenUser).put();
+ClubEventAssit(event=gritos, user=billyUser).put();
+
+
+
+
