@@ -237,8 +237,21 @@ db.delete(ClubEventAssit.all().fetch(512))
 
 gritos = ClubEvent(club=club1, name=u'Ensayo de gritos', comment=u'Como siempre. ToDoOo Por JustIn!', place=u'Donde siempre').put()
 concierto = ClubEvent(club=club1, name=u'Concierto Valencia!!', comment=u'Por fin vieneeee!!', place=u'Plaza de toros', date=datetime.datetime.strptime("01/01/2011", "%d/%m/%Y")).put()
+lectura = ClubEvent(club=club1, name=u'Lectura en grupo', comment=u'Para que todos puedan opinar con otros fans sobre esta magnífica obra de arte', place=u'Aula libre', date=datetime.datetime.strptime("01/04/2012", "%d/%m/%Y")).put()
+lectura2 = ClubEvent(club=club1, name=u'Lectura en grupo II', comment=u'Visto el éxito del primer evento hemos decidido crear otro!', place=u'Aula libre', date=datetime.datetime.strptime("02/04/2012", "%d/%m/%Y")).put()
+
 ClubEventAssit(event=gritos, user=nilsenUser).put();
 ClubEventAssit(event=gritos, user=billyUser).put();
+
+ClubEventAssit(event=concierto, user=nilsenUser).put();
+ClubEventAssit(event=concierto, user=testUser).put();
+ClubEventAssit(event=concierto, user=patryUser).put();
+ClubEventAssit(event=concierto, user=userUser).put();
+
+ClubEventAssit(event=lectura, user=nilsenUser).put();
+ClubEventAssit(event=lectura, user=testUser).put();
+ClubEventAssit(event=lectura, user=patryUser).put();
+ClubEventAssit(event=lectura, user=userUser).put();
 
 
 
