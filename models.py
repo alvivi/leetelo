@@ -96,7 +96,7 @@ class ClubEvent(db.Model):
 
     @classmethod
     def allOf(cls, club):
-        return cls.all().filter('club =', club).filter('date <=', datetime.datetime.now()).fetch(128)
+        return cls.all().filter('club =', club).filter('date >=', datetime.datetime.now()).fetch(128)
 
 class ClubEventAssit(db.Model):
     event = db.ReferenceProperty(ClubEvent)
